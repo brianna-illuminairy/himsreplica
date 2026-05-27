@@ -681,12 +681,12 @@ const Q7_PHRASE = {
   book:   'prep books',
 };
 
-function buildPriorPrep(q7 = []) {
+function priorPrepNames(q7 = []) {
   const items = q7.map(id => Q7_PHRASE[id]).filter(Boolean);
-  if (items.length === 0) return { subject: 'Most SAT prep', verb: 'goes' };
-  if (items.length === 1) return { subject: `Your prior prep (${items[0]})`, verb: 'went' };
-  if (items.length === 2) return { subject: `Your prior prep (${items[0]} + ${items[1]})`, verb: 'went' };
-  return { subject: 'Your prior prep', verb: 'went' };
+  if (items.length === 0) return null;
+  if (items.length === 1) return items[0];
+  if (items.length === 2) return `${items[0]} + ${items[1]}`;
+  return items.slice(0, 2).join(' + ');
 }
 
 function pickContentSkills(q6 = []) {
@@ -707,7 +707,7 @@ function pickContentSkills(q6 = []) {
 export function QFIDiagnosis({ onContinue, onBack, q6 = ['math', 'no-plan'], q7 = ['khan'], q5 = 'oct3' }) {
   const skills = pickContentSkills(q6);
   const totalPts = skills.reduce((s, x) => s + x.pts, 0);
-  const { subject, verb } = buildPriorPrep(q7);
+  const priorPrep = priorPrepNames(q7);
 
   // Constellation reveal: chaotic 28 → 5 illuminated + connected
   const [revealed, setRevealed] = useState(false);
@@ -736,15 +736,24 @@ export function QFIDiagnosis({ onContinue, onBack, q6 = ['math', 'no-plan'], q7 
       footer={<QFButton kind="forest" onClick={onContinue}>Continue</QFButton>}
     >
       <div className="gap-22" style={{ marginTop: 4 }}>
-        {/* Headline — compressed */}
+        {/* Headline + 3-beat subhead */}
         <div>
-          <h1 className="qf-h1" style={{ marginBottom: 8 }}>
+          <h1 className="qf-h1" style={{ marginBottom: 10 }}>
             Study <em>less.</em><br />
             Improve <em>faster.</em>
           </h1>
-          <p className="qf-lead">
-            {subject} {verb} broad — all <em>28 SAT skills</em> at the surface.
-            We find the <em>5–6 costing {totalPts}+ points</em> and go deep.
+          <p className="qf-lead" style={{ marginBottom: 0 }}>
+            {priorPrep ? (
+              <>Last time, your kid prepared with <em>{priorPrep}</em>.</>
+            ) : (
+              <>Most SAT prep covers all <em>28 skills</em> at the surface.</>
+            )}
+          </p>
+          <p className="qf-lead" style={{ marginTop: 6, marginBottom: 0 }}>
+            The problem wasn't <em>effort.</em> It was <em>focus.</em>
+          </p>
+          <p className="qf-lead" style={{ marginTop: 6 }}>
+            illuminairy finds the <em>5 costing the most points.</em>
           </p>
         </div>
 
