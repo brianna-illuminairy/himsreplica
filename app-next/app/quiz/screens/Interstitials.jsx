@@ -709,6 +709,12 @@ export function QFIDiagnosis({ onContinue, onBack, q6 = ['math', 'no-plan'], q7 
   const totalPts = skills.reduce((s, x) => s + x.pts, 0);
   const priorPrep = priorPrepNames(q7);
 
+  const today = new Date('2026-05-26');
+  const days = D_TEST_DATES[q5]
+    ? Math.round((D_TEST_DATES[q5] - today) / (1000 * 60 * 60 * 24))
+    : null;
+  const weeks = days ? Math.round(days / 7) : null;
+
   // Constellation reveal: chaotic 28 → 5 illuminated + connected
   const [revealed, setRevealed] = useState(false);
   useEffect(() => {
@@ -725,6 +731,7 @@ export function QFIDiagnosis({ onContinue, onBack, q6 = ['math', 'no-plan'], q7 
     { x: 320, y: 135 },
   ];
   const LINKS = [[0,1],[1,2],[2,3],[3,4]];
+  const maxPts = Math.max(...skills.map(s => s.pts));
   const DIM = [
     [22,28],[55,60],[80,35],[140,45],[165,30],[200,50],[235,35],[290,28],[335,32],[352,75],
     [25,180],[60,200],[95,215],[135,190],[175,205],[215,195],[255,215],[295,200],[330,185],[355,210],
@@ -736,24 +743,16 @@ export function QFIDiagnosis({ onContinue, onBack, q6 = ['math', 'no-plan'], q7 
       footer={<QFButton kind="forest" onClick={onContinue}>Continue</QFButton>}
     >
       <div className="gap-22" style={{ marginTop: 4 }}>
-        {/* Headline + 3-beat subhead */}
+        {/* Headline + two-line subhead */}
         <div>
           <h1 className="qf-h1" style={{ marginBottom: 10 }}>
-            Study <em>less.</em><br />
-            Improve <em>faster.</em>
+            They lost <em>200+ points</em> to just <em>5–7 skills</em> last test.
           </h1>
           <p className="qf-lead" style={{ marginBottom: 0 }}>
-            {priorPrep ? (
-              <>Last time, your kid prepared with <em>{priorPrep}</em>.</>
-            ) : (
-              <>Most SAT prep covers all <em>28 skills</em> at the surface.</>
-            )}
-          </p>
-          <p className="qf-lead" style={{ marginTop: 6, marginBottom: 0 }}>
-            The problem wasn't <em>effort.</em> It was <em>focus.</em>
+            {priorPrep ? <em>{priorPrep}</em> : 'Most SAT prep'} spread practice across all <em>28 SAT skills.</em>
           </p>
           <p className="qf-lead" style={{ marginTop: 6 }}>
-            illuminairy finds the <em>5 costing the most points.</em>
+            illuminairy diagnoses the few causing the biggest score drops.
           </p>
         </div>
 
@@ -771,47 +770,57 @@ export function QFIDiagnosis({ onContinue, onBack, q6 = ['math', 'no-plan'], q7 
                 }}
               />
             ))}
-            {/* Constellation links between lit stars */}
-            {LINKS.map(([a, b], i) => (
-              <line key={`ln${i}`}
-                x1={LIT[a].x} y1={LIT[a].y}
-                x2={LIT[b].x} y2={LIT[b].y}
-                stroke="#77C89A" strokeWidth="1" strokeLinecap="round"
-                style={{
-                  transition: 'opacity 0.6s ease 0.9s',
-                  opacity: revealed ? 0.55 : 0,
-                }}
-              />
-            ))}
-            {/* 5 lit stars with labels */}
+            {/* Constellation links — width + opacity scale with avg pts of endpoints */}
+            {LINKS.map(([a, b], i) => {
+              const avgScale = (skills[a].pts + skills[b].pts) / (2 * maxPts);
+              return (
+                <line key={`ln${i}`}
+                  x1={LIT[a].x} y1={LIT[a].y}
+                  x2={LIT[b].x} y2={LIT[b].y}
+                  stroke="#77C89A"
+                  strokeWidth={0.5 + 1.8 * avgScale}
+                  strokeLinecap="round"
+                  style={{
+                    transition: 'opacity 0.6s ease 0.9s',
+                    opacity: revealed ? 0.25 + 0.6 * avgScale : 0,
+                  }}
+                />
+              );
+            })}
+            {/* 5 lit stars — size + glow scale with pts (bubble graph) */}
             {LIT.map(({ x, y }, i) => {
               const skill = skills[i];
+              const scale = skill.pts / maxPts;           // 0.6 (smallest) → 1 (biggest)
+              const haloR = 8 + 9 * scale;                // 13.4 → 17
+              const midR  = 4.5 + 5.5 * scale;            // 7.8 → 10
+              const coreR = 2.2 + 3 * scale;              // 4 → 5.2
+              const glowPx = 4 + 4 * scale;               // 6.4 → 8
               return (
                 <g key={`l${i}`} style={{
                   transition: 'opacity 0.6s ease 0.25s',
                   opacity: revealed ? 1 : 0,
                 }}>
-                  {/* +pts label above */}
-                  <text x={x} y={y - 22}
+                  {/* +pts label above (positioned outside halo) */}
+                  <text x={x} y={y - haloR - 5}
                     textAnchor="middle"
                     fontFamily="DM Mono, ui-monospace, monospace"
-                    fontSize="11" fontWeight="600"
+                    fontSize="10.5" fontWeight="600"
                     fill="#2F6E47" letterSpacing="0.04em">
                     +{skill.pts} pts
                   </text>
-                  {/* Aurora-glow star */}
-                  <circle cx={x} cy={y} r={11} fill="rgba(119,200,154,0.10)" />
-                  <circle cx={x} cy={y} r={7}  fill="rgba(119,200,154,0.28)" />
-                  <circle cx={x} cy={y} r={3.6} fill="#2F6E47"
-                    style={{ filter: 'drop-shadow(0 0 5px rgba(119,200,154,0.85))' }} />
-                  {/* Skill name below, wrapped to 2 lines */}
-                  <text x={x} y={y + 22}
+                  {/* Aurora-glow bubble star — radii proportional to pts */}
+                  <circle cx={x} cy={y} r={haloR} fill="rgba(119,200,154,0.10)" />
+                  <circle cx={x} cy={y} r={midR}  fill="rgba(119,200,154,0.28)" />
+                  <circle cx={x} cy={y} r={coreR} fill="#2F6E47"
+                    style={{ filter: `drop-shadow(0 0 ${glowPx}px rgba(119,200,154,0.85))` }} />
+                  {/* Skill name below halo */}
+                  <text x={x} y={y + haloR + 11}
                     textAnchor="middle"
                     fontFamily="Fraunces, Georgia, serif"
-                    fontSize="11" fontWeight="500"
+                    fontSize="10.5" fontWeight="500"
                     fill="#121A2B" letterSpacing="-0.005em">
                     {skill.lines.map((ln, li) => (
-                      <tspan key={li} x={x} dy={li === 0 ? 0 : 12}>{ln}</tspan>
+                      <tspan key={li} x={x} dy={li === 0 ? 0 : 11}>{ln}</tspan>
                     ))}
                   </text>
                 </g>
