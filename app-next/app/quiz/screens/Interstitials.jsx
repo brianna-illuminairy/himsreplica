@@ -659,18 +659,18 @@ const D_Q7_PRIORITY = ['khan', 'group', 'online', 'app', 'book', 'nothing'];
 
 // Real SAT content skills (not tricks) tied to Q6 selections.
 const MATH_SKILLS = [
-  { name: 'Linear Functions',           pts: 35 },
-  { name: 'Geometry: Right Triangles',  pts: 25 },
-  { name: 'Quadratics',                 pts: 22 },
-  { name: 'Word Problems',              pts: 18 },
-  { name: 'Functions & Graphs',         pts: 15 },
+  { name: 'Linear Functions',           lines: ['Linear', 'Functions'],         pts: 35 },
+  { name: 'Geometry: Right Triangles',  lines: ['Right', 'Triangles'],          pts: 25 },
+  { name: 'Quadratics',                 lines: ['Quadratics'],                  pts: 22 },
+  { name: 'Word Problems',              lines: ['Word', 'Problems'],            pts: 18 },
+  { name: 'Functions & Graphs',         lines: ['Functions', '& Graphs'],       pts: 15 },
 ];
 const READING_SKILLS = [
-  { name: 'Inference & Main Idea',      pts: 30 },
-  { name: 'Vocab in Context',           pts: 25 },
-  { name: 'Reading Pacing',             pts: 22 },
-  { name: 'Evidence-Based Reading',     pts: 18 },
-  { name: 'Question-First Strategy',    pts: 15 },
+  { name: 'Inference & Main Idea',      lines: ['Inference', '& Main Idea'],    pts: 30 },
+  { name: 'Vocab in Context',           lines: ['Vocab in', 'Context'],         pts: 25 },
+  { name: 'Reading Pacing',             lines: ['Reading', 'Pacing'],           pts: 22 },
+  { name: 'Evidence-Based Reading',     lines: ['Evidence-', 'Based'],          pts: 18 },
+  { name: 'Question-First Strategy',    lines: ['Question-', 'First'],          pts: 15 },
 ];
 
 function pickContentSkills(q6 = []) {
@@ -696,6 +696,7 @@ export function QFIDiagnosis({ onContinue, onBack, q6 = ['math', 'no-plan'], q7 
   const days = D_TEST_DATES[q5]
     ? Math.round((D_TEST_DATES[q5] - today) / (1000 * 60 * 60 * 24))
     : null;
+  const weeks = days ? Math.round(days / 7) : null;
   const dateShort = D_TEST_DATE_SHORT[q5];
 
   const skills = pickContentSkills(q6);
@@ -708,15 +709,20 @@ export function QFIDiagnosis({ onContinue, onBack, q6 = ['math', 'no-plan'], q7 
     return () => clearTimeout(t);
   }, []);
 
-  // Hand-placed scattered positions in 360×140 viewBox (23 dim + 5 lit = 28)
-  const DIM = [
-    [22,28],[48,98],[68,112],[98,22],[112,72],[118,108],[138,92],
-    [162,58],[172,112],[182,32],[197,102],[217,28],[222,52],
-    [237,96],[247,68],[272,107],[277,32],[292,67],[302,27],
-    [317,112],[327,62],[342,37],[352,97],
+  // Star positions in 360×220 viewBox: 5 lit stars + 23 scattered dim dots
+  const LIT = [
+    { x: 40,  y: 130 },
+    { x: 115, y: 105 },
+    { x: 190, y: 140 },
+    { x: 260, y: 110 },
+    { x: 320, y: 135 },
   ];
-  const LIT = [[82,62],[142,38],[202,78],[262,48],[312,88]];
   const LINKS = [[0,1],[1,2],[2,3],[3,4]];
+  const DIM = [
+    [22,28],[55,60],[80,35],[140,45],[165,30],[200,50],[235,35],[290,28],[335,32],[352,75],
+    [25,180],[60,200],[95,215],[135,190],[175,205],[215,195],[255,215],[295,200],[330,185],[355,210],
+    [73,75],[245,55],[300,60],
+  ];
 
   return (
     <QFScreen stepIdx={9} onBack={onBack}
@@ -727,55 +733,78 @@ export function QFIDiagnosis({ onContinue, onBack, q6 = ['math', 'no-plan'], q7 
         <div>
           <h1 className="qf-h1" style={{ marginBottom: 8 }}>
             The SAT covers <em>years</em> of learning.<br />
-            You only have <em>weeks</em> to prepare.
+            They have <em>{weeks ? `${weeks} weeks` : 'weeks'}</em> to prepare.
           </h1>
           <p className="qf-lead">
-            Forget studying all of it at the surface. Find the few skills costing the most points — and go <em>deep.</em>
+            Forget studying 28 skills at a surface level. Find the ones costing the most points — and go <em>deep.</em>
           </p>
         </div>
 
-        {/* Aurora constellation reveal */}
+        {/* Labeled aurora constellation — replaces the skill table */}
         <div style={{ position: 'relative', padding: '4px 0 6px' }}>
-          <svg viewBox="0 0 360 140" style={{ width: '100%', display: 'block', overflow: 'visible' }}>
+          <svg viewBox="0 0 360 220"
+            style={{ width: '100%', display: 'block', overflow: 'visible' }}>
             {/* Dim scattered (the 23 that don't matter) */}
             {DIM.map(([x, y], i) => (
               <circle key={`d${i}`} cx={x} cy={y} r={2.2}
                 fill="rgba(20,32,46,0.22)"
                 style={{
                   transition: 'opacity 0.9s ease',
-                  opacity: revealed ? 0.45 : 1,
+                  opacity: revealed ? 0.38 : 1,
                 }}
               />
             ))}
-            {/* Constellation links between lit stars (after dots appear) */}
+            {/* Constellation links between lit stars */}
             {LINKS.map(([a, b], i) => (
               <line key={`ln${i}`}
-                x1={LIT[a][0]} y1={LIT[a][1]}
-                x2={LIT[b][0]} y2={LIT[b][1]}
+                x1={LIT[a].x} y1={LIT[a].y}
+                x2={LIT[b].x} y2={LIT[b].y}
                 stroke="#77C89A" strokeWidth="1" strokeLinecap="round"
                 style={{
-                  transition: 'opacity 0.6s ease 0.9s, stroke-dashoffset 0.6s ease 0.9s',
+                  transition: 'opacity 0.6s ease 0.9s',
                   opacity: revealed ? 0.55 : 0,
                 }}
               />
             ))}
-            {/* 5 lit stars with aurora glow */}
-            {LIT.map(([x, y], i) => (
-              <g key={`l${i}`} style={{
-                transition: 'opacity 0.6s ease 0.25s',
-                opacity: revealed ? 1 : 0,
-              }}>
-                <circle cx={x} cy={y} r={11} fill="rgba(119,200,154,0.10)" />
-                <circle cx={x} cy={y} r={7}  fill="rgba(119,200,154,0.28)" />
-                <circle cx={x} cy={y} r={3.4} fill="#2F6E47"
-                  style={{ filter: 'drop-shadow(0 0 5px rgba(119,200,154,0.85))' }} />
-              </g>
-            ))}
+            {/* 5 lit stars with labels */}
+            {LIT.map(({ x, y }, i) => {
+              const skill = skills[i];
+              return (
+                <g key={`l${i}`} style={{
+                  transition: 'opacity 0.6s ease 0.25s',
+                  opacity: revealed ? 1 : 0,
+                }}>
+                  {/* +pts label above */}
+                  <text x={x} y={y - 22}
+                    textAnchor="middle"
+                    fontFamily="DM Mono, ui-monospace, monospace"
+                    fontSize="11" fontWeight="600"
+                    fill="#2F6E47" letterSpacing="0.04em">
+                    +{skill.pts} pts
+                  </text>
+                  {/* Aurora-glow star */}
+                  <circle cx={x} cy={y} r={11} fill="rgba(119,200,154,0.10)" />
+                  <circle cx={x} cy={y} r={7}  fill="rgba(119,200,154,0.28)" />
+                  <circle cx={x} cy={y} r={3.6} fill="#2F6E47"
+                    style={{ filter: 'drop-shadow(0 0 5px rgba(119,200,154,0.85))' }} />
+                  {/* Skill name below, wrapped to 2 lines */}
+                  <text x={x} y={y + 22}
+                    textAnchor="middle"
+                    fontFamily="Fraunces, Georgia, serif"
+                    fontSize="11" fontWeight="500"
+                    fill="#121A2B" letterSpacing="-0.005em">
+                    {skill.lines.map((ln, li) => (
+                      <tspan key={li} x={x} dy={li === 0 ? 0 : 12}>{ln}</tspan>
+                    ))}
+                  </text>
+                </g>
+              );
+            })}
           </svg>
 
-          {/* Score callout */}
+          {/* Score callout — sum of all 5 */}
           <div style={{
-            textAlign: 'center', marginTop: 10,
+            textAlign: 'center', marginTop: 6,
             opacity: revealed ? 1 : 0,
             transition: 'opacity 0.6s ease 0.7s',
           }}>
@@ -787,41 +816,13 @@ export function QFIDiagnosis({ onContinue, onBack, q6 = ['math', 'no-plan'], q7 
               Your fastest path
             </div>
             <div style={{
-              fontFamily: 'var(--qf-display)', fontSize: 26,
+              fontFamily: 'var(--qf-display)', fontSize: 28,
               letterSpacing: '-0.02em', color: 'var(--qf-forest)',
               fontWeight: 500, marginTop: 2, lineHeight: 1,
             }}>
               <em>+{totalPts} points</em>
             </div>
           </div>
-        </div>
-
-        {/* 5 content-skill cards */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {skills.map((skill, i) => (
-            <div key={i} style={{
-              display: 'grid',
-              gridTemplateColumns: '32px 1fr auto',
-              alignItems: 'center',
-              gap: 12,
-              background: 'var(--qf-paper)',
-              border: '1px solid var(--qf-line)',
-              borderRadius: 10,
-              padding: '12px 14px',
-            }}>
-              <div style={{
-                fontFamily: 'var(--qf-mono)', fontSize: 10,
-                color: 'var(--qf-forest)', letterSpacing: '0.06em', fontWeight: 600,
-              }}>{String(i + 1).padStart(2, '0')}</div>
-              <div style={{ fontFamily: 'var(--qf-display)', fontSize: 15, color: 'var(--qf-ink)', letterSpacing: '-0.005em' }}>
-                {skill.name}
-              </div>
-              <div style={{
-                fontFamily: 'var(--qf-mono)', fontSize: 11, color: 'var(--qf-forest)',
-                fontWeight: 600, letterSpacing: '0.06em',
-              }}>+{skill.pts} pts</div>
-            </div>
-          ))}
         </div>
 
         {/* Inline framing — no eyebrows */}
