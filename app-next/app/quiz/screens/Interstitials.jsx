@@ -826,7 +826,9 @@ export function QFIDiagnosis({ onContinue, onBack, q6 = ['math', 'no-plan'], q7 
         </div>
 
         {/* Inline framing — no eyebrows */}
-        <p className="qf-lead">{whyFailed}</p>
+        <p className="qf-lead">
+          Self-study and group classes go <em>wide and shallow.</em> Your kid needs <em>deep work</em> on the few skills that actually move the score.
+        </p>
 
         <p className="qf-lead">
           The fastest way to get their score up is to focus on the <em>highest-impact skills</em> first.
