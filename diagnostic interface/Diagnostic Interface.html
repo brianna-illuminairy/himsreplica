@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Illuminairy · Diagnostic Interface</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Schibsted+Grotesk:wght@300;400;500;600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+  html, body { margin: 0; padding: 0; background: #f0eee9; }
+  body { font-family: 'Schibsted Grotesk', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  #root { min-height: 100vh; }
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<!-- React 18 + Babel (pinned) -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<!-- iOS frame (used for status bar only) -->
+<script type="text/babel" src="ios-frame.jsx"></script>
+
+<!-- shared design tokens + atoms -->
+<script type="text/babel" src="tokens.jsx"></script>
+
+<!-- image-slot custom element (lets user drop their own photos) -->
+<script src="image-slot.js"></script>
+
+<!-- mobile screens -->
+<script type="text/babel" src="mobile.jsx"></script>
+
+<!-- animated single-screen funnel -->
+<script type="text/babel" src="funnel.jsx"></script>
+
+<!-- editorial photo-collage version (Hims-style) -->
+<script type="text/babel" src="editorial.jsx"></script>
+
+<!-- desktop Zoom-session plan hero -->
+<script type="text/babel" src="zoom-plan.jsx"></script>
+
+<!-- desktop diagnostic hero (student + branded test UI) -->
+<script type="text/babel" src="diagnostic.jsx"></script>
+
+<!-- desktop tutor-ranking hero (tutor + ranked weaknesses workspace) -->
+<script type="text/babel" src="tutor-ranking.jsx"></script>
+
+<!-- desktop screens -->
+<script type="text/babel" src="desktop.jsx"></script>
+
+<!-- design canvas wrapper -->
+<script type="text/babel" src="design-canvas.jsx"></script>
+
+<!-- compose -->
+<script type="text/babel">
+function App() {
+  return (
+    <DesignCanvas>
+      <DCSection
+        id="desktop"
+        title="Desktop · for the laptop hero"
+        subtitle="1440×900 — photo on top, branded product UI beneath. Drop into a MacBook frame for animation."
+      >
+        <DCArtboard id="d-diagnostic" label="Student · taking the diagnostic" width={1440} height={900}>
+          <DiagnosticHeroScreen />
+        </DCArtboard>
+        <DCArtboard id="d-tutor" label="Tutor · ranking weaknesses" width={1440} height={900}>
+          <TutorRankingScreen />
+        </DCArtboard>
+        <DCArtboard id="d-zoom" label="Zoom session · reviewing the plan" width={1440} height={900}>
+          <ZoomPlanScreen />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="desktop-dashboard"
+        title="Desktop · dashboard alt (4 steps)"
+        subtitle="Earlier direction — keeping for reference / comparison."
+      >
+        <DCArtboard id="d1" label="01 · Diagnostic" width={1440} height={900}>
+          <DStep1Diagnostic />
+        </DCArtboard>
+        <DCArtboard id="d2" label="02 · Ranked weaknesses" width={1440} height={900}>
+          <DStep2Weaknesses />
+        </DCArtboard>
+        <DCArtboard id="d3" label="03 · The plan" width={1440} height={900}>
+          <DStep3Plan />
+        </DCArtboard>
+        <DCArtboard id="d4" label="04 · Projection" width={1440} height={900}>
+          <DStep4Projection />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="mobile"
+        title="Mobile · in-funnel · two directions"
+        subtitle="390×844. Editorial photo-collage (Hims-style) vs animated UI graphic. Pick one."
+      >
+        <DCArtboard id="m-editorial" label="Editorial · photo collage" width={390} height={844}>
+          <EditorialScreen />
+        </DCArtboard>
+        <DCArtboard id="m-editorial-totem" label="Editorial · totem (photo + UI per step)" width={390} height={844}>
+          <EditorialTotemScreen />
+        </DCArtboard>
+        <DCArtboard id="m-editorial-static" label="Editorial · static (Hims-style)" width={390} height={844}>
+          <EditorialStaticScreen />
+        </DCArtboard>
+        <DCArtboard id="m-funnel" label="Animated · morphing graphic" width={390} height={844}>
+          <FunnelScreen />
+        </DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Aurora Tokens — Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="aurora-tokens.css" />
+  <style>
+    html, body { margin: 0; padding: 0; min-height: 100%; background: #F5F8FA; }
+    .page { max-width: 920px; margin: 0 auto; padding: 56px 28px 96px; }
+    .section { margin-top: 56px; }
+    .section-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      margin: 0 0 16px;
+    }
+    /* Swatch grid */
+    .swatches {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 10px;
+    }
+    .sw {
+      border: 1px solid var(--line);
+      border-radius: var(--r-md);
+      overflow: hidden;
+      background: var(--paper);
+    }
+    .sw .chip { height: 84px; }
+    .sw .info { padding: 10px 12px; }
+    .sw .name {
+      font-family: var(--body);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ink);
+      margin: 0;
+    }
+    .sw .hex {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: var(--ink-mute);
+      margin: 2px 0 0;
+    }
+    .sw .ref {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      margin: 6px 0 0;
+    }
+    /* Button cluster */
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+    .btn-row .btn { width: auto; padding-left: 28px; padding-right: 28px; }
+    .btn-row .btn.pill, .btn-row .btn.pill-paper { padding: 14px 22px; }
+    /* Type specimen */
+    .type-stack { display: flex; flex-direction: column; gap: 18px; }
+    /* Hero demo CTA placement */
+    .hero-cta { margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap; }
+    .hero-eyebrow { color: var(--glow); }
+    /* Card grid */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+    .card-grid .card { display: flex; flex-direction: column; gap: 8px; }
+    .card-grid .card .h3 {
+      font-family: var(--display);
+      font-weight: 500;
+      font-size: 20px;
+      line-height: 1.1;
+      letter-spacing: -0.012em;
+      margin: 0;
+    }
+    .card-grid .card.dark .h3 { color: #F5F8FA; }
+    .card-grid .card p {
+      font-family: var(--body);
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--ink-mid);
+      margin: 0;
+    }
+    .card-grid .card.dark p { color: rgba(245, 248, 250, 0.7); }
+  </style>
+</head>
+<body class="aurora">
+  <div class="page">
+
+    <!-- ───── Header ───── -->
+    <div class="eyebrow">Aurora design system</div>
+    <h1 class="h1" style="margin-top: 12px;">A calm, <em>aurora-toned</em> palette for product surfaces.</h1>
+    <p class="lead" style="margin-top: 14px; max-width: 56ch;">
+      Extracted from the illuminairy SAT funnel. Navy ink, forest green accent,
+      soft sage neutrals. Designed to feel premium without shouting.
+    </p>
+
+    <!-- ───── Hero band ───── -->
+    <div class="section">
+      <p class="section-label">Hero / Dark chrome band</p>
+      <div class="hero">
+        <div class="eyebrow hero-eyebrow">For ambitious families</div>
+        <h1 class="h1" style="margin-top: 12px; font-size: 40px;">
+          Build a plan that fits the <em>kid you have</em>.
+        </h1>
+        <p class="lead" style="margin-top: 14px; color: rgba(245, 248, 250, 0.78); max-width: 52ch;">
+          Aurora is the visual signature: a dark navy field with a soft green-to-blue
+          glow bleeding from the top-right corner. Use it once per screen, large.
+        </p>
+        <div class="hero-cta">
+          <button class="btn pill pill-paper">Start the assessment</button>
+          <button class="btn pill" style="background: transparent; color: #F5F8FA; border: 1px solid rgba(245,248,250,0.25);">See how it works</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───── Palette ───── -->
+    <div class="section">
+      <p class="section-label">Palette</p>
+      <div class="swatches">
+        <div class="sw">
+          <div class="chip" style="background: var(--bg);"></div>
+          <div class="info"><p class="name">bg</p><p class="hex">#F5F8FA</p><p class="ref">page · polar white</p></div>
+        </div>
+        <div class="sw">
+          <div class="chip" style="background: var(--bg-2);"></div>
+          <div class="info"><p class="name">bg-2</p><p class="hex">#ECF1ED</p><p class="ref">sage-tinted bg</p></div>
+        </div>
+        <div class="sw">
+          <div class="chip" style="background: var(--paper); border-bottom: 1px solid var(--line);"></div>
+          <div class="info"><p class="name">paper</p><p class="hex">#FFFFFF</p><p class="ref">cards</p></div>
+        </div>
+        <div class="sw">
+          <div class="chip" style="background: var(--ink);"></div>
+          <div class="info"><p class="name">ink</p><p class="hex">#121A2B</p><p class="ref">primary text · chrome</p></div>
+        </div>
+        <div class="sw">
+          <div class="chip" style="background: var(--ink-2);"></div>
+          <div class="info"><p class="name">ink-2</p><p class="hex">#2A3142</p><p class="ref">body</p></div>
+        </div>
+        <div class="sw">
+          <div class="chip" style="background: var(--ink-mid);"></div>
+          <div class="info"><p class="name">ink-mid</p><p class="hex">#4D5566</p><p class="ref">metadata</p></div>
+        </div>
+        <div class="sw">
+          <div class="chip" style="background: var(--ink-mute);"></div>
+          <div class="info"><p class="name">ink-mute</p><p class="hex">#8A8E97</p><p class="ref">placeholder</p></div>
+        </div>
+        <div class="sw">
+          <div class="chip" style="background: var(--forest);"></div>
+          <div class="info"><p class="name">forest</p><p class="hex">#2F6E47</p><p class="ref">primary accent · CTA</p></div>
+        </div>
+        <div class="sw">
+          <div class="chip" style="background: var(--forest-2);"></div>
+          <div class="info"><p class="name">forest-2</p><p class="hex">#1A4D2F</p><p class="ref">hover / pressed</p></div>
+        </div>
+        <div class="sw">
+          <div class="chip" style="background: var(--forest-mid);"></div>
+          <div class="info"><p class="name">forest-mid</p><p class="hex">#3E8B5A</p><p class="ref">accent mid</p></div>
+        </div>
+        <div class="sw">
+          <div class="chip" style="background: var(--glow);"></div>
+          <div class="info"><p class="name">glow</p><p class="hex">#77C89A</p><p class="ref">highlights on dark</p></div>
+        </div>
+        <div class="sw">
+          <div class="chip" style="background: var(--forest-soft);"></div>
+          <div class="info"><p class="name">forest-soft</p><p class="hex">#E5EFE8</p><p class="ref">selected wash</p></div>
+        </div>
+        <div class="sw">
+          <div class="chip" style="background: var(--celestial);"></div>
+          <div class="info"><p class="name">celestial</p><p class="hex">#0057A8</p><p class="ref">secondary · sparingly</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───── Typography ───── -->
+    <div class="section">
+      <p class="section-label">Typography</p>
+      <div class="card" style="padding: 24px;">
+        <div class="type-stack">
+          <div>
+            <p class="meta" style="margin: 0 0 6px;">Display · Fraunces 500 · opsz 72</p>
+            <h1 class="h1">The headline says <em>one</em> thing well.</h1>
+          </div>
+          <div>
+            <p class="meta" style="margin: 0 0 6px;">H2 · Fraunces 500 · opsz 48</p>
+            <h2 class="h2">A supporting beat <em>continues</em> the thought.</h2>
+          </div>
+          <div>
+            <p class="meta" style="margin: 0 0 6px;">Body · Schibsted Grotesk 400</p>
+            <p class="lead">Body copy is set in Schibsted Grotesk. It runs at 15 / 1.55, ink-2 by default. Emphasis like <em>this</em> uses the same family, just colored forest — never italic.</p>
+          </div>
+          <div>
+            <p class="meta" style="margin: 0 0 6px;">Eyebrow · DM Mono 500 · uppercase · 0.22em tracking</p>
+            <p class="eyebrow">For ambitious families</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───── Buttons ───── -->
+    <div class="section">
+      <p class="section-label">Buttons</p>
+
+      <p class="meta" style="margin: 0 0 10px;">Primary · forest pill · 56px tall</p>
+      <div class="btn-row">
+        <button class="btn">Continue</button>
+        <button class="btn">See my kid's plan →</button>
+        <button class="btn" disabled>Disabled</button>
+      </div>
+
+      <p class="meta" style="margin: 24px 0 10px;">Ink primary · alternate dark CTA</p>
+      <div class="btn-row">
+        <button class="btn ink">Continue</button>
+      </div>
+
+      <p class="meta" style="margin: 24px 0 10px;">Ghost · outline on light</p>
+      <div class="btn-row">
+        <button class="btn ghost">Maybe later</button>
+        <button class="btn ghost">Back</button>
+      </div>
+
+      <p class="meta" style="margin: 24px 0 10px;">Pill · compact / auto-width</p>
+      <div class="btn-row">
+        <button class="btn pill">Filter</button>
+        <button class="btn pill ghost">Reset</button>
+        <button class="btn pill" style="background: var(--forest-soft); color: var(--forest);">Selected</button>
+      </div>
+
+      <p class="meta" style="margin: 24px 0 10px;">On dark · paper pill</p>
+      <div class="hero" style="padding: 28px; border-radius: var(--r-lg);">
+        <div class="btn-row">
+          <button class="btn pill pill-paper">Get started</button>
+          <button class="btn pill" style="background: transparent; color: #F5F8FA; border: 1px solid rgba(245,248,250,0.25);">Learn more</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───── Cards ───── -->
+    <div class="section">
+      <p class="section-label">Cards</p>
+      <div class="card-grid">
+        <div class="card">
+          <span class="eyebrow">Default</span>
+          <h3 class="h3">Clean white card.</h3>
+          <p>Paper background, hairline border, gentle shadow. The everyday container.</p>
+        </div>
+        <div class="card soft">
+          <span class="eyebrow">Soft</span>
+          <h3 class="h3">Selected state.</h3>
+          <p>Forest-soft wash with a tinted border — use for picked options and confirmations.</p>
+        </div>
+        <div class="card muted">
+          <span class="eyebrow" style="color: var(--ink-mute);">Muted</span>
+          <h3 class="h3">Quiet block.</h3>
+          <p>Sage-tinted background, no border. For supporting content that should recede.</p>
+        </div>
+        <div class="card dark">
+          <span class="eyebrow" style="color: var(--glow);">On ink</span>
+          <h3 class="h3">Dark feature card.</h3>
+          <p>Inverts everything. Save for moments that need to stand out — proof, milestones.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

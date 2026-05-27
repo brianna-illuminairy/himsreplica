@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>illuminairy · SAT Quiz Funnel (Live)</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:ital,wght@0,400..700;1,400..700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="quiz-funnel.css" />
+
+  <style>
+    html, body { margin: 0; padding: 0; height: 100%; background: #E8E2D6; }
+    body { font-family: 'Schibsted Grotesk', system-ui, sans-serif; }
+    #root { width: 100%; min-height: 100%; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+
+  <script type="text/babel" src="ios-frame.jsx"></script>
+  <script type="text/babel" src="quiz-funnel-shell.jsx"></script>
+  <script type="text/babel" src="quiz-funnel-questions.jsx"></script>
+  <script type="text/babel" src="quiz-funnel-interstitials.jsx"></script>
+  <script type="text/babel" src="quiz-funnel-results.jsx"></script>
+  <script type="text/babel" src="quiz-funnel-finale.jsx"></script>
+  <script type="text/babel" src="quiz-funnel-moments.jsx"></script>
+  <script type="text/babel" src="quiz-funnel-runner.jsx"></script>
+
+  <script>
+    (function qfBootPoll() {
+      function tick() {
+        if (window.qfMountLiveFunnel) {
+          window.qfMountLiveFunnel();
+          if (document.getElementById('root')?.dataset.qfMounted === '1') return;
+        }
+        setTimeout(tick, 40);
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', tick);
+      } else {
+        tick();
+      }
+    })();
+    window.addEventListener('error', function (e) {
+      var root = document.getElementById('root');
+      if (!root || root.dataset.qfMounted === '1') return;
+      root.innerHTML = '<pre style="padding:24px;font:14px/1.5 system-ui;color:#8b2500;max-width:640px;margin:40px auto;background:#fff;border-radius:12px">' +
+        'Funnel failed to load. Hard-refresh (Cmd+Shift+R).\n\n' + (e.message || e) + '</pre>';
+    });
+  </script>
+</body>
+</html>

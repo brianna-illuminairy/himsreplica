@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ILLUMINAIRY — Brand Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --celestial: #0057A8;
+    --aurora: #77C89A;
+    --glow: #B8F5D1;
+    --navy: #121A2B;
+    --silver: #BCC3CC;
+    --white: #F5F8FA;
+    --navy-mid: #1C2A42;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--navy);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* ── Aurora sky canvas ── */
+  #aurora-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .page-wrap {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 48px;
+    background: linear-gradient(to bottom, rgba(18,26,43,0.95) 0%, transparent 100%);
+  }
+
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 1.1rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--white);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--silver);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .nav-links a:hover { color: var(--glow); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 48px 80px;
+    position: relative;
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--aurora);
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 1s 0.3s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(5rem, 14vw, 11rem);
+    line-height: 0.9;
+    letter-spacing: -0.01em;
+    color: var(--white);
+    opacity: 0;
+    animation: fadeUp 1.1s 0.5s forwards;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    background: linear-gradient(135deg, var(--celestial) 0%, var(--aurora) 50%, var(--glow) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-tagline {
+    margin-top: 32px;
+    font-size: 1rem;
+    font-style: italic;
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--silver);
+    letter-spacing: 0.06em;
+    opacity: 0;
+    animation: fadeUp 1s 0.8s forwards;
+  }
+
+  .hero-divider {
+    width: 1px;
+    height: 80px;
+    background: linear-gradient(to bottom, var(--aurora), transparent);
+    margin: 48px auto 0;
+    opacity: 0;
+    animation: fadeUp 1s 1.1s forwards;
+  }
+
+  /* ── SECTION WRAPPER ── */
+  section {
+    padding: 100px 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--aurora);
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 1.1;
+    margin-bottom: 32px;
+    color: var(--white);
+  }
+
+  .section-body {
+    font-size: 1rem;
+    line-height: 1.85;
+    color: var(--silver);
+    max-width: 680px;
+  }
+
+  /* ── NARRATIVE ── */
+  .narrative-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .narrative-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.4;
+    color: var(--white);
+    border-left: 2px solid var(--aurora);
+    padding-left: 32px;
+  }
+
+  /* ── PALETTE ── */
+  .palette-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 100px 48px;
+  }
+
+  .palette-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-top: 48px;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+  }
+
+  .swatch {
+    aspect-ratio: 1/1.4;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 20px 16px;
+    cursor: pointer;
+    transition: transform 0.3s, flex-grow 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .swatch::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 60%);
+  }
+
+  .swatch:hover { flex-grow: 1.3; }
+
+  .swatch-info {
+    position: relative;
+    z-index: 1;
+  }
+
+  .swatch-name {
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 4px;
+  }
+
+  .swatch-hex {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.6);
+  }
+
+  /* ── VOICE ── */
+  .voice-section {
+    background: linear-gradient(135deg, rgba(0,87,168,0.12) 0%, rgba(119,200,154,0.06) 100%);
+    border: 1px solid rgba(119,200,154,0.15);
+    border-radius: 24px;
+    padding: 72px;
+    margin: 0 48px;
+    max-width: 1200px;
+    margin-inline: auto;
+  }
+
+  .voice-words {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 40px;
+  }
+
+  .voice-word {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.4rem, 2.5vw, 2rem);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--aurora);
+    padding: 8px 24px;
+    border: 1px solid rgba(119,200,154,0.25);
+    border-radius: 100px;
+    transition: all 0.3s;
+    cursor: default;
+  }
+
+  .voice-word:hover {
+    background: rgba(119,200,154,0.1);
+    border-color: var(--aurora);
+    color: var(--glow);
+  }
+
+  /* ── VISUAL LANGUAGE ── */
+  .visual-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 48px;
+  }
+
+  .visual-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(188,195,204,0.1);
+    border-radius: 16px;
+    padding: 36px 32px;
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .visual-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--celestial), var(--aurora));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s;
+  }
+
+  .visual-card:hover {
+    border-color: rgba(119,200,154,0.3);
+    background: rgba(119,200,154,0.04);
+    transform: translateY(-4px);
+  }
+
+  .visual-card:hover::before { transform: scaleX(1); }
+
+  .visual-card-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    color: rgba(119,200,154,0.5);
+    margin-bottom: 16px;
+  }
+
+  .visual-card-text {
+    font-size: 0.92rem;
+    line-height: 1.7;
+    color: var(--silver);
+  }
+
+  /* ── TAGLINES ── */
+  .taglines-section {
+    text-align: center;
+    padding: 100px 48px;
+  }
+
+  .tagline-list {
+    list-style: none;
+    margin-top: 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .tagline-item {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(1.8rem, 4vw, 3.2rem);
+    line-height: 1.3;
+    padding: 24px 0;
+    border-bottom: 1px solid rgba(188,195,204,0.1);
+    color: rgba(245,248,250,0.5);
+    transition: all 0.4s;
+    cursor: default;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .tagline-item:first-child { border-top: 1px solid rgba(188,195,204,0.1); }
+
+  .tagline-item:hover {
+    color: var(--white);
+    padding-left: 16px;
+  }
+
+  .tagline-item:hover .tagline-arrow { opacity: 1; transform: translateX(0); }
+
+  .tagline-arrow {
+    font-size: 1rem;
+    color: var(--aurora);
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: all 0.4s;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid rgba(188,195,204,0.08);
+    padding: 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .footer-note {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: var(--silver);
+    text-transform: uppercase;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* ── STARS DECORATION ── */
+  .stars {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle var(--d) infinite;
+  }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: var(--min); }
+    50% { opacity: var(--max); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* full-width bands */
+  .full-band {
+    background: rgba(255,255,255,0.015);
+    border-top: 1px solid rgba(188,195,204,0.06);
+    border-bottom: 1px solid rgba(188,195,204,0.06);
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    section, .palette-section, .taglines-section { padding: 72px 24px; }
+    .narrative-grid { grid-template-columns: 1fr; gap: 40px; }
+    .palette-grid { grid-template-columns: repeat(3, 1fr); }
+    .visual-grid { grid-template-columns: 1fr; }
+    .voice-section { padding: 48px 32px; margin: 0 24px; }
+    footer { flex-direction: column; gap: 16px; text-align: center; padding: 36px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Starfield -->
+<div class="stars" id="stars"></div>
+
+<!-- Aurora canvas -->
+<canvas id="aurora-canvas"></canvas>
+
+<div class="page-wrap">
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">Illuminairy</div>
+    <ul class="nav-links">
+      <li><a href="#narrative">Narrative</a></li>
+      <li><a href="#palette">Palette</a></li>
+      <li><a href="#voice">Voice</a></li>
+      <li><a href="#visual">Visual</a></li>
+      <li><a href="#taglines">Taglines</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <p class="hero-eyebrow">Brand Guide — v3</p>
+    <h1 class="hero-title">ILLUMI<em>NAIRY</em></h1>
+    <p class="hero-tagline">Guided by Luminaries. Illuminated by Understanding.</p>
+    <div class="hero-divider"></div>
+  </div>
+
+  <!-- ETYMOLOGY -->
+  <section id="narrative" style="padding-bottom: 0;">
+    <p class="section-label">01 — The Name</p>
+    <h2 class="section-title">A Name That<br>Does Three Things</h2>
+  </section>
+
+  <div style="max-width:1200px; margin: 0 auto; padding: 40px 48px 100px; display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px; border-radius: 20px; overflow:hidden;">
+    <div class="etym-card" style="background:rgba(0,87,168,0.18); border:1px solid rgba(0,87,168,0.3); padding:48px 36px; border-radius: 20px 0 0 20px;">
+      <div class="section-label" style="margin-bottom:20px;">Latin: lumen</div>
+      <h3 style="font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:300; color:var(--white); margin-bottom:16px; line-height:1.2;">Illumi<span style="color:var(--aurora)">nate</span></h3>
+      <p style="font-size:0.9rem; line-height:1.8; color:var(--silver);">To supply with light. To make the complex understandable. To clarify what was hidden. The tutoring process itself — confusion dissolving into clarity.</p>
+    </div>
+    <div class="etym-card" style="background:rgba(119,200,154,0.12); border:1px solid rgba(119,200,154,0.25); border-left:none; border-right:none; padding:48px 36px;">
+      <div class="section-label" style="margin-bottom:20px;">Latin: lumen</div>
+      <h3 style="font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:300; color:var(--white); margin-bottom:16px; line-height:1.2;"><span style="color:var(--aurora)">Lumin</span>ary</h3>
+      <p style="font-size:0.9rem; line-height:1.8; color:var(--silver);">Both a person of brilliant influence <em>and</em> a celestial body that gives off light. Your tutor is literally both: an inspiring expert who radiates understanding.</p>
+    </div>
+    <div class="etym-card" style="background:rgba(184,245,209,0.07); border:1px solid rgba(184,245,209,0.18); padding:48px 36px; border-radius: 0 20px 20px 0;">
+      <div class="section-label" style="margin-bottom:20px;">Old Norse: aurōra</div>
+      <h3 style="font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:300; color:var(--white); margin-bottom:16px; line-height:1.2;">— <span style="color:var(--aurora)">airy</span></h3>
+      <p style="font-size:0.9rem; line-height:1.8; color:var(--silver);">The aurora borealis. Ethereal, atmospheric, otherworldly. The northern sky as a living metaphor for the spectacular transformation from darkness to light.</p>
+    </div>
+  </div>
+
+  <!-- CORE STATEMENT -->
+  <div style="background: linear-gradient(135deg, rgba(0,87,168,0.15) 0%, rgba(119,200,154,0.08) 100%); border-top: 1px solid rgba(119,200,154,0.12); border-bottom: 1px solid rgba(119,200,154,0.12); padding: 80px 48px; text-align:center;">
+    <p class="section-label" style="text-align:center; margin-bottom: 32px;">Core Brand Statement</p>
+    <blockquote style="font-family:'Cormorant Garamond',serif; font-weight:300; font-size:clamp(1.5rem, 3.2vw, 2.6rem); line-height:1.5; color:var(--white); max-width:900px; margin:0 auto; font-style:italic;">
+      "Illuminairy connects students with luminaries who illuminate complex ideas and guide them toward clarity, confidence, and brilliance — like northern lights illuminating the night sky."
+    </blockquote>
+  </div>
+
+  <!-- BRAND SYSTEM -->
+  <section style="padding-top: 100px; padding-bottom: 60px; max-width:1200px; margin:0 auto; padding-left:48px; padding-right:48px;">
+    <p class="section-label">02 — Brand System</p>
+    <h2 class="section-title">Every Element<br>Means Something</h2>
+    <p class="section-body" style="margin-bottom: 56px;">This is an unusually cohesive brand system — the name, the visual, the emotional promise, and the service are all the same idea expressed four different ways.</p>
+
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+      <div style="display:flex; gap:24px; align-items:flex-start; background:rgba(255,255,255,0.03); border:1px solid rgba(188,195,204,0.1); border-radius:16px; padding:36px;">
+        <div style="font-family:'Cormorant Garamond',serif; font-size:3rem; color:var(--aurora); line-height:1; flex-shrink:0;">☽</div>
+        <div>
+          <div style="font-size:0.65rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--aurora); margin-bottom:8px; font-family:'DM Mono',monospace;">The Tutor</div>
+          <div style="font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-weight:300; color:var(--white); margin-bottom:10px;">The Luminary</div>
+          <div style="font-size:0.88rem; line-height:1.75; color:var(--silver);">A person of brilliant influence who also radiates light. Not a homework helper — a guide whose expertise illuminates the path forward.</div>
+        </div>
+      </div>
+      <div style="display:flex; gap:24px; align-items:flex-start; background:rgba(255,255,255,0.03); border:1px solid rgba(188,195,204,0.1); border-radius:16px; padding:36px;">
+        <div style="font-family:'Cormorant Garamond',serif; font-size:3rem; color:var(--aurora); line-height:1; flex-shrink:0;">✦</div>
+        <div>
+          <div style="font-size:0.65rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--aurora); margin-bottom:8px; font-family:'DM Mono',monospace;">The Process</div>
+          <div style="font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-weight:300; color:var(--white); margin-bottom:10px;">Illumination</div>
+          <div style="font-size:0.88rem; line-height:1.75; color:var(--silver);">Making the complex understandable. Invisible forces becoming visible. The moment confusion dissolves and understanding appears.</div>
+        </div>
+      </div>
+      <div style="display:flex; gap:24px; align-items:flex-start; background:rgba(255,255,255,0.03); border:1px solid rgba(188,195,204,0.1); border-radius:16px; padding:36px;">
+        <div style="font-family:'Cormorant Garamond',serif; font-size:3rem; color:var(--aurora); line-height:1; flex-shrink:0;">⌁</div>
+        <div>
+          <div style="font-size:0.65rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--aurora); margin-bottom:8px; font-family:'DM Mono',monospace;">The Visual</div>
+          <div style="font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-weight:300; color:var(--white); margin-bottom:10px;">The Aurora Borealis</div>
+          <div style="font-size:0.88rem; line-height:1.75; color:var(--silver);">Light appearing in darkness. Intelligence unfolding. Wonder and discovery made visible. Guidance in motion across the night sky.</div>
+        </div>
+      </div>
+      <div style="display:flex; gap:24px; align-items:flex-start; background:rgba(255,255,255,0.03); border:1px solid rgba(188,195,204,0.1); border-radius:16px; padding:36px;">
+        <div style="font-family:'Cormorant Garamond',serif; font-size:3rem; color:var(--aurora); line-height:1; flex-shrink:0;">→</div>
+        <div>
+          <div style="font-size:0.65rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--aurora); margin-bottom:8px; font-family:'DM Mono',monospace;">The Student</div>
+          <div style="font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-weight:300; color:var(--white); margin-bottom:10px;">The Journey</div>
+          <div style="font-size:0.88rem; line-height:1.75; color:var(--silver);">Moving through uncertainty toward confidence and understanding. Not just better grades — a fundamentally different relationship with learning.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EMOTIONAL TERRITORY -->
+  <div class="full-band" style="margin-top: 40px;">
+  <section style="max-width:1200px; margin:0 auto; padding:100px 48px;">
+    <p class="section-label">03 — Emotional Territory</p>
+    <h2 class="section-title">Not This.<br>This.</h2>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 48px;">
+      <div style="padding: 48px; border:1px solid rgba(188,195,204,0.12); border-radius:16px; opacity:0.5;">
+        <div style="font-size:0.65rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--silver); margin-bottom: 24px; font-family:'DM Mono',monospace;">❌ Generic Tutoring</div>
+        <ul style="list-style:none; display:flex; flex-direction:column; gap:14px;">
+          <li style="font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:300; color:var(--silver); text-decoration: line-through;">"Get better grades."</li>
+          <li style="font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:300; color:var(--silver); text-decoration: line-through;">"Affordable homework help."</li>
+          <li style="font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:300; color:var(--silver); text-decoration: line-through;">"Expert tutors available now."</li>
+          <li style="font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:300; color:var(--silver); text-decoration: line-through;">"Catch up on missed lessons."</li>
+        </ul>
+      </div>
+      <div style="padding: 48px; border:1px solid rgba(119,200,154,0.3); border-radius:16px; background: rgba(119,200,154,0.05);">
+        <div style="font-size:0.65rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--aurora); margin-bottom: 24px; font-family:'DM Mono',monospace;">✦ Illuminairy</div>
+        <ul style="list-style:none; display:flex; flex-direction:column; gap:14px;">
+          <li style="font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:300; color:var(--white); font-style:italic;">"Be guided by someone who illuminates."</li>
+          <li style="font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:300; color:var(--white); font-style:italic;">"From confusion to clarity."</li>
+          <li style="font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:300; color:var(--white); font-style:italic;">"Guided by luminaries."</li>
+          <li style="font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:300; color:var(--white); font-style:italic;">"Lighting the path to brilliance."</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  </div>
+
+  <!-- BRAND FEEL -->
+  <section style="max-width:1200px; margin:0 auto; padding:100px 48px 60px;">
+    <p class="section-label">04 — Brand Feel</p>
+    <h2 class="section-title">The Space Between<br>These Five Places</h2>
+    <div style="display:flex; flex-wrap:wrap; gap:16px; margin-top:40px;">
+      <span style="font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:300; font-style:italic; color:var(--white); padding:14px 28px; border:1px solid rgba(119,200,154,0.25); border-radius:100px; background:rgba(119,200,154,0.05);">A luxury observatory</span>
+      <span style="font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:300; font-style:italic; color:var(--white); padding:14px 28px; border:1px solid rgba(119,200,154,0.25); border-radius:100px; background:rgba(119,200,154,0.05);">A modern science museum</span>
+      <span style="font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:300; font-style:italic; color:var(--white); padding:14px 28px; border:1px solid rgba(119,200,154,0.25); border-radius:100px; background:rgba(119,200,154,0.05);">A high-end university</span>
+      <span style="font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:300; font-style:italic; color:var(--white); padding:14px 28px; border:1px solid rgba(119,200,154,0.25); border-radius:100px; background:rgba(119,200,154,0.05);">An atmospheric Nordic design brand</span>
+      <span style="font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:300; font-style:italic; color:var(--white); padding:14px 28px; border:1px solid rgba(119,200,154,0.25); border-radius:100px; background:rgba(119,200,154,0.05);">An innovation lab</span>
+    </div>
+  </section>
+
+  <!-- PALETTE -->
+  <div class="full-band">
+    <div class="palette-section" id="palette">
+      <p class="section-label">05 — Colour Palette</p>
+      <h2 class="section-title">Aurora &<br>Celestial</h2>
+      <div class="palette-grid">
+        <div class="swatch" style="background:#0057A8">
+          <div class="swatch-info">
+            <div class="swatch-name">Celestial Blue</div>
+            <div class="swatch-hex">#0057A8</div>
+          </div>
+        </div>
+        <div class="swatch" style="background:#77C89A">
+          <div class="swatch-info">
+            <div class="swatch-name">Aurora Green</div>
+            <div class="swatch-hex">#77C89A</div>
+          </div>
+        </div>
+        <div class="swatch" style="background:#B8F5D1">
+          <div class="swatch-info">
+            <div class="swatch-name">Northern Glow</div>
+            <div class="swatch-hex">#B8F5D1</div>
+          </div>
+        </div>
+        <div class="swatch" style="background:#121A2B">
+          <div class="swatch-info">
+            <div class="swatch-name">Midnight Navy</div>
+            <div class="swatch-hex">#121A2B</div>
+          </div>
+        </div>
+        <div class="swatch" style="background:#BCC3CC">
+          <div class="swatch-info">
+            <div class="swatch-name">Silver Reflection</div>
+            <div class="swatch-hex">#BCC3CC</div>
+          </div>
+        </div>
+        <div class="swatch" style="background:#F5F8FA">
+          <div class="swatch-info">
+            <div class="swatch-name" style="color:rgba(18,26,43,0.8)">Polar White</div>
+            <div class="swatch-hex" style="color:rgba(18,26,43,0.5)">#F5F8FA</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VOICE -->
+  <section id="voice">
+    <div class="voice-section">
+      <p class="section-label">06 — Brand Voice</p>
+      <h2 class="section-title">How We Sound</h2>
+      <p class="section-body">Messaging should feel clear and emotionally grounding while inspiring curiosity, confidence, and growth. Clear and elevated — closer to a modern observatory than a classroom.</p>
+      <div class="voice-words">
+        <span class="voice-word">Calm</span>
+        <span class="voice-word">Intelligent</span>
+        <span class="voice-word">Encouraging</span>
+        <span class="voice-word">Elevated</span>
+        <span class="voice-word">Wonder-driven</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- VISUAL LANGUAGE -->
+  <div class="full-band">
+    <section id="visual">
+      <p class="section-label">07 — Visual Language</p>
+      <h2 class="section-title">How We Look</h2>
+      <div class="visual-grid">
+        <div class="visual-card">
+          <div class="visual-card-num">01</div>
+          <div class="visual-card-text">Aurora-inspired gradients flowing from celestial blue through teal to aurora green</div>
+        </div>
+        <div class="visual-card">
+          <div class="visual-card-num">02</div>
+          <div class="visual-card-text">Deep navy and celestial blue backgrounds — twilight skies rather than pure black</div>
+        </div>
+        <div class="visual-card">
+          <div class="visual-card-num">03</div>
+          <div class="visual-card-text">Constellation and navigation motifs — the map, the compass, the guiding star</div>
+        </div>
+        <div class="visual-card">
+          <div class="visual-card-num">04</div>
+          <div class="visual-card-text">Editorial minimalism with atmospheric lighting — the modern observatory aesthetic</div>
+        </div>
+        <div class="visual-card">
+          <div class="visual-card-num">05</div>
+          <div class="visual-card-text">Reflective metallic accents and soft ambient glow evoking frost and starlight</div>
+        </div>
+        <div class="visual-card">
+          <div class="visual-card-num">06</div>
+          <div class="visual-card-text">Dynamic educational creativity through fluid color and purposeful movement</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- TAGLINES -->
+  <div class="taglines-section" id="taglines">
+    <p class="section-label" style="text-align:center">08 — Primary Taglines</p>
+    <h2 class="section-title" style="text-align:center">Our Voice<br>in Words</h2>
+    <ul class="tagline-list">
+      <li class="tagline-item">Guided by Luminaries <span class="tagline-arrow">→</span></li>
+      <li class="tagline-item">Bringing Light to Learning <span class="tagline-arrow">→</span></li>
+      <li class="tagline-item">Illuminate Understanding <span class="tagline-arrow">→</span></li>
+      <li class="tagline-item">From Confusion to Clarity <span class="tagline-arrow">→</span></li>
+      <li class="tagline-item">Calm Guidance Through Complexity <span class="tagline-arrow">→</span></li>
+      <li class="tagline-item">Lighting the Path to Brilliance <span class="tagline-arrow">→</span></li>
+    </ul>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-brand">Illuminairy</div>
+    <div class="footer-note">Brand Guide — Version 3 — Confidential</div>
+  </footer>
+
+</div>
+
+<script>
+  // ── Starfield ──
+  const starsEl = document.getElementById('stars');
+  for (let i = 0; i < 140; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() < 0.2 ? 3 : 2;
+    s.style.cssText = `
+      left:${Math.random()*100}%;
+      top:${Math.random()*100}%;
+      width:${size}px;
+      height:${size}px;
+      --d:${2+Math.random()*5}s;
+      --min:${0.05+Math.random()*0.1};
+      --max:${0.3+Math.random()*0.6};
+    `;
+    starsEl.appendChild(s);
+  }
+
+  // ── Aurora canvas ──
+  const canvas = document.getElementById('aurora-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, t = 0;
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  function drawAurora() {
+    ctx.clearRect(0, 0, W, H);
+    const bands = [
+      { y: H * 0.28, amp: 60, freq: 0.0018, phase: t * 0.0004, color: 'rgba(0,87,168,0.07)' },
+      { y: H * 0.22, amp: 45, freq: 0.0022, phase: t * 0.0005 + 1, color: 'rgba(119,200,154,0.055)' },
+      { y: H * 0.32, amp: 35, freq: 0.0015, phase: t * 0.00035 + 2, color: 'rgba(184,245,209,0.04)' },
+    ];
+
+    bands.forEach(b => {
+      ctx.beginPath();
+      ctx.moveTo(0, H);
+      for (let x = 0; x <= W; x += 4) {
+        const y = b.y + Math.sin(x * b.freq + b.phase) * b.amp
+                      + Math.sin(x * b.freq * 1.7 + b.phase * 1.3) * (b.amp * 0.4);
+        ctx.lineTo(x, y);
+      }
+      ctx.lineTo(W, H);
+      ctx.closePath();
+
+      const grad = ctx.createLinearGradient(0, b.y - b.amp, 0, b.y + b.amp * 2);
+      grad.addColorStop(0, b.color);
+      grad.addColorStop(1, 'transparent');
+      ctx.fillStyle = grad;
+      ctx.fill();
+    });
+
+    t++;
+    requestAnimationFrame(drawAurora);
+  }
+  drawAurora();
+</script>
+</body>
+</html>

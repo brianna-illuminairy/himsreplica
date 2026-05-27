@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>illuminairy · SAT Landing A/B</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500;1,9..144,600&family=Schibsted+Grotesk:ital,wght@0,400..900;1,400..900&family=DM+Sans:ital,wght@0,200..700;1,200..700&family=DM+Mono:wght@300;400;500&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="brand-theme.css" />
+
+  <style>
+    html, body { margin: 0; padding: 0; height: 100%; background: #f0eee9; }
+    body { font-family: 'Hanken Grotesk', system-ui, sans-serif; }
+    #root { width: 100%; height: 100%; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- React + Babel -->
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <!-- Framework components (load first; they self-attach to window) -->
+  <script type="text/babel" src="design-canvas.jsx"></script>
+  <script type="text/babel" src="ios-frame.jsx"></script>
+  <script type="text/babel" src="tweaks-panel.jsx"></script>
+
+  <!-- Variant components -->
+  <script type="text/babel" src="variant-a.jsx"></script>
+  <script type="text/babel" src="variant-b-shared.jsx"></script>
+  <script type="text/babel" src="variant-b3.jsx"></script>
+  <script type="text/babel" src="variant-b3-branded.jsx"></script>
+
+  <!-- App -->
+  <script type="text/babel" data-presets="env,react">
+    const { useState, useEffect } = React;
+
+    // iPhone 14 Pro-ish frame size
+    const W = 402;
+    const H = 874;
+
+    // ─────────────────────────────────────────────────────────
+    // Palette presets — each maps to the CSS custom properties in styles.css.
+    // Swatch order in the TweakColor card: [bg, cream, ink, accent, paper].
+    // ─────────────────────────────────────────────────────────
+    const PALETTES = {
+      current: {
+        label: 'Current',
+        swatch: ['#B5CCC8', '#F1E4C9', '#141414', '#EE5A29', '#FDFBF6'],
+        vars: {
+          '--bg': '#B5CCC8', '--bg-deep': '#A0BAB4',
+          '--cream': '#F1E4C9', '--cream-2': '#F5ECD6',
+          '--highlight': '#E2EBE6', '--paper': '#FDFBF6', '--paper-2': '#FFFFFF',
+          '--ink': '#141414', '--ink-2': '#2A2A2A',
+          '--ink-mid': '#4A554F', '--ink-mute': '#6E7B74',
+          '--accent': '#EE5A29', '--accent-2': '#D44C1E', '--accent-soft': '#FBE6DC',
+          '--green': '#2A8155', '--green-soft': '#E1ECDF',
+        },
+      },
+      softer: {
+        label: 'Softer · warmer ink, lighter sage',
+        swatch: ['#C5D6D0', '#F4ECD8', '#2A2520', '#D9603B', '#FAF6EE'],
+        vars: {
+          '--bg': '#C5D6D0', '--bg-deep': '#B0C3BD',
+          '--cream': '#F4ECD8', '--cream-2': '#F7F0DE',
+          '--highlight': '#E6EDE8', '--paper': '#FAF6EE', '--paper-2': '#FFFFFF',
+          '--ink': '#2A2520', '--ink-2': '#3A332C',
+          '--ink-mid': '#5A584F', '--ink-mute': '#7D7C73',
+          '--accent': '#D9603B', '--accent-2': '#B94E2A', '--accent-soft': '#F6E4DA',
+          '--green': '#3A7E5A', '--green-soft': '#E4ECE2',
+        },
+      },
+      editorial: {
+        label: 'Editorial · paper-led, sage as accent',
+        swatch: ['#F2EAD6', '#D7DFD7', '#1F1D1A', '#C0593A', '#FCF9F0'],
+        vars: {
+          '--bg': '#F2EAD6', '--bg-deep': '#E2D9C0',
+          '--cream': '#D7DFD7', '--cream-2': '#E4EAE2',
+          '--highlight': '#EEEAD8', '--paper': '#FCF9F0', '--paper-2': '#FFFFFF',
+          '--ink': '#1F1D1A', '--ink-2': '#2E2C28',
+          '--ink-mid': '#5A554C', '--ink-mute': '#7D7867',
+          '--accent': '#C0593A', '--accent-2': '#A14828', '--accent-soft': '#F0DDD3',
+          '--green': '#3D7350', '--green-soft': '#DDE6DC',
+        },
+      },
+      terracotta: {
+        label: 'Mono + terracotta · neutralized accent',
+        swatch: ['#B5CCC8', '#EFE9DD', '#292723', '#B66A50', '#FCFAF5'],
+        vars: {
+          '--bg': '#B5CCC8', '--bg-deep': '#9FB9B4',
+          '--cream': '#EFE9DD', '--cream-2': '#F4EFE5',
+          '--highlight': '#E0E9E3', '--paper': '#FCFAF5', '--paper-2': '#FFFFFF',
+          '--ink': '#292723', '--ink-2': '#393730',
+          '--ink-mid': '#5A574F', '--ink-mute': '#7C7A70',
+          '--accent': '#B66A50', '--accent-2': '#9A5640', '--accent-soft': '#EEDFD7',
+          '--green': '#3A7858', '--green-soft': '#E0E8DE',
+        },
+      },
+      airy: {
+        label: 'Airy · much lighter, dialed-back',
+        swatch: ['#E0E7E2', '#F8F2E1', '#2D332E', '#C2624C', '#FFFFFF'],
+        vars: {
+          '--bg': '#E0E7E2', '--bg-deep': '#C9D4CE',
+          '--cream': '#F8F2E1', '--cream-2': '#FBF6E9',
+          '--highlight': '#ECF1ED', '--paper': '#FFFFFF', '--paper-2': '#FFFFFF',
+          '--ink': '#2D332E', '--ink-2': '#3D423D',
+          '--ink-mid': '#5E635E', '--ink-mute': '#7F837F',
+          '--accent': '#C2624C', '--accent-2': '#A24E3A', '--accent-soft': '#F1E0D8',
+          '--green': '#4A8265', '--green-soft': '#E6EEE7',
+        },
+      },
+    };
+
+    const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+      "palette": "current",
+      "softerCTAs": false,
+      "brandMode": "light",
+      "brandFont": "dm-sans"
+    }/*EDITMODE-END*/;
+
+    function PhoneSlot({ children }) {
+      return (
+        <div style={{ width: W, height: H, background: '#000' }}>
+          <IOSDevice width={W} height={H}>{children}</IOSDevice>
+        </div>
+      );
+    }
+
+    function App() {
+      const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+      // Apply selected palette by writing CSS vars onto :root.
+      useEffect(() => {
+        const p = PALETTES[t.palette] || PALETTES.current;
+        const root = document.documentElement;
+        Object.entries(p.vars).forEach(([k, v]) => root.style.setProperty(k, v));
+      }, [t.palette]);
+
+      // "Softer CTAs" — tone down pure black button backgrounds even within a palette.
+      useEffect(() => {
+        const id = 'softer-cta-overrides';
+        let el = document.getElementById(id);
+        if (t.softerCTAs) {
+          if (!el) { el = document.createElement('style'); el.id = id; document.head.appendChild(el); }
+          el.textContent = `
+            .il-page .btn { background: var(--ink-2); }
+            .il-page .card.dark, .il-page .section.bg-ink, .il-page .hero-cta {
+              background: var(--ink-2);
+            }
+            .il-page .footer { background: var(--ink-2); }
+          `;
+        } else if (el) {
+          el.remove();
+        }
+      }, [t.softerCTAs]);
+
+      const start = () => window.alert("→ Quiz funnel starts here. (Out of scope for this A/B test.)");
+
+      // Palette option list for TweakColor (array-of-arrays form → swatch chips)
+      const paletteOptions = Object.values(PALETTES).map(p => p.swatch);
+      const currentSwatch = (PALETTES[t.palette] || PALETTES.current).swatch;
+      const onPaletteChange = (swatch) => {
+        const key = Object.keys(PALETTES).find(k =>
+          JSON.stringify(PALETTES[k].swatch).toLowerCase() === JSON.stringify(swatch).toLowerCase()
+        );
+        if (key) setTweak('palette', key);
+      };
+
+      return (
+        <>
+          <DesignCanvas>
+            <DCSection
+              id="landing-ab"
+              title="SAT Quiz Funnel · Landing Page A/B Test"
+              subtitle="Variant A is the current low-context control. B3a/b/c share the lean 8-section structure but differ in hero hook — A/B which opening converts best."
+            >
+              <DCArtboard id="variant-a" label="A · Low context (CONTROL)" width={W} height={H}>
+                <PhoneSlot><VariantA /></PhoneSlot>
+              </DCArtboard>
+              <DCArtboard id="variant-b3a" label="B3a · Problem hook" width={W} height={H}>
+                <PhoneSlot><VariantB3a onStart={start} /></PhoneSlot>
+              </DCArtboard>
+              <DCArtboard id="variant-b3b" label="B3b · Results hook" width={W} height={H}>
+                <PhoneSlot><VariantB3b onStart={start} /></PhoneSlot>
+              </DCArtboard>
+              <DCArtboard id="variant-b3c" label="B3c · Authority hook" width={W} height={H}>
+                <PhoneSlot><VariantB3c onStart={start} /></PhoneSlot>
+              </DCArtboard>
+
+              <DCArtboard id="variant-b3a-brand" label={`B3a · Problem (Aurora · ${t.brandMode})`} width={W} height={H}>
+                <PhoneSlot><VariantB3a onStart={start} brand mode={t.brandMode} displayFont={t.brandFont} /></PhoneSlot>
+              </DCArtboard>
+
+              <DCArtboard id="variant-b3b-brand" label={`B3b · Results (Aurora · ${t.brandMode})`} width={W} height={H}>
+                <PhoneSlot><VariantB3b onStart={start} brand mode={t.brandMode} displayFont={t.brandFont} /></PhoneSlot>
+              </DCArtboard>
+
+              <DCArtboard id="variant-b3c-brand" label={`B3c · Authority (Aurora · ${t.brandMode})`} width={W} height={H}>
+                <PhoneSlot><VariantB3c onStart={start} brand mode={t.brandMode} displayFont={t.brandFont} /></PhoneSlot>
+              </DCArtboard>
+            </DCSection>
+          </DesignCanvas>
+
+          <TweaksPanel title="Tweaks">
+            <TweakSection label="Color palette">
+              <TweakColor
+                label={(PALETTES[t.palette] || PALETTES.current).label}
+                value={currentSwatch}
+                options={paletteOptions}
+                onChange={onPaletteChange}
+              />
+            </TweakSection>
+            <TweakSection label="Refinements">
+              <TweakToggle
+                label="Softer CTAs (less pure black)"
+                value={t.softerCTAs}
+                onChange={(v) => setTweak('softerCTAs', v)}
+              />
+            </TweakSection>
+            <TweakSection label="Aurora brand variants">
+              <TweakRadio
+                label="Mode"
+                value={t.brandMode}
+                options={['dark', 'light']}
+                onChange={(v) => setTweak('brandMode', v)}
+              />
+              <TweakSelect
+                label="Display font"
+                value={t.brandFont}
+                options={[
+                  { label: 'DM Sans · clean modern sans (premium)', value: 'dm-sans' },
+                  { label: 'DM Sans + italic-serif accent on em', value: 'dm-sans-serif-em' },
+                  { label: 'Schibsted Grotesk · editorial sans', value: 'schibsted' },
+                  { label: 'Fraunces · editorial serif', value: 'fraunces' },
+                  { label: 'Cormorant · original brand (wispy)', value: 'cormorant' },
+                ]}
+                onChange={(v) => setTweak('brandFont', v)}
+              />
+            </TweakSection>
+          </TweaksPanel>
+        </>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
