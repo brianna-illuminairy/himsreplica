@@ -746,7 +746,7 @@ export function QFIDiagnosis({ onContinue, onBack, q4 = '1200-1300', q6 = ['math
 
   return (
     <QFScreen stepIdx={9} onBack={onBack}
-      footer={<QFButton kind="forest" onClick={onContinue}>Find their 5–6 skills</QFButton>}
+      footer={<QFButton kind="forest" onClick={onContinue}>Build their plan</QFButton>}
     >
       <div className="gap-22" style={{ marginTop: 4 }}>
         {/* Above image: H1 (1 sentence) + sub (1 sentence) */}
@@ -855,6 +855,30 @@ export function QFIDiagnosis({ onContinue, onBack, q4 = '1200-1300', q6 = ['math
             }}>
               <em>+{totalPts} points</em>
             </div>
+          </div>
+
+          {/* 3-step mechanism badge */}
+          <div style={{
+            display: 'flex', justifyContent: 'center', alignItems: 'center',
+            gap: 10, marginTop: 16,
+            opacity: revealed ? 1 : 0,
+            transition: 'opacity 0.6s ease 0.95s',
+          }}>
+            {['Diagnose', 'Rank', 'Plan'].map((step, i) => (
+              <span key={step} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span style={{
+                  fontFamily: 'var(--qf-mono)', fontSize: 10.5,
+                  letterSpacing: '0.18em', color: 'var(--qf-forest)',
+                  fontWeight: 600, textTransform: 'uppercase',
+                }}>{step}</span>
+                {i < 2 && (
+                  <span style={{
+                    color: 'var(--qf-ink-mute)', fontSize: 12,
+                    fontFamily: 'var(--qf-mono)',
+                  }}>→</span>
+                )}
+              </span>
+            ))}
           </div>
         </div>
 
