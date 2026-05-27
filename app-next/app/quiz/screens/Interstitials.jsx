@@ -10,14 +10,18 @@ const STAKES_OUTCOME = {
   'app-rounds': "they don't miss their early application rounds",
   'early':      "they're ready for their early application rounds",
 };
+const I1_DATE_PHRASE = {
+  'aug22': 'August 22', 'oct3': 'October 3', 'nov7': 'November 7',
+  'dec5': 'December 5', '2027': null, 'tbd': null,
+};
 
-export function QFI1Proof({ onContinue, onBack, q2 = 'top-choice', vars = {} }) {
+export function QFI1Proof({ onContinue, onBack, q2 = 'top-choice', q5 = 'oct3', vars = {} }) {
   const v = {
-    test_date_phrase: 'October 3',
+    test_date_phrase: I1_DATE_PHRASE[q5] ?? null,
     stakes_outcome: STAKES_OUTCOME[q2] || STAKES_OUTCOME['top-choice'],
     ...vars,
   };
-  const hasDate = v.test_date_phrase && v.test_date_phrase !== 'unsure';
+  const hasDate = !!v.test_date_phrase;
   return (
     <QFScreen stepIdx={6} ornament="glow" onBack={onBack}
       footer={<QFButton kind="forest" onClick={onContinue}>Continue</QFButton>}

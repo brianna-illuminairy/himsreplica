@@ -84,7 +84,7 @@ export default function QuizRunner() {
     case 'q3':  return <QFQ3TimesTaken value={a.q3} onSelect={v => setQAndAdvance('q3', v)} onBack={back} />;
     case 'q4':  return <QFQ4RecentScore value={a.q4} onSelect={v => setQAndAdvance('q4', v)} onBack={back} />;
     case 'q5':  return <QFQ5Clock     value={a.q5} onSelect={v => setQAndAdvance('q5', v)} onBack={back} />;
-    case 'i1':  return <QFI1Proof     onContinue={next} onBack={back} q2={a.q2} />;
+    case 'i1':  return <QFI1Proof     onContinue={next} onBack={back} q2={a.q2} q5={a.q5} />;
     case 'q6':  return <QFQ6Blocker   value={a.q6} onToggle={id => toggleQ('q6', id)} onContinue={next} onBack={back} />;
     case 'q7':  return <QFQ7Tried     value={a.q7} onToggle={id => toggleQ('q7', id)} onContinue={next} onBack={back} q3={a.q3} />;
     case 'i-diag': return <QFIDiagnosis onContinue={next} onBack={back} q6={a.q6} q7={a.q7} q5={a.q5} />;
