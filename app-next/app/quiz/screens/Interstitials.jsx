@@ -44,7 +44,7 @@ export function QFI1Proof({ onContinue, onBack, q2 = 'top-choice', q5 = 'oct3', 
 
 // ─── I2 · Compute ────────────────────────────────────────────────────────────
 const CQ4_BANDS = {
-  'u1000': 'Under 1000', '1100-1200': '1100–1200', '1200-1300': '1200–1300',
+  'u1000': 'Under 1100', '1100-1200': '1100–1200', '1200-1300': '1200–1300',
   '1300-1400': '1300–1400', '1400plus': '1400+',
 };
 const CQ5_LONG = {
@@ -60,7 +60,7 @@ const CSCORE_RETURN = {
   'nov7': 'November 21, 2026', 'dec5': 'December 19, 2026',
 };
 const CANCHOR_SCORES = {
-  'u1000': 950, '1100-1200': 1150, '1200-1300': 1250,
+  'u1000': 1050, '1100-1200': 1150, '1200-1300': 1250,
   '1300-1400': 1350, '1400plus': 1450,
 };
 const CQ6_PHRASE = {
@@ -254,7 +254,7 @@ export function QFI3Bridge({ onContinue, onBack, q5 = 'oct3' }) {
 
 // ─── I · GPA Gap (redesigned: side-by-side cards, user-specified copy) ───────
 const GAP_Q4_LABEL = {
-  'u1000': 'under 1000', '1100-1200': '1100–1200',
+  'u1000': 'under 1100', '1100-1200': '1100–1200',
   '1200-1300': '1200–1300', '1300-1400': '1300–1400',
 };
 const GAP_Q9_LABEL = {
@@ -354,7 +354,7 @@ export function QFIGPAGap({ onContinue, onBack, q4 = '1200-1300', q9 = '3.8-4.0'
 
 // ─── V1 · Score Projection ────────────────────────────────────────────────────
 const Q4_TO_SCORE = {
-  'u1000': 950, '1100-1200': 1150, '1200-1300': 1250,
+  'u1000': 1050, '1100-1200': 1150, '1200-1300': 1250,
   '1300-1400': 1350, '1400plus': 1430,
 };
 const Q8_TO_TARGET = {

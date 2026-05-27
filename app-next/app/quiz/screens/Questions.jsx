@@ -63,7 +63,7 @@ export function QFQ3TimesTaken({ value, onSelect, onBack }) {
 
 export function QFQ4RecentScore({ value, onSelect, onBack }) {
   const opts = [
-    { id: 'u1000',     label: 'Under 1000' },
+    { id: 'u1000',     label: 'Under 1100' },
     { id: '1100-1200', label: '1100–1200' },
     { id: '1200-1300', label: '1200–1300' },
     { id: '1300-1400', label: '1300–1400' },
