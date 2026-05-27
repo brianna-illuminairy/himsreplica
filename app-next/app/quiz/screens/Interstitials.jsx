@@ -699,38 +699,104 @@ export function QFIDiagnosis({ onContinue, onBack, q6 = ['math', 'no-plan'], q7 
   const dateShort = D_TEST_DATE_SHORT[q5];
 
   const skills = pickContentSkills(q6);
+  const totalPts = skills.reduce((s, x) => s + x.pts, 0);
 
-  // 28-dot grid: always 5 highlighted forest-green
-  const HIGHLIGHT = 5;
-  const dots = Array.from({ length: 28 }, (_, i) => i < HIGHLIGHT);
+  // Constellation reveal: chaotic 28 → 5 illuminated + connected
+  const [revealed, setRevealed] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setRevealed(true), 650);
+    return () => clearTimeout(t);
+  }, []);
+
+  // Hand-placed scattered positions in 360×140 viewBox (23 dim + 5 lit = 28)
+  const DIM = [
+    [22,28],[48,98],[68,112],[98,22],[112,72],[118,108],[138,92],
+    [162,58],[172,112],[182,32],[197,102],[217,28],[222,52],
+    [237,96],[247,68],[272,107],[277,32],[292,67],[302,27],
+    [317,112],[327,62],[342,37],[352,97],
+  ];
+  const LIT = [[82,62],[142,38],[202,78],[262,48],[312,88]];
+  const LINKS = [[0,1],[1,2],[2,3],[3,4]];
 
   return (
     <QFScreen stepIdx={9} onBack={onBack}
       footer={<QFButton kind="forest" onClick={onContinue}>Continue</QFButton>}
     >
       <div className="gap-22" style={{ marginTop: 4 }}>
-        {/* Hero thesis */}
-        <h1 className="qf-h1">
-          The SAT has <em>28</em> skill areas. Only <em>5–6</em> are costing the most points.
-        </h1>
-
-        {/* 28-dot visual — 5 highlighted glow forest-green */}
-        <div style={{
-          display: 'grid', gridTemplateColumns: 'repeat(14, 1fr)', gap: 6,
-          padding: '4px 0',
-        }}>
-          {dots.map((hot, i) => (
-            <div key={i} style={{
-              aspectRatio: '1',
-              borderRadius: '50%',
-              background: hot ? 'var(--qf-forest)' : 'rgba(20,32,46,0.12)',
-              boxShadow: hot ? '0 0 8px rgba(119,200,154,0.55)' : 'none',
-              transition: 'background 0.2s',
-            }} />
-          ))}
+        {/* Headline — scope-vs-time tension */}
+        <div>
+          <h1 className="qf-h1" style={{ marginBottom: 8 }}>
+            The SAT covers <em>years</em> of learning.<br />
+            You only have <em>weeks</em> to prepare.
+          </h1>
+          <p className="qf-lead">
+            Forget studying all of it at the surface. Find the few skills costing the most points — and go <em>deep.</em>
+          </p>
         </div>
 
-        {/* 5 content-skill cards with rank + name + pts */}
+        {/* Aurora constellation reveal */}
+        <div style={{ position: 'relative', padding: '4px 0 6px' }}>
+          <svg viewBox="0 0 360 140" style={{ width: '100%', display: 'block', overflow: 'visible' }}>
+            {/* Dim scattered (the 23 that don't matter) */}
+            {DIM.map(([x, y], i) => (
+              <circle key={`d${i}`} cx={x} cy={y} r={2.2}
+                fill="rgba(20,32,46,0.22)"
+                style={{
+                  transition: 'opacity 0.9s ease',
+                  opacity: revealed ? 0.45 : 1,
+                }}
+              />
+            ))}
+            {/* Constellation links between lit stars (after dots appear) */}
+            {LINKS.map(([a, b], i) => (
+              <line key={`ln${i}`}
+                x1={LIT[a][0]} y1={LIT[a][1]}
+                x2={LIT[b][0]} y2={LIT[b][1]}
+                stroke="#77C89A" strokeWidth="1" strokeLinecap="round"
+                style={{
+                  transition: 'opacity 0.6s ease 0.9s, stroke-dashoffset 0.6s ease 0.9s',
+                  opacity: revealed ? 0.55 : 0,
+                }}
+              />
+            ))}
+            {/* 5 lit stars with aurora glow */}
+            {LIT.map(([x, y], i) => (
+              <g key={`l${i}`} style={{
+                transition: 'opacity 0.6s ease 0.25s',
+                opacity: revealed ? 1 : 0,
+              }}>
+                <circle cx={x} cy={y} r={11} fill="rgba(119,200,154,0.10)" />
+                <circle cx={x} cy={y} r={7}  fill="rgba(119,200,154,0.28)" />
+                <circle cx={x} cy={y} r={3.4} fill="#2F6E47"
+                  style={{ filter: 'drop-shadow(0 0 5px rgba(119,200,154,0.85))' }} />
+              </g>
+            ))}
+          </svg>
+
+          {/* Score callout */}
+          <div style={{
+            textAlign: 'center', marginTop: 10,
+            opacity: revealed ? 1 : 0,
+            transition: 'opacity 0.6s ease 0.7s',
+          }}>
+            <div style={{
+              fontFamily: 'var(--qf-mono)', fontSize: 10,
+              letterSpacing: '0.22em', color: 'var(--qf-ink-mute)',
+              textTransform: 'uppercase',
+            }}>
+              Your fastest path
+            </div>
+            <div style={{
+              fontFamily: 'var(--qf-display)', fontSize: 26,
+              letterSpacing: '-0.02em', color: 'var(--qf-forest)',
+              fontWeight: 500, marginTop: 2, lineHeight: 1,
+            }}>
+              <em>+{totalPts} points</em>
+            </div>
+          </div>
+        </div>
+
+        {/* 5 content-skill cards */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {skills.map((skill, i) => (
             <div key={i} style={{
