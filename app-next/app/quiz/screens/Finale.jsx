@@ -140,12 +140,6 @@ export function QFS7PlanDetails({ onContinue, onBack, q5 = 'oct3' }) {
       quote: "I was skeptical of online tutoring. But the diagnostic showed me exactly what was wrong, and 12 weeks later he's at 1410.",
       attribution: 'David D. · Dad of a junior · CA',
     },
-    {
-      photo: '/photos/student-b.jpg',
-      ba: '1240 → 1430',
-      quote: "We'd done Khan and a Princeton class. Neither caught her pacing problem. illuminairy did — in the first hour.",
-      attribution: 'Priya S. · Mom of a senior · NJ',
-    },
   ];
 
   return (
