@@ -266,11 +266,11 @@ export function QFS3Stats({ onContinue, onBack }) {
   );
 }
 
-// ─── S4 · Tutor feature (editorial, Noom clinician-style) ────────────────────
+// ─── S4 · Editorial team feature ─────────────────────────────────────────────
 export function QFS4Authority({ onContinue, onBack }) {
   const benefits = [
-    '1:1 tutor who scored 1450+',
-    'Weekly sessions + text support between',
+    '1:1 messaging access · M–F 10 AM–8 PM',
+    'Weekly 1:1 sessions',
     'Weekly progress reports',
   ];
 
@@ -279,7 +279,7 @@ export function QFS4Authority({ onContinue, onBack }) {
       footer={<QFButton kind="forest" onClick={onContinue}>I'm ready</QFButton>}
     >
       <div className="gap-22">
-        {/* Editorial portrait — uses /photos/tutor-a.jpg if present, gradient fallback */}
+        {/* Editorial team hero — uses /photos/team-hero.jpg if present, aurora fallback */}
         <div style={{
           width: '100%',
           aspectRatio: '4 / 3',
@@ -287,11 +287,11 @@ export function QFS4Authority({ onContinue, onBack }) {
           overflow: 'hidden',
           position: 'relative',
           background:
-            'linear-gradient(135deg, #1A4D2F 0%, #2F6E47 35%, #77C89A 70%, #C8E6CF 100%)',
+            'linear-gradient(135deg, #1A4D2F 0%, #2F6E47 35%, #0057A8 75%, #121A2B 100%)',
         }}>
           <img
-            src="/photos/tutor-a.jpg"
-            alt="Maya R., illuminairy tutor"
+            src="/photos/team-hero.jpg"
+            alt="The illuminairy tutors"
             style={{
               position: 'absolute', inset: 0,
               width: '100%', height: '100%',
@@ -302,31 +302,15 @@ export function QFS4Authority({ onContinue, onBack }) {
           />
         </div>
 
-        {/* Name + credential */}
-        <div>
-          <div style={{
-            fontFamily: 'var(--qf-display)', fontSize: 24, fontWeight: 500,
-            letterSpacing: '-0.01em', color: 'var(--qf-ink)', lineHeight: 1.15,
-          }}>
-            Maya R.
-          </div>
-          <div style={{
-            fontFamily: 'var(--qf-mono)', fontSize: 11, color: 'var(--qf-forest)',
-            letterSpacing: '0.14em', marginTop: 4,
-          }}>
-            1580 SAT · GEORGIA TECH · 6 YEARS COACHING
-          </div>
+        {/* Headline + supporting fact */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <h1 className="qf-h1" style={{ marginBottom: 0 }}>
+            Coached by people who <em>just took the test.</em>
+          </h1>
+          <p className="qf-lead" style={{ margin: 0 }}>
+            11 tutors. All scored <em>1450+</em> on the Digital SAT in the past 3 years.
+          </p>
         </div>
-
-        {/* Pull quote */}
-        <p style={{
-          fontFamily: 'var(--qf-display)', fontSize: 19, lineHeight: 1.35,
-          letterSpacing: '-0.01em', color: 'var(--qf-ink-2)', margin: 0,
-        }}>
-          "I work backwards from the test date. We find the
-          {' '}<em style={{ color: 'var(--qf-forest)' }}>5–6 skills</em> costing the most points,
-          then drill them until they're <em style={{ color: 'var(--qf-forest)' }}>automatic</em>."
-        </p>
 
         {/* 3 inline benefits — thin rules, no card chrome */}
         <div style={{ borderTop: '1px solid var(--qf-line)', marginTop: 4 }}>
@@ -334,8 +318,9 @@ export function QFS4Authority({ onContinue, onBack }) {
             <div key={i} style={{
               padding: '14px 0',
               borderBottom: '1px solid var(--qf-line)',
-              fontFamily: 'var(--qf-body)', fontSize: 15, color: 'var(--qf-ink)',
-              lineHeight: 1.4,
+              fontFamily: 'var(--qf-display)', fontSize: 15.5,
+              color: 'var(--qf-ink-2)', fontWeight: 500,
+              letterSpacing: '-0.005em', lineHeight: 1.35,
             }}>
               {b}
             </div>
@@ -347,7 +332,7 @@ export function QFS4Authority({ onContinue, onBack }) {
           fontFamily: 'var(--qf-body)', fontSize: 13.5,
           color: 'var(--qf-ink-mid)', lineHeight: 1.5, margin: 0,
         }}>
-          You'll be matched with Maya or one of our other vetted tutors on the strategy call.
+          You'll meet your matched tutor on the strategy call.
         </p>
       </div>
     </QFScreen>
