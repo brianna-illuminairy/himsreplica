@@ -74,12 +74,12 @@ export function QFS1Summary({ answers = {}, onContinue, onBack }) {
 // User's simplified language: tutor teaches → tutor does example → student & tutor solve → student solves w/ hint → student solves alone → student practices → tutor helps when stuck
 export function QFS2Science({ onContinue, onBack }) {
   const steps = [
-    { icon: '🎯', label: 'Tutor teaches', note: 'Explains the concept behind the miss' },
-    { icon: '✍️', label: 'Tutor does example', note: 'Works through a problem out loud' },
-    { icon: '🤝', label: 'Solve together', note: 'Student and tutor work through it jointly' },
-    { icon: '💡', label: 'Student solves w/ hint', note: 'Tutor gives a nudge when needed' },
-    { icon: '✅', label: 'Student solves alone', note: 'No help — just like test day' },
-    { icon: '🔁', label: 'Targeted reps', note: 'Practices the same question type until automatic' },
+    { label: 'Tutor teaches',        note: 'Explains the concept behind the miss' },
+    { label: 'Tutor does example',   note: 'Works through a problem out loud' },
+    { label: 'Solve together',       note: 'Student and tutor work through it jointly' },
+    { label: 'Student solves w/ hint', note: 'Tutor gives a nudge when needed' },
+    { label: 'Student solves alone', note: 'No help — just like test day' },
+    { label: 'Targeted reps',        note: 'Practices the same question type until automatic' },
   ];
 
   return (
@@ -121,13 +121,17 @@ export function QFS2Science({ onContinue, onBack }) {
 
           {steps.map((s, i) => (
             <div key={i} style={{
-              display: 'grid', gridTemplateColumns: '28px 1fr auto',
+              display: 'grid', gridTemplateColumns: '32px 1fr auto',
               alignItems: 'center', gap: 12,
               padding: '12px 16px',
               borderTop: i > 0 ? '1px solid var(--qf-line)' : 'none',
               background: i === steps.length - 1 ? 'var(--qf-forest-soft)' : undefined,
             }}>
-              <span style={{ fontSize: 16 }}>{s.icon}</span>
+              <span style={{
+                fontFamily: 'var(--qf-mono)', fontSize: 11, fontWeight: 600,
+                color: i === steps.length - 1 ? 'var(--qf-forest)' : 'var(--qf-ink-mute)',
+                letterSpacing: '0.05em',
+              }}>0{i + 1}</span>
               <div>
                 <div style={{
                   fontFamily: 'var(--qf-body)', fontSize: 14, fontWeight: 600,
@@ -139,18 +143,12 @@ export function QFS2Science({ onContinue, onBack }) {
                 }}>{s.note}</div>
               </div>
               <div style={{
-                width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
+                width: 24, height: 4, borderRadius: 2, flexShrink: 0,
                 background: i === steps.length - 1 ? 'var(--qf-forest)'
                   : i >= 4 ? '#3E8B5A'
-                  : i >= 2 ? 'rgba(20,32,46,0.35)'
-                  : 'rgba(20,32,46,0.15)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 12,
-              }}>
-                {i === 0 ? <span style={{ color: '#fff', fontSize: 10 }}>✗</span>
-                  : i === 1 ? <span style={{ fontFamily: 'var(--qf-mono)', color: '#fff', fontSize: 11, fontWeight: 700 }}>T</span>
-                  : <span style={{ color: '#fff', fontSize: 11 }}>✓</span>}
-              </div>
+                  : i >= 2 ? 'rgba(47,110,71,0.45)'
+                  : 'rgba(20,32,46,0.18)',
+              }} />
             </div>
           ))}
 
@@ -278,17 +276,14 @@ export function QFS4Authority({ onContinue, onBack }) {
 
   const benefits = [
     {
-      icon: '🎓',
       headline: '1:1 tutor who scored 1450+',
       sub: "Matched to your kid's specific gaps — not whoever's free.",
     },
     {
-      icon: '💬',
       headline: 'Weekly sessions + text between',
       sub: 'Consistent schedule with direct access in between.',
     },
     {
-      icon: '📊',
       headline: 'Weekly progress reports',
       sub: "You see exactly what's improving and what's next.",
     },
@@ -332,11 +327,14 @@ export function QFS4Authority({ onContinue, onBack }) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {benefits.map((b, i) => (
             <div key={i} style={{
-              display: 'flex', gap: 14, alignItems: 'flex-start',
+              display: 'flex', gap: 14, alignItems: 'stretch',
               background: 'var(--qf-paper)', border: '1px solid var(--qf-line)',
-              borderRadius: 12, padding: '16px 14px',
+              borderRadius: 12, padding: '16px 16px',
             }}>
-              <span style={{ fontSize: 24, lineHeight: 1, flexShrink: 0 }}>{b.icon}</span>
+              <div style={{
+                width: 3, flexShrink: 0, alignSelf: 'stretch',
+                background: 'var(--qf-forest)', borderRadius: 2,
+              }} />
               <div>
                 <div style={{
                   fontFamily: 'var(--qf-body)', fontSize: 15, fontWeight: 600,

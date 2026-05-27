@@ -384,6 +384,33 @@ const V1_TEST_DATES = {
   'nov7': new Date('2026-11-07'), 'dec5': new Date('2026-12-05'),
 };
 
+const V1_MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const v1FmtDate = (d) => d ? `${V1_MONTHS[d.getMonth()]} ${d.getDate()}` : '';
+const v1AddDays = (d, n) => new Date(d.getTime() + n * 86400000);
+
+const V1_STAKES_BENEFIT = {
+  'top-choice': 'competitive for their top-choice school',
+  'merit':      'in range for merit scholarships',
+  'selective':  'competitive at selective colleges',
+  'app-rounds': 'ready for early application deadlines',
+};
+
+const v1AvgGainForBand = (current) => {
+  if (current >= 1400) return 95;
+  if (current >= 1300) return 150;
+  if (current >= 1200) return 180;
+  if (current >= 1100) return 210;
+  return 240;
+};
+
+const V1_SKILLS = [
+  { rank: 1, pct: 92, pts: 60 },
+  { rank: 2, pct: 78, pts: 48 },
+  { rank: 3, pct: 64, pts: 38 },
+  { rank: 4, pct: 48, pts: 26 },
+  { rank: 5, pct: 36, pts: 18 },
+];
+
 export function QFV1Projection({
   onContinue, onBack,
   q4 = '1200-1300', q5 = 'oct3', q6 = ['math'], q8 = '1400',
@@ -416,16 +443,39 @@ export function QFV1Projection({
     return () => clearTimeout(t);
   }, [lineIdx, phase, lines.length]);
 
-  // Chart SVG
-  const W = 320, H = 160;
-  const midScore = current + Math.round((target - current) * 0.45);
-  const midX = 130, midY = H - 80;
-  const points = [
-    { x: 12,     y: H - 18, lbl: 'Now',    val: current,  isNow: true },
-    { x: midX,   y: midY,   lbl: 'Wk 4',   val: midScore, isMid: true },
-    { x: W - 12, y: 22,     lbl: testDate, val: target,   isEnd: true },
-  ];
-  const path = `M ${points[0].x} ${points[0].y} Q ${points[0].x + 55} ${points[0].y - 10}, ${points[1].x} ${points[1].y} T ${points[2].x} ${points[2].y}`;
+  // Milestone timeline data (computed from today + Q5 retake date)
+  const startDate = today;
+  const diagDate = v1AddDays(today, 7);
+  const planDate = v1AddDays(today, 10);
+  const firstSessionDate = v1AddDays(today, 14);
+  const retakeDate = V1_TEST_DATES[q5];
+  const weeksOfTutoring = retakeDate
+    ? Math.max(2, Math.round((retakeDate - firstSessionDate) / (7 * 86400000)))
+    : 12;
+  const avgGain = v1AvgGainForBand(current);
+
+  const milestones = [
+    { date: startDate,        label: 'Today',      val: current },
+    { date: diagDate,         label: 'Diagnostic', val: null },
+    { date: planDate,         label: 'Plan',       val: null },
+    { date: firstSessionDate, label: 'Session 1',  val: null },
+    retakeDate ? { date: retakeDate, label: 'Retake', val: target, isEnd: true } : null,
+  ].filter(Boolean);
+
+  const tlW = 340, tlChartH = 96, tlPad = 18;
+  const tlMs = milestones.length;
+  const xAt = (i) => tlPad + (i / (tlMs - 1)) * (tlW - tlPad * 2);
+  const yAt = (i) => i === tlMs - 1 ? 14 : tlChartH - 12;
+  const tlPath = milestones.map((m, i) => {
+    if (i === 0) return `M ${xAt(i)} ${yAt(i)}`;
+    if (i === tlMs - 1) {
+      const prevX = xAt(i - 1);
+      const cx = prevX + (xAt(i) - prevX) * 0.4;
+      const cy = yAt(i - 1);
+      return `Q ${cx} ${cy}, ${xAt(i)} ${yAt(i)}`;
+    }
+    return `L ${xAt(i)} ${yAt(i)}`;
+  }).join(' ');
 
   if (phase === 'reveal') {
     return (
@@ -453,15 +503,16 @@ export function QFV1Projection({
 
   return (
     <QFScreen stepIdx={13} ornament="glow" onBack={onBack}
-      footer={<QFButton kind="forest" onClick={onContinue}>See my kid's plan</QFButton>}
+      footer={<QFButton kind="forest" onClick={onContinue}>Schedule the diagnostic</QFButton>}
     >
       <div className="gap-22">
+        {/* Headline */}
         <div style={{ textAlign: 'center' }}>
           <div className="qf-meta" style={{ color: 'var(--qf-forest)', marginBottom: 6, letterSpacing: '0.18em' }}>
-            BUILT TO HIT
+            Built to hit
           </div>
           <div style={{
-            fontFamily: 'var(--qf-display)', fontSize: 42, fontWeight: 500,
+            fontFamily: 'var(--qf-display)', fontSize: 48, fontWeight: 500,
             letterSpacing: '-0.03em', color: 'var(--qf-forest)', lineHeight: 1,
           }}>
             <em>{target}</em>
@@ -472,86 +523,131 @@ export function QFV1Projection({
           }}>
             by <em>{testDate}</em>
           </div>
-          <div className="qf-meta" style={{ color: 'var(--qf-ink-mute)', marginTop: 4 }}>
+          <div className="qf-meta" style={{ color: 'var(--qf-ink-mute)', marginTop: 6 }}>
             Closing a <em style={{ color: 'var(--qf-forest)' }}>{gap}-point</em> gap
             {days ? <> in <em style={{ color: 'var(--qf-forest)' }}>{days} days</em></> : null}.
           </div>
         </div>
 
-        <div className="qf-graph" style={{ position: 'relative' }}>
-          {/* Current / Target header */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 12, marginTop: 16 }}>
-            <div>
-              <div className="qf-meta">Current</div>
-              <div style={{ fontFamily: 'var(--qf-display)', fontSize: 26, color: 'var(--qf-ink-mid)' }}>{current}</div>
-            </div>
-            <div style={{ textAlign: 'right' }}>
-              <div className="qf-meta" style={{ color: 'var(--qf-forest)' }}>Target</div>
-              <div style={{ fontFamily: 'var(--qf-display)', fontSize: 32, color: 'var(--qf-forest)' }}>
-                <em>{target}</em>
-              </div>
-            </div>
+        {/* Milestone timeline */}
+        <div>
+          <div className="qf-meta" style={{ color: 'var(--qf-ink-mute)', marginBottom: 10, letterSpacing: '0.12em' }}>
+            Their path
           </div>
-
-          <svg viewBox={`0 0 ${W} ${H}`} style={{ width: '100%', height: 160, display: 'block', overflow: 'visible' }}>
+          <svg viewBox={`0 0 ${tlW} ${tlChartH + 38}`}
+            style={{ width: '100%', height: 150, display: 'block', overflow: 'visible' }}>
             <defs>
-              <linearGradient id="qf-fill" x1="0" x2="0" y1="0" y2="1">
+              <linearGradient id="qf-fill-v1" x1="0" x2="0" y1="0" y2="1">
                 <stop offset="0%" stopColor="#205040" stopOpacity="0.22" />
                 <stop offset="100%" stopColor="#205040" stopOpacity="0" />
               </linearGradient>
             </defs>
-            <path d={`${path} L ${W - 12} ${H} L 12 ${H} Z`} fill="url(#qf-fill)" />
-            <path d={path} fill="none" stroke="#205040" strokeWidth="2.2" strokeLinecap="round" />
-
-            {/* Mid-curve teal milestone dot */}
-            <circle cx={points[1].x} cy={points[1].y} r={5}
-              fill="#4AAFA0" stroke="#fff" strokeWidth="2" />
-            {/* Callout label for mid-point */}
-            <text x={points[1].x - 42} y={points[1].y - 10}
-              fontFamily="DM Mono" fontSize="7.5" fill="#4AAFA0" letterSpacing="0.8">
-              DIAG LOCK-IN
-            </text>
-            <text x={points[1].x - 42} y={points[1].y + 1}
-              fontFamily="DM Mono" fontSize="7.5" fill="#4AAFA0" letterSpacing="0.8">
-              ({midScore} · WK 4)
-            </text>
-
-            {/* Endpoint */}
-            <circle cx={points[2].x} cy={points[2].y} r={7}
-              fill="#205040" stroke="#fff" strokeWidth="3" />
-            <circle cx={points[2].x} cy={points[2].y} r="14"
-              fill="none" stroke="#205040" strokeOpacity="0.25" strokeWidth="1.5" />
-          </svg>
-
-          {/* X-axis labels */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 4px', marginTop: 6 }}>
-            {[{lbl:'Now',isEnd:false},{lbl:'Wk 4',isEnd:false},{lbl:testDate,isEnd:true}].map((p, i) => (
-              <div key={i} style={{
-                fontFamily: 'var(--qf-mono)', fontSize: 9, letterSpacing: '0.15em',
-                color: p.isEnd ? 'var(--qf-forest)' : 'var(--qf-ink-mute)',
-                fontWeight: p.isEnd ? 600 : 400, textTransform: 'uppercase',
-              }}>{p.lbl}</div>
+            <path d={`${tlPath} L ${xAt(tlMs - 1)} ${tlChartH} L ${xAt(0)} ${tlChartH} Z`}
+              fill="url(#qf-fill-v1)" />
+            <path d={tlPath} fill="none" stroke="#205040" strokeWidth="2.2" strokeLinecap="round" />
+            {milestones.map((m, i) => (
+              <g key={`d${i}`}>
+                <circle cx={xAt(i)} cy={yAt(i)} r={m.isEnd || i === 0 ? 6 : 4}
+                  fill={m.isEnd ? '#2F6E47' : i === 0 ? '#2A3142' : '#FFFFFF'}
+                  stroke="#FFFFFF" strokeWidth={i === 0 || m.isEnd ? 2 : 1.5} />
+                {m.isEnd && (
+                  <circle cx={xAt(i)} cy={yAt(i)} r="12"
+                    fill="none" stroke="#2F6E47" strokeOpacity="0.3" strokeWidth="1.5" />
+                )}
+              </g>
             ))}
-          </div>
+            {milestones.map((m, i) => m.val ? (
+              <text key={`v${i}`} x={xAt(i)} y={yAt(i) - 12}
+                fontFamily="Fraunces, Georgia, serif" fontSize="13" fontWeight="500"
+                fill={m.isEnd ? '#2F6E47' : '#4D5566'} textAnchor="middle">
+                {m.val}
+              </text>
+            ) : null)}
+            {milestones.map((m, i) => (
+              <g key={`l${i}`}>
+                <text x={xAt(i)} y={tlChartH + 14} fontFamily="DM Mono" fontSize="8.5"
+                  fill={m.isEnd ? '#2F6E47' : '#8A8E97'}
+                  fontWeight={m.isEnd ? 600 : 400}
+                  textAnchor="middle" letterSpacing="0.06em">
+                  {v1FmtDate(m.date)}
+                </text>
+                <text x={xAt(i)} y={tlChartH + 28}
+                  fontFamily="Schibsted Grotesk, system-ui, sans-serif" fontSize="10.5"
+                  fill={m.isEnd ? '#2F6E47' : '#4D5566'}
+                  fontWeight={m.isEnd ? 600 : 500}
+                  textAnchor="middle">
+                  {m.label}
+                </text>
+              </g>
+            ))}
+          </svg>
         </div>
 
-        {/* Benefit line */}
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '0 4px' }}>
-          <span>🎯</span>
-          <span style={{ fontSize: 14, color: 'var(--qf-ink-2)', lineHeight: 1.5 }}>
-            Close the <em>{topBlocker}</em> gap that's costing the most points.
-          </span>
-        </div>
-
+        {/* Comparison stat */}
         <div className="qf-card wash" style={{ padding: 16 }}>
           <div className="qf-meta" style={{ color: 'var(--qf-forest)', marginBottom: 6, letterSpacing: '0.12em' }}>
-            ✦ CONFIRMED ONLY AFTER 1:1 DIAGNOSTIC
+            Across 95+ matching plans
           </div>
-          <p style={{ fontSize: 14, lineHeight: 1.5, color: 'var(--qf-ink-2)', margin: 0 }}>
-            Modeled from the last 95 illuminairy plans matching their starting score, GPA, and target.
-            Final projection locked in Week 1.
+          <p style={{ fontSize: 15, lineHeight: 1.45, color: 'var(--qf-ink-2)', margin: 0 }}>
+            Kids who started near <em>{current}</em> averaged
+            <em style={{ color: 'var(--qf-forest)' }}> +{avgGain} points</em> in {weeksOfTutoring} weeks of diagnostic-driven tutoring.
           </p>
         </div>
+
+        {/* Locked skill bars */}
+        <div>
+          <div className="qf-meta" style={{ color: 'var(--qf-ink-mute)', marginBottom: 12, letterSpacing: '0.12em' }}>
+            5 skills costing the most points
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {V1_SKILLS.map((s, i) => (
+              <div key={i} style={{
+                display: 'grid',
+                gridTemplateColumns: '70px 1fr 56px',
+                alignItems: 'center',
+                gap: 10,
+              }}>
+                <div style={{
+                  fontFamily: 'var(--qf-mono)', fontSize: 11, color: 'var(--qf-ink-mute)',
+                  letterSpacing: '0.08em',
+                }}>Skill #{s.rank}</div>
+                <div style={{
+                  height: 18, background: 'rgba(20,32,46,0.05)',
+                  borderRadius: 9, overflow: 'hidden', position: 'relative',
+                }}>
+                  <div style={{
+                    width: `${s.pct}%`, height: '100%',
+                    background: 'linear-gradient(to right, rgba(47,110,71,0.35), rgba(47,110,71,0.65))',
+                    borderRadius: 9,
+                  }} />
+                  <div style={{
+                    position: 'absolute', inset: 0,
+                    background: 'repeating-linear-gradient(45deg, transparent 0, transparent 4px, rgba(255,255,255,0.22) 4px, rgba(255,255,255,0.22) 8px)',
+                    borderRadius: 9,
+                  }} />
+                </div>
+                <div style={{
+                  fontFamily: 'var(--qf-mono)', fontSize: 11, color: 'var(--qf-forest)',
+                  fontWeight: 600, textAlign: 'right', letterSpacing: '0.05em',
+                }}>+{s.pts} pts</div>
+              </div>
+            ))}
+          </div>
+          <p style={{
+            marginTop: 14, fontSize: 14, color: 'var(--qf-ink-2)',
+            lineHeight: 1.5, padding: '0 2px',
+          }}>
+            The diagnostic reveals which 5–6 skills these are — and ranks them by point impact.
+          </p>
+        </div>
+
+        {/* Closing transition */}
+        <p style={{
+          fontSize: 14, color: 'var(--qf-ink-2)', lineHeight: 1.55,
+          textAlign: 'center', padding: '0 8px',
+        }}>
+          Let's determine their top 5–6 skill gaps and schedule the diagnostic.
+        </p>
       </div>
     </QFScreen>
   );

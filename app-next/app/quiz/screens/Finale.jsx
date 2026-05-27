@@ -10,13 +10,13 @@ export function QFS5Approved({ onContinue, onBack }) {
     >
       <div className="gap-22">
         <div className="qf-eyebrow center" style={{ textAlign: 'center', color: 'var(--qf-forest)' }}>
-          ✓  Eligible for an illuminairy plan
+          Eligible for a diagnostic + personalized plan
         </div>
         <h1 className="qf-h1 center" style={{ textAlign: 'center' }}>
-          Good news. Your kid <em>qualifies</em> for a personalized plan.
+          Your kid <em>qualifies</em> for a diagnostic and personalized plan.
         </h1>
         <p className="qf-lead center" style={{ textAlign: 'center' }}>
-          Based on their profile and your timeline, we can build a plan that finishes before their test date.
+          Based on their profile and your timeline, we can run their diagnostic and build a plan that finishes before their test date.
           Save your spot to see the recommendation.
         </p>
         <div className="qf-card gap-14" style={{ padding: 18 }}>
