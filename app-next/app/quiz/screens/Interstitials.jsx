@@ -689,8 +689,8 @@ function priorPrepNames(q7 = []) {
   const items = q7.map(id => Q7_PHRASE[id]).filter(Boolean);
   if (items.length === 0) return null;
   if (items.length === 1) return items[0];
-  if (items.length === 2) return `${items[0]} + ${items[1]}`;
-  return items.slice(0, 2).join(' + ');
+  if (items.length === 2) return `${items[0]} and ${items[1]}`;
+  return `${items.slice(0, -1).join(', ')}, and ${items[items.length - 1]}`;
 }
 
 function pickContentSkills(q6 = []) {
@@ -708,16 +708,18 @@ function pickContentSkills(q6 = []) {
   ];
 }
 
-export function QFIDiagnosis({ onContinue, onBack, q6 = ['math', 'no-plan'], q7 = ['khan'], q5 = 'oct3' }) {
+export function QFIDiagnosis({ onContinue, onBack, q4 = '1200-1300', q6 = ['math', 'no-plan'], q7 = ['khan'], q5 = 'oct3' }) {
   const skills = pickContentSkills(q6);
   const totalPts = skills.reduce((s, x) => s + x.pts, 0);
   const priorPrep = priorPrepNames(q7);
+  const lastScore = CANCHOR_SCORES[q4];
 
   const today = new Date('2026-05-26');
   const days = D_TEST_DATES[q5]
     ? Math.round((D_TEST_DATES[q5] - today) / (1000 * 60 * 60 * 24))
     : null;
   const weeks = days ? Math.round(days / 7) : null;
+  const dateShort = D_TEST_DATE_SHORT[q5];
 
   // Constellation reveal: chaotic 28 → 5 illuminated + connected
   const [revealed, setRevealed] = useState(false);
@@ -747,16 +749,17 @@ export function QFIDiagnosis({ onContinue, onBack, q6 = ['math', 'no-plan'], q7 
       footer={<QFButton kind="forest" onClick={onContinue}>Continue</QFButton>}
     >
       <div className="gap-22" style={{ marginTop: 4 }}>
-        {/* Headline + two-line subhead */}
+        {/* Above image: H1 (1 sentence) + sub (1 sentence) */}
         <div>
           <h1 className="qf-h1" style={{ marginBottom: 10 }}>
-            They lost <em>200+ points</em> to just <em>5–7 skills</em> last test.
+            {priorPrep ? (
+              <>They scored <em>{lastScore}</em> last time, even after <em>{priorPrep}</em>.</>
+            ) : (
+              <>They're scoring around <em>{lastScore}</em> on the SAT.</>
+            )}
           </h1>
-          <p className="qf-lead" style={{ marginBottom: 0 }}>
-            {priorPrep ? <em>{priorPrep}</em> : 'Most SAT prep'} spread practice across all <em>28 SAT skills.</em>
-          </p>
-          <p className="qf-lead" style={{ marginTop: 6 }}>
-            illuminairy diagnoses the few causing the biggest score drops.
+          <p className="qf-lead">
+            That's because their work spread across all <em>28 SAT skills</em> instead of focusing on the <em>5–6 causing the biggest score drops.</em>
           </p>
         </div>
 
@@ -856,9 +859,19 @@ export function QFIDiagnosis({ onContinue, onBack, q6 = ['math', 'no-plan'], q7 
         </div>
 
         {/* Inline framing — no eyebrows */}
-        <p className="qf-disclaimer">
-          Sources: College Board retake data (250,000+ test takers) · Bloom (1984) — 2-sigma effect of 1:1 tutoring.
-        </p>
+        {/* Below image: 2 sentences, no space between */}
+        <div>
+          <p className="qf-lead" style={{ margin: 0 }}>
+            {weeks && dateShort ? (
+              <>With only <em>{weeks} weeks</em> until the {dateShort} SAT, every study hour counts.</>
+            ) : (
+              <>Every study hour counts now — there's no time to waste on the wrong skills.</>
+            )}
+          </p>
+          <p className="qf-lead" style={{ margin: 0 }}>
+            illuminairy diagnoses the few skills actually holding their score back.
+          </p>
+        </div>
       </div>
     </QFScreen>
   );
