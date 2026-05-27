@@ -828,6 +828,10 @@ export function QFIDiagnosis({ onContinue, onBack, q6 = ['math', 'no-plan'], q7 
         {/* Inline framing — no eyebrows */}
         <p className="qf-lead">{whyFailed}</p>
 
+        <p className="qf-lead">
+          The fastest way to get their score up is to focus on the <em>highest-impact skills</em> first.
+        </p>
+
         <p className="qf-disclaimer">
           Sources: College Board retake data (250,000+ test takers) · Bloom (1984) — 2-sigma effect of 1:1 tutoring.
         </p>
