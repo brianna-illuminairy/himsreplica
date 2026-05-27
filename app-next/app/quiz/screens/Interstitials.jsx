@@ -659,19 +659,35 @@ const D_Q7_PRIORITY = ['khan', 'group', 'online', 'app', 'book', 'nothing'];
 
 // Real SAT content skills (not tricks) tied to Q6 selections.
 const MATH_SKILLS = [
-  { name: 'Linear Functions',           lines: ['Linear', 'Functions'],         pts: 35 },
-  { name: 'Geometry: Right Triangles',  lines: ['Right', 'Triangles'],          pts: 25 },
-  { name: 'Quadratics',                 lines: ['Quadratics'],                  pts: 22 },
-  { name: 'Word Problems',              lines: ['Word', 'Problems'],            pts: 18 },
-  { name: 'Functions & Graphs',         lines: ['Functions', '& Graphs'],       pts: 15 },
+  { name: 'Linear Functions',           lines: ['Linear', 'Functions'],         pts: 50 },
+  { name: 'Geometry: Right Triangles',  lines: ['Right', 'Triangles'],          pts: 45 },
+  { name: 'Quadratics',                 lines: ['Quadratics'],                  pts: 40 },
+  { name: 'Word Problems',              lines: ['Word', 'Problems'],            pts: 35 },
+  { name: 'Functions & Graphs',         lines: ['Functions', '& Graphs'],       pts: 30 },
 ];
 const READING_SKILLS = [
-  { name: 'Inference & Main Idea',      lines: ['Inference', '& Main Idea'],    pts: 30 },
-  { name: 'Vocab in Context',           lines: ['Vocab in', 'Context'],         pts: 25 },
-  { name: 'Reading Pacing',             lines: ['Reading', 'Pacing'],           pts: 22 },
-  { name: 'Evidence-Based Reading',     lines: ['Evidence-', 'Based'],          pts: 18 },
-  { name: 'Question-First Strategy',    lines: ['Question-', 'First'],          pts: 15 },
+  { name: 'Inference & Main Idea',      lines: ['Inference', '& Main Idea'],    pts: 50 },
+  { name: 'Vocab in Context',           lines: ['Vocab in', 'Context'],         pts: 45 },
+  { name: 'Reading Pacing',             lines: ['Reading', 'Pacing'],           pts: 40 },
+  { name: 'Evidence-Based Reading',     lines: ['Evidence-', 'Based'],          pts: 35 },
+  { name: 'Question-First Strategy',    lines: ['Question-', 'First'],          pts: 30 },
 ];
+
+const Q7_PHRASE = {
+  khan:   'Khan Academy',
+  group:  'group classes',
+  online: 'online courses',
+  app:    'SAT apps',
+  book:   'prep books',
+};
+
+function buildPriorPrep(q7 = []) {
+  const items = q7.map(id => Q7_PHRASE[id]).filter(Boolean);
+  if (items.length === 0) return { subject: 'Most SAT prep', verb: 'goes' };
+  if (items.length === 1) return { subject: `Your prior prep (${items[0]})`, verb: 'went' };
+  if (items.length === 2) return { subject: `Your prior prep (${items[0]} + ${items[1]})`, verb: 'went' };
+  return { subject: 'Your prior prep', verb: 'went' };
+}
 
 function pickContentSkills(q6 = []) {
   const hasMath = q6.includes('math');
@@ -689,18 +705,9 @@ function pickContentSkills(q6 = []) {
 }
 
 export function QFIDiagnosis({ onContinue, onBack, q6 = ['math', 'no-plan'], q7 = ['khan'], q5 = 'oct3' }) {
-  const aKey = D_Q7_PRIORITY.find(p => q7.includes(p)) || 'nothing';
-  const whyFailed = PREP_WHY_FAILED[aKey];
-
-  const today = new Date('2026-05-26');
-  const days = D_TEST_DATES[q5]
-    ? Math.round((D_TEST_DATES[q5] - today) / (1000 * 60 * 60 * 24))
-    : null;
-  const weeks = days ? Math.round(days / 7) : null;
-  const dateShort = D_TEST_DATE_SHORT[q5];
-
   const skills = pickContentSkills(q6);
   const totalPts = skills.reduce((s, x) => s + x.pts, 0);
+  const { subject, verb } = buildPriorPrep(q7);
 
   // Constellation reveal: chaotic 28 → 5 illuminated + connected
   const [revealed, setRevealed] = useState(false);
@@ -729,14 +736,15 @@ export function QFIDiagnosis({ onContinue, onBack, q6 = ['math', 'no-plan'], q7 
       footer={<QFButton kind="forest" onClick={onContinue}>Continue</QFButton>}
     >
       <div className="gap-22" style={{ marginTop: 4 }}>
-        {/* Headline — scope-vs-time tension */}
+        {/* Headline — compressed */}
         <div>
           <h1 className="qf-h1" style={{ marginBottom: 8 }}>
-            The SAT covers <em>years</em> of learning.<br />
-            They have <em>{weeks ? `${weeks} weeks` : 'weeks'}</em> to prepare.
+            Study <em>less.</em><br />
+            Improve <em>faster.</em>
           </h1>
           <p className="qf-lead">
-            Forget studying 28 skills at a surface level. Find the ones costing the most points — and go <em>deep.</em>
+            {subject} {verb} broad — all <em>28 SAT skills</em> at the surface.
+            We find the <em>5–6 costing {totalPts}+ points</em> and go deep.
           </p>
         </div>
 
@@ -826,14 +834,6 @@ export function QFIDiagnosis({ onContinue, onBack, q6 = ['math', 'no-plan'], q7 
         </div>
 
         {/* Inline framing — no eyebrows */}
-        <p className="qf-lead">
-          Self-study and group classes go <em>wide and shallow.</em> Your kid needs <em>deep work</em> on the few skills that actually move the score.
-        </p>
-
-        <p className="qf-lead">
-          The fastest way to get their score up is to focus on the <em>highest-impact skills</em> first.
-        </p>
-
         <p className="qf-disclaimer">
           Sources: College Board retake data (250,000+ test takers) · Bloom (1984) — 2-sigma effect of 1:1 tutoring.
         </p>
