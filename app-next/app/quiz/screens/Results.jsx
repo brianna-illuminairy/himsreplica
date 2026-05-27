@@ -266,27 +266,12 @@ export function QFS3Stats({ onContinue, onBack }) {
   );
 }
 
-// ─── S4 · Authority (Hims-style: faces + 3 benefit bullets, minimal text) ────
+// ─── S4 · Tutor feature (editorial, Noom clinician-style) ────────────────────
 export function QFS4Authority({ onContinue, onBack }) {
-  const tutors = [
-    { name: 'Maya R.',   score: '1580', initials: 'MR' },
-    { name: 'Daniel K.', score: '1570', initials: 'DK' },
-    { name: 'Priya V.',  score: '1590', initials: 'PV' },
-  ];
-
   const benefits = [
-    {
-      headline: '1:1 tutor who scored 1450+',
-      sub: "Matched to your kid's specific gaps — not whoever's free.",
-    },
-    {
-      headline: 'Weekly sessions + text between',
-      sub: 'Consistent schedule with direct access in between.',
-    },
-    {
-      headline: 'Weekly progress reports',
-      sub: "You see exactly what's improving and what's next.",
-    },
+    '1:1 tutor who scored 1450+',
+    'Weekly sessions + text support between',
+    'Weekly progress reports',
   ];
 
   return (
@@ -294,60 +279,76 @@ export function QFS4Authority({ onContinue, onBack }) {
       footer={<QFButton kind="forest" onClick={onContinue}>I'm ready</QFButton>}
     >
       <div className="gap-22">
-        <h1 className="qf-h1">
-          Tutors who've <em>been there.</em>
-        </h1>
-
-        {/* Tutor faces row */}
-        <div style={{ display: 'flex', gap: 14, justifyContent: 'center' }}>
-          {tutors.map((t, i) => (
-            <div key={i} style={{ textAlign: 'center' }}>
-              <div style={{
-                width: 72, height: 72, borderRadius: '50%',
-                background: 'var(--qf-forest-soft)',
-                border: '2px solid var(--qf-forest)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontFamily: 'var(--qf-display)', fontSize: 22, fontWeight: 500,
-                color: 'var(--qf-forest)',
-              }}>{t.initials}</div>
-              <div style={{
-                marginTop: 8,
-                fontFamily: 'var(--qf-body)', fontSize: 13, fontWeight: 600,
-                color: 'var(--qf-ink)',
-              }}>{t.name}</div>
-              <div style={{
-                fontFamily: 'var(--qf-mono)', fontSize: 10, color: 'var(--qf-forest)',
-                letterSpacing: '0.12em', marginTop: 2,
-              }}>{t.score} SAT</div>
-            </div>
-          ))}
+        {/* Editorial portrait — uses /photos/tutor-a.jpg if present, gradient fallback */}
+        <div style={{
+          width: '100%',
+          aspectRatio: '4 / 3',
+          borderRadius: 16,
+          overflow: 'hidden',
+          position: 'relative',
+          background:
+            'linear-gradient(135deg, #1A4D2F 0%, #2F6E47 35%, #77C89A 70%, #C8E6CF 100%)',
+        }}>
+          <img
+            src="/photos/tutor-a.jpg"
+            alt="Maya R., illuminairy tutor"
+            style={{
+              position: 'absolute', inset: 0,
+              width: '100%', height: '100%',
+              objectFit: 'cover',
+              display: 'block',
+            }}
+            onError={(e) => { e.currentTarget.style.display = 'none'; }}
+          />
         </div>
 
-        {/* 3 Hims-style benefit bullets */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        {/* Name + credential */}
+        <div>
+          <div style={{
+            fontFamily: 'var(--qf-display)', fontSize: 24, fontWeight: 500,
+            letterSpacing: '-0.01em', color: 'var(--qf-ink)', lineHeight: 1.15,
+          }}>
+            Maya R.
+          </div>
+          <div style={{
+            fontFamily: 'var(--qf-mono)', fontSize: 11, color: 'var(--qf-forest)',
+            letterSpacing: '0.14em', marginTop: 4,
+          }}>
+            1580 SAT · GEORGIA TECH · 6 YEARS COACHING
+          </div>
+        </div>
+
+        {/* Pull quote */}
+        <p style={{
+          fontFamily: 'var(--qf-display)', fontSize: 19, lineHeight: 1.35,
+          letterSpacing: '-0.01em', color: 'var(--qf-ink-2)', margin: 0,
+        }}>
+          "I work backwards from the test date. We find the
+          {' '}<em style={{ color: 'var(--qf-forest)' }}>5–6 skills</em> costing the most points,
+          then drill them until they're <em style={{ color: 'var(--qf-forest)' }}>automatic</em>."
+        </p>
+
+        {/* 3 inline benefits — thin rules, no card chrome */}
+        <div style={{ borderTop: '1px solid var(--qf-line)', marginTop: 4 }}>
           {benefits.map((b, i) => (
             <div key={i} style={{
-              display: 'flex', gap: 14, alignItems: 'stretch',
-              background: 'var(--qf-paper)', border: '1px solid var(--qf-line)',
-              borderRadius: 12, padding: '16px 16px',
+              padding: '14px 0',
+              borderBottom: '1px solid var(--qf-line)',
+              fontFamily: 'var(--qf-body)', fontSize: 15, color: 'var(--qf-ink)',
+              lineHeight: 1.4,
             }}>
-              <div style={{
-                width: 3, flexShrink: 0, alignSelf: 'stretch',
-                background: 'var(--qf-forest)', borderRadius: 2,
-              }} />
-              <div>
-                <div style={{
-                  fontFamily: 'var(--qf-body)', fontSize: 15, fontWeight: 600,
-                  color: 'var(--qf-ink)', lineHeight: 1.3,
-                }}>{b.headline}</div>
-                <div style={{
-                  fontFamily: 'var(--qf-body)', fontSize: 13, color: 'var(--qf-ink-mute)',
-                  marginTop: 4, lineHeight: 1.4,
-                }}>{b.sub}</div>
-              </div>
+              {b}
             </div>
           ))}
         </div>
+
+        {/* Closing line */}
+        <p style={{
+          fontFamily: 'var(--qf-body)', fontSize: 13.5,
+          color: 'var(--qf-ink-mid)', lineHeight: 1.5, margin: 0,
+        }}>
+          You'll be matched with Maya or one of our other vetted tutors on the strategy call.
+        </p>
       </div>
     </QFScreen>
   );

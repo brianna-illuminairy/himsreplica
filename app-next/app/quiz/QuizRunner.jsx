@@ -12,10 +12,11 @@ import {
   QFS1Summary, QFS2Science, QFS3Stats, QFS4Authority,
 } from './screens/Results';
 import {
-  QFS5Approved, QFS6Preference, QFS7PlanDetails, QFS8Acknowledgment, QFS9Booking,
+  QFS5Approved, QFS7PlanDetails, QFS8Acknowledgment, QFS9Booking,
 } from './screens/Finale';
 
 // Linear step sequence. i-gap is conditional (inserted after q9 when showGapScreen is true).
+// S6 (plan preference) removed — funnel ends in a free strategy call; enrollment happens there.
 const BASE_STEPS = [
   'q1','q2','q3','q4','q5',
   'i1',
@@ -25,7 +26,7 @@ const BASE_STEPS = [
   // i-gap inserted here conditionally
   'v1',
   's1','s2','s3','s4',
-  's5','s6','s7','s8','s9',
+  's5','s7','s8','s9',
 ];
 
 function getSteps(answers) {
@@ -98,8 +99,7 @@ export default function QuizRunner() {
     case 's3':  return <QFS3Stats     onContinue={next} onBack={back} />;
     case 's4':  return <QFS4Authority onContinue={next} onBack={back} />;
     case 's5':  return <QFS5Approved  onContinue={next} onBack={back} />;
-    case 's6':  return <QFS6Preference value={a.planChoice} onSelect={v => setQ('planChoice', v)} onContinue={next} onBack={back} />;
-    case 's7':  return <QFS7PlanDetails onContinue={next} onBack={back} />;
+    case 's7':  return <QFS7PlanDetails onContinue={next} onBack={back} q5={a.q5} />;
     case 's8':  return <QFS8Acknowledgment onContinue={next} onBack={back} />;
     case 's9':  return <QFS9Booking   onComplete={() => goTo('s9')} onBack={back} />;
     default:    return <QFQ1Trigger   value={a.q1} onSelect={v => setQAndAdvance('q1', v)} onBack={back} />;

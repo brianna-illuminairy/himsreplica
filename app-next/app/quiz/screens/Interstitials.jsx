@@ -454,28 +454,39 @@ export function QFV1Projection({
     : 12;
   const avgGain = v1AvgGainForBand(current);
 
+  // Setup-phase gains (T/D/P/S1) absorb a portion before skills add up
+  const setupGain = Math.round(gap * 0.08); // ~20 pts of the gap
+  const skillCumGain = [0.32, 0.51, 0.66, 0.77, 0.85].map(p => Math.round(gap * p)); // cumulative SK1..SK5
+  // Individual SK contributions (pretty for display)
+  const skillContrib = V1_SKILLS.map(s => s.pts); // [60, 48, 38, 26, 18]
+
+  // Milestones with relative x position (0–1) and absolute score
   const milestones = [
-    { date: startDate,        label: 'Today',      val: current },
-    { date: diagDate,         label: 'Diagnostic', val: null },
-    { date: planDate,         label: 'Plan',       val: null },
-    { date: firstSessionDate, label: 'Session 1',  val: null },
-    retakeDate ? { date: retakeDate, label: 'Retake', val: target, isEnd: true } : null,
+    { id: 'T',   xRel: 0.00, score: current,                          label: 'Today',       date: startDate,        showScoreAbove: true },
+    { id: 'D',   xRel: 0.10, score: current + Math.round(setupGain * 0.25), label: 'Diagnostic', date: diagDate },
+    { id: 'P',   xRel: 0.18, score: current + Math.round(setupGain * 0.5),  label: 'Plan',       date: planDate },
+    { id: 'S1',  xRel: 0.26, score: current + setupGain,              label: 'Session 1',   date: firstSessionDate },
+    { id: 'SK1', xRel: 0.38, score: current + skillCumGain[0],        label: 'Skill 1',     pts: skillContrib[0] },
+    { id: 'SK2', xRel: 0.50, score: current + skillCumGain[1],        label: 'Skill 2',     pts: skillContrib[1] },
+    { id: 'SK3', xRel: 0.62, score: current + skillCumGain[2],        label: 'Skill 3',     pts: skillContrib[2] },
+    { id: 'SK4', xRel: 0.74, score: current + skillCumGain[3],        label: 'Skill 4',     pts: skillContrib[3] },
+    { id: 'SK5', xRel: 0.86, score: current + skillCumGain[4],        label: 'Skill 5',     pts: skillContrib[4] },
+    retakeDate ? { id: 'R', xRel: 1.00, score: target, label: 'Retake', date: retakeDate, showScoreAbove: true, isEnd: true } : null,
   ].filter(Boolean);
 
-  const tlW = 340, tlChartH = 96, tlPad = 18;
-  const tlMs = milestones.length;
-  const xAt = (i) => tlPad + (i / (tlMs - 1)) * (tlW - tlPad * 2);
-  const yAt = (i) => i === tlMs - 1 ? 14 : tlChartH - 12;
-  const tlPath = milestones.map((m, i) => {
-    if (i === 0) return `M ${xAt(i)} ${yAt(i)}`;
-    if (i === tlMs - 1) {
-      const prevX = xAt(i - 1);
-      const cx = prevX + (xAt(i) - prevX) * 0.4;
-      const cy = yAt(i - 1);
-      return `Q ${cx} ${cy}, ${xAt(i)} ${yAt(i)}`;
-    }
-    return `L ${xAt(i)} ${yAt(i)}`;
-  }).join(' ');
+  // Chart geometry
+  const CW = 340, CH = 130;
+  const PAD_X = 14;
+  const PAD_TOP = 22;
+  const PAD_BOTTOM = 26;
+  const usableH = CH - PAD_TOP - PAD_BOTTOM;
+  const px = (m) => PAD_X + m.xRel * (CW - 2 * PAD_X);
+  const py = (m) => PAD_TOP + usableH - ((m.score - current) / gap) * usableH;
+  const tlPath = milestones.map((m, i) => `${i === 0 ? 'M' : 'L'} ${px(m)} ${py(m)}`).join(' ');
+  const baselineY = CH - PAD_BOTTOM;
+  const lastM = milestones[milestones.length - 1];
+  const firstM = milestones[0];
+  const fillPath = `${tlPath} L ${px(lastM)} ${baselineY} L ${px(firstM)} ${baselineY} Z`;
 
   if (phase === 'reveal') {
     return (
@@ -501,9 +512,13 @@ export function QFV1Projection({
     );
   }
 
+  // Legend rows: paired so left column is phase milestones, right column is skill contributions
+  const phaseRows = milestones.filter(m => !m.id.startsWith('SK'));
+  const skillRows = milestones.filter(m => m.id.startsWith('SK'));
+
   return (
     <QFScreen stepIdx={13} ornament="glow" onBack={onBack}
-      footer={<QFButton kind="forest" onClick={onContinue}>Schedule the diagnostic</QFButton>}
+      footer={<QFButton kind="forest" onClick={onContinue}>See my kid's plan</QFButton>}
     >
       <div className="gap-22">
         {/* Headline */}
@@ -529,131 +544,101 @@ export function QFV1Projection({
           </div>
         </div>
 
-        {/* Milestone timeline */}
-        <div>
-          <div className="qf-meta" style={{ color: 'var(--qf-ink-mute)', marginBottom: 10, letterSpacing: '0.12em' }}>
-            Their path
-          </div>
-          <svg viewBox={`0 0 ${tlW} ${tlChartH + 38}`}
-            style={{ width: '100%', height: 150, display: 'block', overflow: 'visible' }}>
-            <defs>
-              <linearGradient id="qf-fill-v1" x1="0" x2="0" y1="0" y2="1">
-                <stop offset="0%" stopColor="#205040" stopOpacity="0.22" />
-                <stop offset="100%" stopColor="#205040" stopOpacity="0" />
-              </linearGradient>
-            </defs>
-            <path d={`${tlPath} L ${xAt(tlMs - 1)} ${tlChartH} L ${xAt(0)} ${tlChartH} Z`}
-              fill="url(#qf-fill-v1)" />
-            <path d={tlPath} fill="none" stroke="#205040" strokeWidth="2.2" strokeLinecap="round" />
-            {milestones.map((m, i) => (
-              <g key={`d${i}`}>
-                <circle cx={xAt(i)} cy={yAt(i)} r={m.isEnd || i === 0 ? 6 : 4}
-                  fill={m.isEnd ? '#2F6E47' : i === 0 ? '#2A3142' : '#FFFFFF'}
-                  stroke="#FFFFFF" strokeWidth={i === 0 || m.isEnd ? 2 : 1.5} />
-                {m.isEnd && (
-                  <circle cx={xAt(i)} cy={yAt(i)} r="12"
+        {/* Unified chart: skills are markers ON the curve */}
+        <svg viewBox={`0 0 ${CW} ${CH}`}
+          style={{ width: '100%', display: 'block', overflow: 'visible' }}>
+          <defs>
+            <linearGradient id="qf-fill-v1" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stopColor="#205040" stopOpacity="0.20" />
+              <stop offset="100%" stopColor="#205040" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          <path d={fillPath} fill="url(#qf-fill-v1)" />
+          <path d={tlPath} fill="none" stroke="#205040" strokeWidth="2.2"
+            strokeLinecap="round" strokeLinejoin="round" />
+          {milestones.map((m) => {
+            const isSk = m.id.startsWith('SK');
+            const isEnd = m.isEnd;
+            const isStart = m.id === 'T';
+            const r = isEnd ? 5.5 : isStart ? 4.5 : isSk ? 3.8 : 2.8;
+            const fill = isEnd ? '#2F6E47' : isSk ? '#4AAFA0' : isStart ? '#2A3142' : '#FFFFFF';
+            const stroke = isSk ? '#4AAFA0' : '#205040';
+            return (
+              <g key={m.id}>
+                {isEnd && (
+                  <circle cx={px(m)} cy={py(m)} r={11}
                     fill="none" stroke="#2F6E47" strokeOpacity="0.3" strokeWidth="1.5" />
                 )}
-              </g>
-            ))}
-            {milestones.map((m, i) => m.val ? (
-              <text key={`v${i}`} x={xAt(i)} y={yAt(i) - 12}
-                fontFamily="Fraunces, Georgia, serif" fontSize="13" fontWeight="500"
-                fill={m.isEnd ? '#2F6E47' : '#4D5566'} textAnchor="middle">
-                {m.val}
-              </text>
-            ) : null)}
-            {milestones.map((m, i) => (
-              <g key={`l${i}`}>
-                <text x={xAt(i)} y={tlChartH + 14} fontFamily="DM Mono" fontSize="8.5"
-                  fill={m.isEnd ? '#2F6E47' : '#8A8E97'}
-                  fontWeight={m.isEnd ? 600 : 400}
+                <circle cx={px(m)} cy={py(m)} r={r}
+                  fill={fill} stroke={stroke} strokeWidth={isEnd || isStart ? 2 : 1.2} />
+                {m.showScoreAbove && (
+                  <text x={px(m)} y={py(m) - (isEnd ? 11 : 9)}
+                    fontFamily="Fraunces, Georgia, serif"
+                    fontSize={isEnd ? 14 : 11} fontWeight="500"
+                    fill="#2F6E47" textAnchor="middle">
+                    {m.score}
+                  </text>
+                )}
+                {m.pts && (
+                  <text x={px(m)} y={py(m) - 8}
+                    fontFamily="DM Mono" fontSize="8.5" fontWeight="600"
+                    fill="#3E8B5A" textAnchor="middle" letterSpacing="0.04em">
+                    +{m.pts}
+                  </text>
+                )}
+                <text x={px(m)} y={baselineY + 14}
+                  fontFamily="DM Mono" fontSize="9" fontWeight="600"
+                  fill={isEnd ? '#2F6E47' : isSk ? '#4AAFA0' : '#8A8E97'}
                   textAnchor="middle" letterSpacing="0.06em">
-                  {v1FmtDate(m.date)}
-                </text>
-                <text x={xAt(i)} y={tlChartH + 28}
-                  fontFamily="Schibsted Grotesk, system-ui, sans-serif" fontSize="10.5"
-                  fill={m.isEnd ? '#2F6E47' : '#4D5566'}
-                  fontWeight={m.isEnd ? 600 : 500}
-                  textAnchor="middle">
-                  {m.label}
+                  {m.id}
                 </text>
               </g>
-            ))}
-          </svg>
-        </div>
+            );
+          })}
+        </svg>
 
-        {/* Comparison stat */}
-        <div className="qf-card wash" style={{ padding: 16 }}>
-          <div className="qf-meta" style={{ color: 'var(--qf-forest)', marginBottom: 6, letterSpacing: '0.12em' }}>
-            Across 95+ matching plans
-          </div>
-          <p style={{ fontSize: 15, lineHeight: 1.45, color: 'var(--qf-ink-2)', margin: 0 }}>
-            Kids who started near <em>{current}</em> averaged
-            <em style={{ color: 'var(--qf-forest)' }}> +{avgGain} points</em> in {weeksOfTutoring} weeks of diagnostic-driven tutoring.
-          </p>
-        </div>
-
-        {/* Locked skill bars */}
-        <div>
-          <div className="qf-meta" style={{ color: 'var(--qf-ink-mute)', marginBottom: 12, letterSpacing: '0.12em' }}>
-            5 skills costing the most points
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {V1_SKILLS.map((s, i) => (
-              <div key={i} style={{
-                display: 'grid',
-                gridTemplateColumns: '70px 1fr 56px',
-                alignItems: 'center',
-                gap: 10,
-              }}>
-                <div style={{
-                  fontFamily: 'var(--qf-mono)', fontSize: 11, color: 'var(--qf-ink-mute)',
-                  letterSpacing: '0.08em',
-                }}>Skill #{s.rank}</div>
-                <div style={{
-                  height: 18, background: 'rgba(20,32,46,0.05)',
-                  borderRadius: 9, overflow: 'hidden', position: 'relative',
-                }}>
-                  <div style={{
-                    width: `${s.pct}%`, height: '100%',
-                    background: 'linear-gradient(to right, rgba(47,110,71,0.35), rgba(47,110,71,0.65))',
-                    borderRadius: 9,
-                  }} />
-                  <div style={{
-                    position: 'absolute', inset: 0,
-                    background: 'repeating-linear-gradient(45deg, transparent 0, transparent 4px, rgba(255,255,255,0.22) 4px, rgba(255,255,255,0.22) 8px)',
-                    borderRadius: 9,
-                  }} />
-                </div>
-                <div style={{
-                  fontFamily: 'var(--qf-mono)', fontSize: 11, color: 'var(--qf-forest)',
-                  fontWeight: 600, textAlign: 'right', letterSpacing: '0.05em',
-                }}>+{s.pts} pts</div>
-              </div>
-            ))}
-          </div>
-          <p style={{
-            marginTop: 14, fontSize: 14, color: 'var(--qf-ink-2)',
-            lineHeight: 1.5, padding: '0 2px',
-          }}>
-            The diagnostic reveals which 5–6 skills these are — and ranks them by point impact.
-          </p>
-        </div>
-
-        {/* Closing transition */}
-        <p style={{
-          fontSize: 14, color: 'var(--qf-ink-2)', lineHeight: 1.55,
-          textAlign: 'center', padding: '0 8px',
+        {/* Legend — phases left, skills right */}
+        <div style={{
+          display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px 14px',
+          fontFamily: 'var(--qf-body)', fontSize: 11.5, color: 'var(--qf-ink-mid)',
         }}>
-          Let's determine their top 5–6 skill gaps and schedule the diagnostic.
+          {phaseRows.map(m => (
+            <div key={m.id} style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+              <span style={{
+                fontFamily: 'var(--qf-mono)', fontSize: 10, fontWeight: 600,
+                color: m.isEnd ? 'var(--qf-forest)' : m.id === 'T' ? 'var(--qf-ink-2)' : 'var(--qf-ink-mute)',
+                letterSpacing: '0.06em', minWidth: 22,
+              }}>{m.id}</span>
+              <span>
+                {m.label}
+                {m.date && <span style={{ color: 'var(--qf-ink-mute)' }}> · {v1FmtDate(m.date)}</span>}
+                {m.isEnd && <span style={{ color: 'var(--qf-forest)', fontWeight: 600 }}> · {target}</span>}
+              </span>
+            </div>
+          ))}
+          {skillRows.map(m => (
+            <div key={m.id} style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+              <span style={{
+                fontFamily: 'var(--qf-mono)', fontSize: 10, fontWeight: 600,
+                color: 'var(--qf-glow)', letterSpacing: '0.06em', minWidth: 28,
+              }}>{m.id}</span>
+              <span style={{ color: 'var(--qf-forest)', fontWeight: 500 }}>+{m.pts} pts</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Comparison stat — inline, no card */}
+        <p style={{ fontSize: 13.5, color: 'var(--qf-ink-2)', lineHeight: 1.5, margin: 0 }}>
+          Across 95+ matching plans, kids who started near <em>{current}</em> averaged
+          <em style={{ color: 'var(--qf-forest)' }}> +{avgGain} points</em> in {weeksOfTutoring} weeks of diagnostic-driven tutoring.
+          The diagnostic reveals which skills <em>SK1–5</em> actually are.
         </p>
       </div>
     </QFScreen>
   );
 }
 
-// ─── I · Diagnosis (redesigned: "28 vs 5-6" argument) ────────────────────────
+// ─── I · Diagnosis (content skills, no tricks) ───────────────────────────────
 const D_TEST_DATE_SHORT = {
   'aug22': 'August 22', 'oct3': 'October 3', 'nov7': 'November 7', 'dec5': 'December 5',
 };
@@ -663,23 +648,45 @@ const D_TEST_DATES = {
 };
 
 const PREP_WHY_FAILED = {
-  'khan':    "Khan covers every skill shallowly. Your kid needs deep work on these 5, not surface work on all 28.",
-  'group':   "Group class paces to the middle of the room. Nobody built a plan for the few skills actually costing your kid points.",
-  'online':  "One syllabus for everyone — it doesn't diagnose your kid's biggest point leaks and rank them.",
-  'app':     "SAT apps keep serving questions. They don't tell you which skills to master first.",
-  'book':    "Paper prep trains the wrong test. The digital SAT rewards Desmos, on-screen tools, and screen-based pacing.",
+  'khan':    "Khan covers all 28 skills shallowly. Your kid needs deep work on these 5 — not surface review.",
+  'group':   "Group classes pace to the middle of the room. Nobody built a plan for the few skills actually costing your kid points.",
+  'online':  "One syllabus for everyone. It doesn't diagnose your kid's biggest point leaks and rank them.",
+  'app':     "SAT apps keep serving questions. They don't tell you which content skills to master first.",
+  'book':    "Paper prep trains the wrong test. The digital SAT rewards Desmos and on-screen pacing — not flipping pages.",
   'nothing': "Without a diagnostic, students guess where to start and lose months on low-impact review.",
 };
 const D_Q7_PRIORITY = ['khan', 'group', 'online', 'app', 'book', 'nothing'];
 
-const GAP_SKILLS_BY_Q6 = {
-  'math':       [{ name: 'Desmos & calculator strategy', pts: '~35 pts' }, { name: 'Math pacing', pts: '~25 pts' }],
-  'reading':    [{ name: 'Question-first reading', pts: '~30 pts' }, { name: 'Passage pacing', pts: '~20 pts' }],
-  'no-plan':    [{ name: 'Gap prioritization', pts: '~40 pts' }, { name: 'Strategic sequencing', pts: '~20 pts' }],
-  'wont':       [{ name: 'Practice consistency', pts: '~30 pts' }, { name: 'Reviewing missed questions', pts: '~20 pts' }],
-  'self-study': [{ name: 'Targeted skill drilling', pts: '~35 pts' }, { name: 'Identifying blind spots', pts: '~25 pts' }],
-  'too-busy':   [{ name: 'High-ROI skill focus', pts: '~40 pts' }, { name: 'Efficient session structure', pts: '~20 pts' }],
-};
+// Real SAT content skills (not tricks) tied to Q6 selections.
+const MATH_SKILLS = [
+  { name: 'Linear Functions',           pts: 35 },
+  { name: 'Geometry: Right Triangles',  pts: 25 },
+  { name: 'Quadratics',                 pts: 22 },
+  { name: 'Word Problems',              pts: 18 },
+  { name: 'Functions & Graphs',         pts: 15 },
+];
+const READING_SKILLS = [
+  { name: 'Inference & Main Idea',      pts: 30 },
+  { name: 'Vocab in Context',           pts: 25 },
+  { name: 'Reading Pacing',             pts: 22 },
+  { name: 'Evidence-Based Reading',     pts: 18 },
+  { name: 'Question-First Strategy',    pts: 15 },
+];
+
+function pickContentSkills(q6 = []) {
+  const hasMath = q6.includes('math');
+  const hasReading = q6.includes('reading');
+  if (hasMath && !hasReading) return MATH_SKILLS;
+  if (hasReading && !hasMath) return READING_SKILLS;
+  // Mixed (default, or both selected): top 5 by points across both domains
+  return [
+    MATH_SKILLS[0],     // Linear Functions +35
+    READING_SKILLS[0],  // Inference & Main Idea +30
+    MATH_SKILLS[1],     // Geometry: Right Triangles +25
+    READING_SKILLS[1],  // Vocab in Context +25
+    MATH_SKILLS[2],     // Quadratics +22
+  ];
+}
 
 export function QFIDiagnosis({ onContinue, onBack, q6 = ['math', 'no-plan'], q7 = ['khan'], q5 = 'oct3' }) {
   const aKey = D_Q7_PRIORITY.find(p => q7.includes(p)) || 'nothing';
@@ -691,11 +698,11 @@ export function QFIDiagnosis({ onContinue, onBack, q6 = ['math', 'no-plan'], q7 
     : null;
   const dateShort = D_TEST_DATE_SHORT[q5];
 
-  const gapSkills = q6.flatMap(id => GAP_SKILLS_BY_Q6[id] || []).slice(0, 5);
+  const skills = pickContentSkills(q6);
 
-  // 28 dots grid: 28 grey, first 5-6 green
-  const highlightCount = Math.min(6, gapSkills.length || 5);
-  const dots = Array.from({ length: 28 }, (_, i) => i < highlightCount);
+  // 28-dot grid: always 5 highlighted forest-green
+  const HIGHLIGHT = 5;
+  const dots = Array.from({ length: 28 }, (_, i) => i < HIGHLIGHT);
 
   return (
     <QFScreen stepIdx={9} onBack={onBack}
@@ -703,67 +710,61 @@ export function QFIDiagnosis({ onContinue, onBack, q6 = ['math', 'no-plan'], q7 
     >
       <div className="gap-22" style={{ marginTop: 4 }}>
         {/* Hero thesis */}
-        <div>
-          <h1 className="qf-h1">
-            The SAT has <em>28</em> skill areas. Only <em>5–6</em> are costing the most points.
-          </h1>
-        </div>
+        <h1 className="qf-h1">
+          The SAT has <em>28</em> skill areas. Only <em>5–6</em> are costing the most points.
+        </h1>
 
-        {/* 28-dot visual */}
+        {/* 28-dot visual — 5 highlighted glow forest-green */}
         <div style={{
-          display: 'flex', flexWrap: 'wrap', gap: 8, padding: '4px 0',
+          display: 'grid', gridTemplateColumns: 'repeat(14, 1fr)', gap: 6,
+          padding: '4px 0',
         }}>
           {dots.map((hot, i) => (
             <div key={i} style={{
-              width: 14, height: 14, borderRadius: '50%',
+              aspectRatio: '1',
+              borderRadius: '50%',
               background: hot ? 'var(--qf-forest)' : 'rgba(20,32,46,0.12)',
+              boxShadow: hot ? '0 0 8px rgba(119,200,154,0.55)' : 'none',
               transition: 'background 0.2s',
             }} />
           ))}
-          <div style={{
-            marginLeft: 4, fontFamily: 'var(--qf-mono)', fontSize: 10,
-            color: 'var(--qf-forest)', letterSpacing: '0.12em', alignSelf: 'center',
-          }}>
-            = high impact
-          </div>
         </div>
 
-        {/* Gap list from Q6 */}
-        {gapSkills.length > 0 && (
-          <div>
-            <div className="qf-meta" style={{ color: 'var(--qf-forest)', marginBottom: 10 }}>Gaps costing the most points</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {gapSkills.map((skill, i) => (
-                <div key={i} style={{
-                  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                  background: 'var(--qf-paper)', border: '1px solid var(--qf-line)',
-                  borderRadius: 10, padding: '12px 14px',
-                }}>
-                  <span style={{ fontSize: 14, color: 'var(--qf-ink-2)' }}>{skill.name}</span>
-                  <span style={{
-                    fontFamily: 'var(--qf-mono)', fontSize: 11, color: 'var(--qf-forest)',
-                    fontWeight: 600, letterSpacing: '0.08em',
-                  }}>{skill.pts}</span>
-                </div>
-              ))}
+        {/* 5 content-skill cards with rank + name + pts */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {skills.map((skill, i) => (
+            <div key={i} style={{
+              display: 'grid',
+              gridTemplateColumns: '32px 1fr auto',
+              alignItems: 'center',
+              gap: 12,
+              background: 'var(--qf-paper)',
+              border: '1px solid var(--qf-line)',
+              borderRadius: 10,
+              padding: '12px 14px',
+            }}>
+              <div style={{
+                fontFamily: 'var(--qf-mono)', fontSize: 10,
+                color: 'var(--qf-forest)', letterSpacing: '0.06em', fontWeight: 600,
+              }}>{String(i + 1).padStart(2, '0')}</div>
+              <div style={{ fontFamily: 'var(--qf-display)', fontSize: 15, color: 'var(--qf-ink)', letterSpacing: '-0.005em' }}>
+                {skill.name}
+              </div>
+              <div style={{
+                fontFamily: 'var(--qf-mono)', fontSize: 11, color: 'var(--qf-forest)',
+                fontWeight: 600, letterSpacing: '0.06em',
+              }}>+{skill.pts} pts</div>
             </div>
-          </div>
-        )}
-
-        {/* Why their prep didn't fix it */}
-        <div>
-          <div className="qf-meta" style={{ color: 'var(--qf-ink-mute)', marginBottom: 8 }}>Why their prep didn't fix it</div>
-          <p className="qf-lead">{whyFailed}</p>
+          ))}
         </div>
+
+        {/* Inline framing — no eyebrows */}
+        <p className="qf-lead">{whyFailed}</p>
 
         {days && dateShort && (
-          <div>
-            <div className="qf-meta" style={{ color: 'var(--qf-forest)', marginBottom: 6 }}>Good news</div>
-            <p className="qf-lead">
-              We can build a diagnostic + ranked plan with one-on-one tutoring before the {dateShort} SAT.
-              You still have about <em>{days} days</em> to get this right.
-            </p>
-          </div>
+          <p className="qf-lead">
+            About <em>{days} days</em> until the {dateShort} SAT. Enough to fix this.
+          </p>
         )}
 
         <p className="qf-disclaimer">

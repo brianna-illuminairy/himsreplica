@@ -118,16 +118,44 @@ export function QFS6Preference({ value = 'full', onSelect, onContinue, onBack })
 }
 
 // ─── S7 · Plan details ────────────────────────────────────────────────────────
-export function QFS7PlanDetails({ onContinue, onBack }) {
+const S7_TEST_DATES = {
+  'aug22': new Date('2026-08-22'), 'oct3': new Date('2026-10-03'),
+  'nov7': new Date('2026-11-07'), 'dec5': new Date('2026-12-05'),
+};
+const S7_DATE_SHORT = {
+  'aug22': 'Aug 22', 'oct3': 'Oct 3', 'nov7': 'Nov 7', 'dec5': 'Dec 5',
+};
+
+export function QFS7PlanDetails({ onContinue, onBack, q5 = 'oct3' }) {
+  const today = new Date('2026-05-26');
+  const daysToTest = S7_TEST_DATES[q5]
+    ? Math.round((S7_TEST_DATES[q5] - today) / (1000 * 60 * 60 * 24))
+    : null;
+  const dateShort = S7_DATE_SHORT[q5];
+
+  const testimonials = [
+    {
+      photo: '/photos/student-a.jpg',
+      ba: '1180 → 1410',
+      quote: "I was skeptical of online tutoring. But the diagnostic showed me exactly what was wrong, and 12 weeks later he's at 1410.",
+      attribution: 'David D. · Dad of a junior · CA',
+    },
+    {
+      photo: '/photos/student-b.jpg',
+      ba: '1240 → 1430',
+      quote: "We'd done Khan and a Princeton class. Neither caught her pacing problem. illuminairy did — in the first hour.",
+      attribution: 'Priya S. · Mom of a senior · NJ',
+    },
+  ];
+
   return (
     <QFScreen stepIdx={20} onBack={onBack}
-      footer={<QFButton kind="forest" onClick={onContinue}>This is what we want</QFButton>}
+      footer={<QFButton kind="forest" onClick={onContinue}>Book my free strategy call</QFButton>}
     >
       <div className="gap-22">
         <h1 className="qf-h1">12 weeks. <em>One plan.</em> Built around their gaps.</h1>
-        <div className="qf-img-ph" style={{ aspectRatio: '4/3' }}>
-          Plan mockup · diagnostic readout + weekly cadence
-        </div>
+
+        {/* 5-row timeline */}
         <div className="gap-10">
           {[
             { wk: 'Week 1',     ttl: 'Diagnostic',          desc: 'Map their 5 high-impact gaps.' },
@@ -137,7 +165,7 @@ export function QFS7PlanDetails({ onContinue, onBack }) {
             { wk: 'Week 12',    ttl: 'Test-day prep',       desc: 'Confidence drills. Logistics. Rest.' },
           ].map((s, i) => (
             <div key={i} style={{
-              display: 'grid', gridTemplateColumns: '74px 1fr', gap: 14,
+              display: 'grid', gridTemplateColumns: '78px 1fr', gap: 14,
               padding: '14px 0', borderTop: i === 0 ? 'none' : '1px solid var(--qf-line)',
             }}>
               <div className="qf-meta" style={{ color: 'var(--qf-forest)', paddingTop: 4 }}>{s.wk}</div>
@@ -148,35 +176,63 @@ export function QFS7PlanDetails({ onContinue, onBack }) {
             </div>
           ))}
         </div>
-        <div className="qf-card wash">
-          <div className="qf-meta" style={{ color: 'var(--qf-forest)', marginBottom: 12 }}>Why parents pick this</div>
-          <ul className="qf-checklist">
-            <li><span className="check">✓</span>You see weekly progress, not after-the-fact reports.</li>
-            <li><span className="check">✓</span>Their tutor texts back same day. You stop nagging.</li>
-            <li><span className="check">✓</span>Plan ends with the test. No open-ended subscription.</li>
-            <li><span className="check">✓</span>If gains stall by week 6, we re-match the tutor — free.</li>
-          </ul>
-        </div>
+
+        {/* Urgency + free-call reassurance, paired */}
+        {daysToTest && dateShort && (
+          <div style={{
+            background: 'var(--qf-bg-2)',
+            border: '1px solid var(--qf-line)',
+            borderRadius: 12, padding: '14px 16px',
+            display: 'flex', flexDirection: 'column', gap: 6,
+          }}>
+            <div style={{
+              fontFamily: 'var(--qf-display)', fontSize: 17, fontWeight: 500,
+              letterSpacing: '-0.01em', color: 'var(--qf-ink)',
+            }}>
+              <em style={{ color: 'var(--qf-forest)' }}>{daysToTest} days</em> until the {dateShort} SAT.
+            </div>
+            <div style={{ fontSize: 13, color: 'var(--qf-ink-mid)', lineHeight: 1.5 }}>
+              Spots for the diagnostic and weekly sessions fill up fast. The strategy call is free — no commitment.
+            </div>
+          </div>
+        )}
+
+        {/* Testimonials with real student photos */}
         <div className="gap-14">
-          {[
-            { ba: '1180 → 1410', name: 'David D.', school: 'Dad of a junior · CA',
-              quote: "I was skeptical of online tutoring. But the diagnostic showed me exactly what was wrong, and 12 weeks later he's at 1410." },
-            { ba: '1240 → 1430', name: 'Priya S.', school: 'Mom of a senior · NJ',
-              quote: "We'd done Khan and a Princeton class. Neither caught her pacing problem. illuminairy did — in the first hour." },
-          ].map((r, i) => (
+          {testimonials.map((r, i) => (
             <div key={i} className="qf-card" style={{ padding: 18 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', borderBottom: '1px solid var(--qf-line)', paddingBottom: 12, marginBottom: 12 }}>
-                <span style={{ fontFamily: 'var(--qf-display)', fontSize: 22, color: 'var(--qf-forest)', fontWeight: 500, letterSpacing: '-0.01em' }}>{r.ba}</span>
-                <span className="qf-meta" style={{ color: 'var(--qf-forest)' }}>✓ Verified</span>
+              <div style={{ display: 'flex', gap: 14, alignItems: 'center', marginBottom: 12 }}>
+                <div style={{
+                  width: 72, height: 72, borderRadius: 12,
+                  overflow: 'hidden', flexShrink: 0,
+                  background:
+                    'linear-gradient(135deg, #C8E6CF 0%, #77C89A 60%, #2F6E47 100%)',
+                  position: 'relative',
+                }}>
+                  <img
+                    src={r.photo}
+                    alt=""
+                    style={{
+                      position: 'absolute', inset: 0,
+                      width: '100%', height: '100%',
+                      objectFit: 'cover', display: 'block',
+                    }}
+                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                  />
+                </div>
+                <div>
+                  <div style={{
+                    fontFamily: 'var(--qf-display)', fontSize: 22, color: 'var(--qf-forest)',
+                    fontWeight: 500, letterSpacing: '-0.01em', lineHeight: 1.1,
+                  }}>{r.ba}</div>
+                  <div className="qf-meta" style={{ color: 'var(--qf-forest)', marginTop: 4 }}>✓ Verified</div>
+                </div>
               </div>
-              <p style={{ fontFamily: 'var(--qf-display)', fontSize: 16, lineHeight: 1.5, fontWeight: 500, color: 'var(--qf-ink-2)', margin: 0 }}>"{r.quote}"</p>
-              <div className="qf-meta" style={{ marginTop: 10 }}>— {r.name} · {r.school}</div>
+              <p style={{ fontFamily: 'var(--qf-display)', fontSize: 15.5, lineHeight: 1.5, fontWeight: 500, color: 'var(--qf-ink-2)', margin: 0 }}>"{r.quote}"</p>
+              <div className="qf-meta" style={{ marginTop: 10 }}>— {r.attribution}</div>
             </div>
           ))}
         </div>
-        <p className="qf-disclaimer">
-          Before/after scores shared by parents at plan completion. Avg gain across last 95 plans: +182 points. Individual results vary.
-        </p>
       </div>
     </QFScreen>
   );
@@ -199,15 +255,15 @@ export function QFS8Acknowledgment({ name = "your kid", onContinue, onBack }) {
         </div>
         <h1 className="qf-h1 center" style={{ textAlign: 'center' }}>We're <em>on it</em>.</h1>
         <p className="qf-lead" style={{ maxWidth: 320 }}>
-          Your kid's plan is reserved. The last step is a 15-min call so we can finalize their diagnostic schedule and match them with the right tutor.
+          Your kid's plan is reserved. The last step is a 15-min strategy call to discuss your kid's goals and timeline. If we're a fit, we'll enroll and schedule the diagnostic from there.
         </p>
         <QFConstellation />
         <ul className="qf-checklist" style={{ width: '100%', textAlign: 'left' }}>
           <li><span className="check">✓</span>15 minutes · just you, no student required</li>
           <li><span className="check">✓</span>You'll meet their matched tutor by name</li>
-          <li><span className="check">✓</span>Diagnostic scheduled on the call</li>
+          <li><span className="check">✓</span>Enrollment + diagnostic scheduling happens on the call</li>
         </ul>
-        <p className="qf-disclaimer">No charge until after the call. Cancel anytime in the first 14 days.</p>
+        <p className="qf-disclaimer">Free call. No charge until you enroll on the call.</p>
       </div>
     </QFScreen>
   );
@@ -229,9 +285,9 @@ export function QFS9Booking({ onComplete, onBack }) {
       footer={<QFButton kind="forest" onClick={onComplete}>Confirm {days[selectedDay].dow === 'THU' ? 'Thursday' : days[selectedDay].dow} · {slots[selectedSlot]}</QFButton>}
     >
       <div className="gap-22">
-        <h1 className="qf-h1">Pick a time for your <em>15-minute</em> call.</h1>
+        <h1 className="qf-h1">Pick a time for your <em>free</em> strategy call.</h1>
         <p className="qf-lead">
-          With your kid's plan specialist. We'll confirm the diagnostic and tutor match. No charge today.
+          With a plan specialist. We'll walk through your kid's goals, timeline, and recommended plan. Free, no commitment.
         </p>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8 }}>
           {days.map((d, i) => (
