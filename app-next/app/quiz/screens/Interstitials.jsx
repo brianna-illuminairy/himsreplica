@@ -863,13 +863,13 @@ export function QFIDiagnosis({ onContinue, onBack, q4 = '1200-1300', q6 = ['math
         <div>
           <p className="qf-lead" style={{ margin: 0 }}>
             {weeks && dateShort ? (
-              <>With <em>{weeks} weeks</em> until the {dateShort} SAT, repeating what didn't work isn't an option.</>
+              <>With <em>{weeks} weeks</em> until the {dateShort} SAT, you need to quickly figure out the skills costing them points and build a personalized plan.</>
             ) : (
-              <>Repeating what didn't work isn't an option.</>
+              <>You need to quickly figure out the skills costing them points and build a personalized plan.</>
             )}
           </p>
           <p className="qf-lead" style={{ margin: 0 }}>
-            illuminairy diagnoses the <em>5–6 skills</em> causing the biggest score drops.
+            illuminairy's diagnostic identifies the <em>5–6 skills</em> and builds a plan around them.
           </p>
         </div>
       </div>
