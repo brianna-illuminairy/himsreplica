@@ -857,29 +857,6 @@ export function QFIDiagnosis({ onContinue, onBack, q4 = '1200-1300', q6 = ['math
             </div>
           </div>
 
-          {/* 3-step mechanism badge */}
-          <div style={{
-            display: 'flex', justifyContent: 'center', alignItems: 'center',
-            gap: 10, marginTop: 16,
-            opacity: revealed ? 1 : 0,
-            transition: 'opacity 0.6s ease 0.95s',
-          }}>
-            {['Diagnose', 'Rank', 'Plan'].map((step, i) => (
-              <span key={step} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <span style={{
-                  fontFamily: 'var(--qf-mono)', fontSize: 10.5,
-                  letterSpacing: '0.18em', color: 'var(--qf-forest)',
-                  fontWeight: 600, textTransform: 'uppercase',
-                }}>{step}</span>
-                {i < 2 && (
-                  <span style={{
-                    color: 'var(--qf-ink-mute)', fontSize: 12,
-                    fontFamily: 'var(--qf-mono)',
-                  }}>→</span>
-                )}
-              </span>
-            ))}
-          </div>
         </div>
 
         {/* Inline framing — no eyebrows */}
@@ -895,6 +872,71 @@ export function QFIDiagnosis({ onContinue, onBack, q4 = '1200-1300', q6 = ['math
           <p className="qf-lead" style={{ margin: 0 }}>
             illuminairy's diagnostic identifies the <em>5–6 skills</em> and builds a plan around them.
           </p>
+        </div>
+      </div>
+    </QFScreen>
+  );
+}
+
+// ─── I · Method (editorial: diagnose → rank → plan) ──────────────────────────
+export function QFIMethod({ onContinue, onBack }) {
+  const steps = [
+    { num: '01', label: 'Diagnose', desc: 'A 60-min 1:1 test reveals the 5–6 skills costing your kid the most points.' },
+    { num: '02', label: 'Rank',     desc: 'Each skill scored by point impact. Tackle the highest-leverage first.' },
+    { num: '03', label: 'Plan',     desc: '12 weeks of 1:1 tutoring focused only on those skills.' },
+  ];
+  return (
+    <QFScreen stepIdx={10} onBack={onBack}
+      footer={<QFButton kind="forest" onClick={onContinue}>See their projection</QFButton>}
+    >
+      <div className="gap-22">
+        {/* Editorial hero — uses /photos/method-hero.jpg if present, aurora fallback */}
+        <div style={{
+          width: '100%', aspectRatio: '4 / 3', borderRadius: 16, overflow: 'hidden',
+          position: 'relative',
+          background: 'linear-gradient(135deg, #1A4D2F 0%, #2F6E47 35%, #0057A8 75%, #121A2B 100%)',
+        }}>
+          <img
+            src="/photos/method-hero.jpg"
+            alt="An illuminairy 1:1 tutoring session"
+            style={{
+              position: 'absolute', inset: 0,
+              width: '100%', height: '100%',
+              objectFit: 'cover', display: 'block',
+            }}
+            onError={(e) => { e.currentTarget.style.display = 'none'; }}
+          />
+        </div>
+
+        {/* Headline */}
+        <h1 className="qf-h1" style={{ marginBottom: 0 }}>
+          How <em>illuminairy</em> works.
+        </h1>
+
+        {/* 3 numbered steps — editorial list, thin rules */}
+        <div style={{ borderTop: '1px solid var(--qf-line)' }}>
+          {steps.map((step, i) => (
+            <div key={i} style={{
+              display: 'grid', gridTemplateColumns: '40px 1fr', gap: 14,
+              padding: '16px 0',
+              borderBottom: '1px solid var(--qf-line)',
+              alignItems: 'baseline',
+            }}>
+              <div style={{
+                fontFamily: 'var(--qf-mono)', fontSize: 11,
+                color: 'var(--qf-forest)', letterSpacing: '0.12em', fontWeight: 600,
+              }}>{step.num}</div>
+              <div>
+                <div style={{
+                  fontFamily: 'var(--qf-display)', fontSize: 19, fontWeight: 500,
+                  letterSpacing: '-0.01em', color: 'var(--qf-ink)', marginBottom: 4,
+                }}>{step.label}</div>
+                <div style={{ fontSize: 13.5, color: 'var(--qf-ink-mid)', lineHeight: 1.5 }}>
+                  {step.desc}
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </QFScreen>
