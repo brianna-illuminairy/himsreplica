@@ -11,8 +11,8 @@ export function QFS1Summary({ answers = {}, onContinue, onBack }) {
   const Q4_LABEL = { 'u1000': 'Under 1000', '1100-1200': '1100–1200', '1200-1300': '1200–1300', '1300-1400': '1300–1400', '1400plus': '1400+' };
   const Q5_LABEL = { 'aug22': 'Aug 22, 2026', 'oct3': 'Oct 3, 2026', 'nov7': 'Nov 7, 2026', 'dec5': 'Dec 5, 2026', '2027': 'Spring 2027', 'tbd': 'TBD' };
   const Q3_LABEL = { 'sat-1': 'Once', 'sat-2': 'Twice', 'sat-3+': 'Three+ times', 'psat-only': 'PSAT only', 'none': 'First time' };
-  const Q8_LABEL = { '1300': '1300+', '1400': '1400+', '1450': '1450+', '1500': '1500+', '1550': '1550+', 'tbd': 'Not sure' };
-  const Q9_LABEL = { '4.0+': '4.0+', '3.8-4.0': '3.8 – 4.0', '3.5-3.8': '3.5 – 3.8', '3.0-3.5': '3.0 – 3.5', 'u3.0': 'Below 3.0', 'na': 'Not sure' };
+  const Q8_LABEL = { '1250': '1250', '1300': '1300', '1350': '1350', '1400': '1400', '1450': '1450+', 'tbd': 'Not sure' };
+  const Q9_LABEL = { 'u3.0': 'Under 3.0', '3.0-3.3': '3.0 – 3.3', '3.3-3.5': '3.3 – 3.5', '3.5-3.7': '3.5 – 3.7', '3.7-3.9': '3.7 – 3.9', '4.0+': '4.0+' };
   const Q7_LABELS = { 'khan': 'Khan / Bluebook', 'group': 'Group class', 'online': 'Online course', 'app': 'SAT App', 'book': 'Prep book', 'nothing': 'No prep' };
   const Q6_LABELS = { 'math': 'Math', 'reading': 'Reading & writing', 'self-study': "Self-study", 'no-plan': 'No clear plan', 'wont': "Won't study alone", 'too-busy': 'Too busy' };
 

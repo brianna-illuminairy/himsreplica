@@ -78,11 +78,6 @@ const STARS = [
 ];
 
 export function QFI2Compute({ onContinue, onBack, q4 = '1200-1300', q5 = 'oct3', q6 = ['math', 'no-plan'] }) {
-  const [phase, setPhase] = useState(0);
-  const [barPct, setBarPct] = useState(0);
-  const [barLabel, setBarLabel] = useState('ANALYZING INPUTS');
-  const [showMissing, setShowMissing] = useState(false);
-
   const hasQ4 = q4 && q4 !== 'na' && CQ4_BANDS[q4];
   const hasDate = q5 && q5 !== 'tbd' && q5 !== '2027';
   const isEarlyApp = q5 === 'aug22' || q5 === 'oct3';
@@ -96,40 +91,59 @@ export function QFI2Compute({ onContinue, onBack, q4 = '1200-1300', q5 = 'oct3',
     ? Math.round((TEST_DATES[q5] - today) / (1000 * 60 * 60 * 24))
     : null;
 
-  // Sequential animation
+  // Build a flat reveal sequence: section headers + their rows
+  const items = [];
+  items.push({ type: 'header', label: 'Reviewing your inputs', section: 1 });
+  if (hasQ4) items.push({ type: 'row', content: <>Starting score range: <span className="v">{CQ4_BANDS[q4]}</span></> });
+  else       items.push({ type: 'row', content: <>No official SAT yet: <span className="v">planning for first sit</span></> });
+  if (hasDate)    items.push({ type: 'row', content: <>Next test date: <span className="v">{CQ5_LONG[q5]}</span></> });
+  if (isEarlyApp) items.push({ type: 'row', content: <>Early Action deadlines: <span className="v">Nov 1</span></> });
+  items.push({ type: 'row', content: <>Regular Decision deadlines: <span className="v">Jan 1</span></> });
+  if (CSCORE_RETURN[q5]) items.push({ type: 'row', content: <>Score return: <span className="v">{CSCORE_RETURN[q5]}</span></> });
+
+  items.push({ type: 'header', label: 'Building plan frame', section: 2 });
+  if (daysToTest) items.push({ type: 'row', content: <>Building <span className="v">{daysToTest}-day</span> prep window: <span className="v">May 26 → {CQ5_SHORT[q5]}</span></> });
+  else            items.push({ type: 'row', content: <>Building <span className="v">flexible</span> prep window</> });
+  if (hasQ4)          items.push({ type: 'row', content: <>Plan anchor score: <span className="v">{CANCHOR_SCORES[q4]}</span></> });
+  if (problemSummary) items.push({ type: 'row', content: <>Optimizing for: <span className="v">{problemSummary}</span></> });
+
+  const [revealed, setRevealed] = useState(0);
+  const [barPct, setBarPct] = useState(0);
+  const [showBar, setShowBar] = useState(false);
+  const [showMissing, setShowMissing] = useState(false);
+
+  // Stagger each item in sequence, then start the progress bar
   useEffect(() => {
-    const t1 = setTimeout(() => setPhase(1), 400);
-    const t2 = setTimeout(() => setPhase(2), 900);
-    const t3 = setTimeout(() => {
-      setPhase(3);
-      // Animate progress bar 0 → 40
+    const timers = [];
+    const FIRST_DELAY = 350;
+    const STAGGER = 320;
+    for (let i = 0; i < items.length; i++) {
+      timers.push(setTimeout(() => setRevealed(i + 1), FIRST_DELAY + i * STAGGER));
+    }
+    const barDelay = FIRST_DELAY + items.length * STAGGER + 250;
+    timers.push(setTimeout(() => {
+      setShowBar(true);
       let pct = 0;
-      const inc1 = setInterval(() => {
+      const inc = setInterval(() => {
         pct += 2;
         setBarPct(pct);
-        if (pct >= 40) { clearInterval(inc1); setBarLabel('DETECTING GAPS'); }
-      }, 30);
-      // 40 → 70
-      setTimeout(() => {
-        let pct2 = 40;
-        const inc2 = setInterval(() => {
-          pct2 += 2;
-          setBarPct(pct2);
-          if (pct2 >= 70) { clearInterval(inc2); setBarLabel('MISSING DATA DETECTED'); }
-        }, 30);
-        // 70 → 100
-        setTimeout(() => {
-          let pct3 = 70;
-          const inc3 = setInterval(() => {
-            pct3 += 2;
-            setBarPct(pct3);
-            if (pct3 >= 100) { clearInterval(inc3); setShowMissing(true); }
-          }, 30);
-        }, 800);
-      }, 700);
-    }, 1800);
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
+        if (pct >= 100) {
+          clearInterval(inc);
+          setShowMissing(true);
+        }
+      }, 28);
+      timers.push(inc);
+    }, barDelay));
+    return () => timers.forEach(t => {
+      if (typeof t === 'number') clearTimeout(t);
+      else clearInterval(t);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const barLabel = barPct < 40 ? 'ANALYZING INPUTS'
+                 : barPct < 70 ? 'DETECTING GAPS'
+                 : 'MISSING DATA DETECTED';
 
   return (
     <QFScreen stepIdx={9} tone="ink" onBack={onBack}
@@ -145,42 +159,30 @@ export function QFI2Compute({ onContinue, onBack, q4 = '1200-1300', q5 = 'oct3',
       <div className="qf-compute">
         <div className="compute-eyebrow">Building your plan</div>
 
-        <div className="compute-section" style={{ opacity: phase >= 1 ? 1 : 0, transition: 'opacity 0.4s' }}>
-          <div className="compute-header"><span className="ck">✓</span> Reviewing your inputs</div>
-          {hasQ4 ? (
-            <div className="compute-line">Starting score range: <span className="v">{CQ4_BANDS[q4]}</span></div>
-          ) : (
-            <div className="compute-line">No official SAT yet: <span className="v">planning for first sit</span></div>
-          )}
-          {hasDate && (
-            <div className="compute-line">Next test date: <span className="v">{CQ5_LONG[q5]}</span></div>
-          )}
-          {isEarlyApp && (
-            <div className="compute-line">Early Action deadlines: <span className="v">Nov 1</span></div>
-          )}
-          <div className="compute-line">Regular Decision deadlines: <span className="v">Jan 1</span></div>
-          {CSCORE_RETURN[q5] && (
-            <div className="compute-line">Score return: <span className="v">{CSCORE_RETURN[q5]}</span></div>
-          )}
-        </div>
+        {items.map((item, i) => {
+          const shown = i < revealed;
+          const style = {
+            opacity: shown ? 1 : 0,
+            transform: shown ? 'translateY(0)' : 'translateY(4px)',
+            transition: 'opacity 0.35s ease, transform 0.35s ease',
+          };
+          if (item.type === 'header') {
+            return (
+              <div key={i} className="compute-header"
+                style={{ ...style, marginTop: item.section > 1 ? 18 : 0 }}>
+                <span className="ck">✓</span> {item.label}
+              </div>
+            );
+          }
+          return (
+            <div key={i} className="compute-line" style={style}>
+              {item.content}
+            </div>
+          );
+        })}
 
-        <div className="compute-section" style={{ opacity: phase >= 2 ? 1 : 0, transition: 'opacity 0.4s' }}>
-          <div className="compute-header"><span className="ck">✓</span> Building plan frame</div>
-          {daysToTest ? (
-            <div className="compute-line">Building <span className="v">{daysToTest}-day</span> prep window: <span className="v">May 26 → {CQ5_SHORT[q5]}</span></div>
-          ) : (
-            <div className="compute-line">Building <span className="v">flexible</span> prep window</div>
-          )}
-          {hasQ4 && (
-            <div className="compute-line">Plan anchor score: <span className="v">{CANCHOR_SCORES[q4]}</span></div>
-          )}
-          {problemSummary && (
-            <div className="compute-line">Optimizing for: <span className="v">{problemSummary}</span></div>
-          )}
-        </div>
-
-        {phase >= 3 && (
-          <div style={{ marginTop: 20 }}>
+        {showBar && (
+          <div style={{ marginTop: 22, opacity: 1, animation: 'fadeIn 0.4s ease' }}>
             <div style={{
               fontFamily: 'var(--qf-mono)', fontSize: 9, letterSpacing: '0.2em',
               color: 'var(--qf-glow)', marginBottom: 8,
@@ -252,7 +254,7 @@ const GAP_Q4_LABEL = {
   '1200-1300': '1200–1300', '1300-1400': '1300–1400',
 };
 const GAP_Q9_LABEL = {
-  '3.0-3.5': '3.0–3.5', '3.5-3.8': '3.5–3.8', '3.8-4.0': '3.8–4.0', '4.0+': '4.0+',
+  '3.0-3.3': '3.0–3.3', '3.3-3.5': '3.3–3.5', '3.5-3.7': '3.5–3.7', '3.7-3.9': '3.7–3.9', '4.0+': '4.0+',
 };
 
 export function QFIGPAGap({ onContinue, onBack, q4 = '1200-1300', q9 = '3.8-4.0' }) {
@@ -352,7 +354,7 @@ const Q4_TO_SCORE = {
   '1300-1400': 1350, '1400plus': 1430,
 };
 const Q8_TO_TARGET = {
-  '1300': 1300, '1400': 1400, '1450': 1450, '1500': 1500, '1550': 1550,
+  '1250': 1250, '1300': 1300, '1350': 1350, '1400': 1400, '1450': 1450,
 };
 const Q5_TO_DATE = {
   'aug22': 'Aug 22', 'oct3': 'Oct 3', 'nov7': 'Nov 7', 'dec5': 'Dec 5',
@@ -364,35 +366,47 @@ const CQ6_SHORT = {
   'self-study': 'self-study gaps', 'too-busy': 'time management',
 };
 
-const REVEAL_LINES = (name, blocker, projected, testDate) => [
-  `Based on your answers${name ? `, ${name}` : ''}…`,
-  `we've built a custom prep plan`,
-  `focused on <em>${blocker}</em>`,
-  `designed to get them to <em>${projected}</em> by <em>${testDate}</em>`,
-  `with a path to <em>1500+</em> on a re-test.`,
-  `Let's walk through it.`,
-];
+const REVEAL_LINES = (name, blocker, current, target, gap, days, testDate) => {
+  const lines = [
+    `Based on your answers${name ? `, ${name}` : ''}…`,
+    `we've built a custom prep plan`,
+    `focused on <em>${blocker}</em>`,
+    `to take them from <em>${current}</em> to <em>${target}</em>`,
+  ];
+  if (days) lines.push(`closing a <em>${gap}-point</em> gap in <em>${days} days</em>.`);
+  else      lines.push(`closing a <em>${gap}-point</em> gap before test day.`);
+  lines.push(`Let's walk through it.`);
+  return lines;
+};
+
+const V1_TEST_DATES = {
+  'aug22': new Date('2026-08-22'), 'oct3': new Date('2026-10-03'),
+  'nov7': new Date('2026-11-07'), 'dec5': new Date('2026-12-05'),
+};
 
 export function QFV1Projection({
   onContinue, onBack,
-  q4 = '1200-1300', q5 = 'oct3', q6 = ['math'], q8 = '1450',
+  q4 = '1200-1300', q5 = 'oct3', q6 = ['math'], q8 = '1400',
   parentName = '',
-  current: currentProp, target: targetProp, projected: projectedProp, testDate: testDateProp,
+  current: currentProp, target: targetProp, testDate: testDateProp,
 }) {
   const [phase, setPhase] = useState('reveal'); // 'reveal' | 'chart'
   const [lineIdx, setLineIdx] = useState(0);
 
   const current = currentProp ?? Q4_TO_SCORE[q4] ?? 1250;
-  const target = targetProp ?? Q8_TO_TARGET[q8] ?? Math.min(1600, Math.round((current + 200) / 50) * 50);
-  const testDate = testDateProp ?? Q5_TO_DATE[q5] ?? 'test day';
-  const hasFixedDate = ['aug22', 'oct3', 'nov7', 'dec5'].includes(q5);
+  let target = targetProp ?? Q8_TO_TARGET[q8] ?? Math.min(1600, Math.round((current + 200) / 50) * 50);
+  // Ensure a meaningful improvement gap if user picked a target below current
+  if (target <= current) target = Math.min(1600, current + 100);
+  const gap = target - current;
 
-  let gain = 180;
-  if (q5 === 'aug22') gain = 130;
-  const projected = projectedProp ?? Math.min(target, current + gain);
+  const testDate = testDateProp ?? Q5_TO_DATE[q5] ?? 'test day';
+  const today = new Date('2026-05-26');
+  const days = V1_TEST_DATES[q5]
+    ? Math.round((V1_TEST_DATES[q5] - today) / (1000 * 60 * 60 * 24))
+    : null;
 
   const topBlocker = CQ6_SHORT[q6[0]] || 'key gaps';
-  const lines = REVEAL_LINES(parentName, topBlocker, projected, testDate);
+  const lines = REVEAL_LINES(parentName, topBlocker, current, target, gap, days, testDate);
 
   // Advance reveal lines
   useEffect(() => {
@@ -404,12 +418,12 @@ export function QFV1Projection({
 
   // Chart SVG
   const W = 320, H = 160;
-  const midScore = current + Math.round((projected - current) * 0.45);
+  const midScore = current + Math.round((target - current) * 0.45);
   const midX = 130, midY = H - 80;
   const points = [
-    { x: 12,     y: H - 18, lbl: 'Now',    val: current,   isNow: true },
-    { x: midX,   y: midY,   lbl: 'Wk 4',   val: midScore,  isMid: true },
-    { x: W - 12, y: 22,     lbl: testDate,  val: projected, isEnd: true },
+    { x: 12,     y: H - 18, lbl: 'Now',    val: current,  isNow: true },
+    { x: midX,   y: midY,   lbl: 'Wk 4',   val: midScore, isMid: true },
+    { x: W - 12, y: 22,     lbl: testDate, val: target,   isEnd: true },
   ];
   const path = `M ${points[0].x} ${points[0].y} Q ${points[0].x + 55} ${points[0].y - 10}, ${points[1].x} ${points[1].y} T ${points[2].x} ${points[2].y}`;
 
@@ -444,13 +458,13 @@ export function QFV1Projection({
       <div className="gap-22">
         <div style={{ textAlign: 'center' }}>
           <div className="qf-meta" style={{ color: 'var(--qf-forest)', marginBottom: 6, letterSpacing: '0.18em' }}>
-            WE PREDICT THEY'LL HIT
+            BUILT TO HIT
           </div>
           <div style={{
             fontFamily: 'var(--qf-display)', fontSize: 42, fontWeight: 500,
             letterSpacing: '-0.03em', color: 'var(--qf-forest)', lineHeight: 1,
           }}>
-            <em>{projected}</em>
+            <em>{target}</em>
           </div>
           <div style={{
             fontFamily: 'var(--qf-display)', fontSize: 16, color: 'var(--qf-ink-mid)',
@@ -459,28 +473,22 @@ export function QFV1Projection({
             by <em>{testDate}</em>
           </div>
           <div className="qf-meta" style={{ color: 'var(--qf-ink-mute)', marginTop: 4 }}>
-            And a path to <em style={{ color: 'var(--qf-forest)' }}>1500+</em> with a re-test.
+            Closing a <em style={{ color: 'var(--qf-forest)' }}>{gap}-point</em> gap
+            {days ? <> in <em style={{ color: 'var(--qf-forest)' }}>{days} days</em></> : null}.
           </div>
         </div>
 
         <div className="qf-graph" style={{ position: 'relative' }}>
-          {/* Stretch label above chart */}
-          <div style={{
-            position: 'absolute', top: -2, right: 0,
-            fontFamily: 'var(--qf-mono)', fontSize: 9, letterSpacing: '0.15em',
-            color: 'var(--qf-glow)', fontWeight: 600,
-          }}>STRETCH (1500+) →</div>
-
-          {/* Current / Projected header */}
+          {/* Current / Target header */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 12, marginTop: 16 }}>
             <div>
               <div className="qf-meta">Current</div>
               <div style={{ fontFamily: 'var(--qf-display)', fontSize: 26, color: 'var(--qf-ink-mid)' }}>{current}</div>
             </div>
             <div style={{ textAlign: 'right' }}>
-              <div className="qf-meta" style={{ color: 'var(--qf-forest)' }}>Projected</div>
+              <div className="qf-meta" style={{ color: 'var(--qf-forest)' }}>Target</div>
               <div style={{ fontFamily: 'var(--qf-display)', fontSize: 32, color: 'var(--qf-forest)' }}>
-                <em>{projected}</em>
+                <em>{target}</em>
               </div>
             </div>
           </div>
@@ -492,10 +500,6 @@ export function QFV1Projection({
                 <stop offset="100%" stopColor="#205040" stopOpacity="0" />
               </linearGradient>
             </defs>
-            <line x1="0" x2={W} y1={32} y2={32}
-              stroke="rgba(20,32,46,0.18)" strokeWidth="1" strokeDasharray="3 3" />
-            <text x={W - 2} y={28} fontFamily="DM Mono" fontSize="8.5"
-              fill="rgba(20,32,46,0.5)" letterSpacing="1.2" textAnchor="end">TARGET {target}</text>
             <path d={`${path} L ${W - 12} ${H} L 12 ${H} Z`} fill="url(#qf-fill)" />
             <path d={path} fill="none" stroke="#205040" strokeWidth="2.2" strokeLinecap="round" />
 

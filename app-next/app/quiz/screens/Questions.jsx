@@ -159,33 +159,33 @@ export function QFQ7Tried({ value = [], onToggle, onContinue, onBack, q3 = 'sat-
 
 export function QFQ8Goal({ value, onSelect, onBack }) {
   const opts = [
-    { id: '1300', label: '1300+' },
-    { id: '1400', label: '1400+' },
+    { id: '1250', label: '1250' },
+    { id: '1300', label: '1300' },
+    { id: '1350', label: '1350' },
+    { id: '1400', label: '1400' },
     { id: '1450', label: '1450+' },
-    { id: '1500', label: '1500+' },
-    { id: '1550', label: '1550+' },
-    { id: 'tbd',  label: 'Not sure' },
   ];
   return (
     <QFScreen stepIdx={10} onBack={onBack}>
-      <QFQuestionHead title="What score are you <em>aiming for</em>?" />
+      <QFQuestionHead title="What score are they <em>aiming for</em>?" />
       <div className="qf-options">
         {opts.map(o => (
           <QFOption key={o.id} selected={value === o.id} onClick={() => onSelect(o.id)}>{o.label}</QFOption>
         ))}
       </div>
+      <QFOptOut onClick={() => onSelect('tbd')}>Not sure yet</QFOptOut>
     </QFScreen>
   );
 }
 
 export function QFQ9GPA({ value, onSelect, onBack }) {
   const opts = [
+    { id: 'u3.0',    label: 'Under 3.0' },
+    { id: '3.0-3.3', label: '3.0 – 3.3' },
+    { id: '3.3-3.5', label: '3.3 – 3.5' },
+    { id: '3.5-3.7', label: '3.5 – 3.7' },
+    { id: '3.7-3.9', label: '3.7 – 3.9' },
     { id: '4.0+',    label: '4.0+' },
-    { id: '3.8-4.0', label: '3.8 – 4.0' },
-    { id: '3.5-3.8', label: '3.5 – 3.8' },
-    { id: '3.0-3.5', label: '3.0 – 3.5' },
-    { id: 'u3.0',    label: 'Below 3.0' },
-    { id: 'na',      label: 'Not sure' },
   ];
   return (
     <QFScreen stepIdx={12} onBack={onBack}>

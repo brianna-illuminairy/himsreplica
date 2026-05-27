@@ -53,7 +53,7 @@ export function useQuiz() {
 
 // Derived: is i-gap screen shown?
 export function showGapScreen(answers) {
-  const highGpa = ['3.0-3.5', '3.5-3.8', '3.8-4.0', '4.0+'].includes(answers.q9);
+  const highGpa = ['3.0-3.3', '3.3-3.5', '3.5-3.7', '3.7-3.9', '4.0+'].includes(answers.q9);
   const lowScore = ['u1000', '1100-1200', '1200-1300', '1300-1400'].includes(answers.q4);
   return highGpa && lowScore;
 }
