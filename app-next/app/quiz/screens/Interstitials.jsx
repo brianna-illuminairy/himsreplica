@@ -828,12 +828,6 @@ export function QFIDiagnosis({ onContinue, onBack, q6 = ['math', 'no-plan'], q7 
         {/* Inline framing — no eyebrows */}
         <p className="qf-lead">{whyFailed}</p>
 
-        {days && dateShort && (
-          <p className="qf-lead">
-            About <em>{days} days</em> until the {dateShort} SAT. Enough to fix this.
-          </p>
-        )}
-
         <p className="qf-disclaimer">
           Sources: College Board retake data (250,000+ test takers) · Bloom (1984) — 2-sigma effect of 1:1 tutoring.
         </p>
