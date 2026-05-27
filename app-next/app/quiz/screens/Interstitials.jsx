@@ -746,7 +746,7 @@ export function QFIDiagnosis({ onContinue, onBack, q4 = '1200-1300', q6 = ['math
 
   return (
     <QFScreen stepIdx={9} onBack={onBack}
-      footer={<QFButton kind="forest" onClick={onContinue}>Continue</QFButton>}
+      footer={<QFButton kind="forest" onClick={onContinue}>Find their 5–6 skills</QFButton>}
     >
       <div className="gap-22" style={{ marginTop: 4 }}>
         {/* Above image: H1 (1 sentence) + sub (1 sentence) */}
