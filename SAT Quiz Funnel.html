@@ -7,7 +7,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:ital,wght@0,400..700;1,400..700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&family=Schibsted+Grotesk:ital,wght@0,400..700;1,400..700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="quiz-funnel.css" />
 
@@ -36,7 +36,6 @@
   <script type="text/babel" src="quiz-funnel-interstitials.jsx"></script>
   <script type="text/babel" src="quiz-funnel-results.jsx"></script>
   <script type="text/babel" src="quiz-funnel-finale.jsx"></script>
-  <script type="text/babel" src="quiz-funnel-runner.jsx"></script>
 
   <!-- App -->
   <script type="text/babel" data-presets="env,react">
@@ -106,53 +105,39 @@
           { id: 'i1', label: '06 · Proof interstitial', C: () => <QFI1Proof /> },
           { id: 'q6', label: '07 · Blocker',            C: () => <QFQ6Blocker /> },
           { id: 'q7', label: '08 · Tried',              C: () => <QFQ7Tried /> },
-          { id: 'i-diag',     label: '09 · Diagnosis · compare (live)',  C: () => <QFIDiagnosisCompare /> },
-          { id: 'i-diag-old', label: '09 · Diagnosis · headline only (archive)',  C: () => <QFIDiagnosis /> },
-          { id: 'i-diag-cmp', label: '09 · Diagnosis · terminal (archive)',  C: () => <QFIDiagnosisComputing /> },
-          { id: 'i-diag-rep', label: '09 · Diagnosis · report (archive)', C: () => <QFIDiagnosisReport /> },
+          { id: 'i-diag',     label: '09a · Diagnosis · paragraphs',  C: () => <QFIDiagnosis /> },
+          { id: 'i-diag-rep', label: '09b · Diagnosis · report variant', C: () => <QFIDiagnosisReport /> },
         ],
       },
       {
         id: 'phase-3',
         title: 'Phase 3 · Compute + Goal + Method + GPA',
-        subtitle: 'Compute → goal → GPA. (No early projection — Flow A saves payoff for after method.)',
+        subtitle: 'Compute screen synthesizes Q3–Q7 inputs in dark mode (the only dark screen in the funnel). Hands off to Goal as the "missing input". Then Method (RCA) explains how we work, then last data ask: GPA.',
         screens: [
-          { id: 'i2', label: '10 · Build plan (live)', C: () => <QFI2BuildPlan /> },
-          { id: 'i2-dark', label: '10 · Compute · dark (archive)', C: () => <QFI2Compute /> },
-          { id: 'q8', label: '11 · Goal', C: () => <QFQ8Goal /> },
-          { id: 'q9', label: '12 · GPA', C: () => <QFQ9GPA /> },
-          { id: 'i3', label: '· Legacy · good-news bridge (not in live flow)', C: () => <QFI3Bridge /> },
-        ],
-      },
-      {
-        id: 'phase-live',
-        title: 'Live wired funnel',
-        subtitle: 'Play the full quiz end-to-end in the phone frame. Open SAT Quiz Funnel Live.html',
-        screens: [
-          { id: 'live', label: '▶ Run live funnel', C: () => <QuizFunnelRunner /> },
+          { id: 'i2', label: '09 · Compute · building your plan', C: () => <QFI2Compute /> },
+          { id: 'q8', label: '10 · Goal',                       C: () => <QFQ8Goal /> },
+          { id: 'i3', label: '11 · Score Projection · preview',    C: () => <QFI3Bridge /> },
+          { id: 'q9', label: '12 · GPA',                        C: () => <QFQ9GPA /> },
         ],
       },
       {
         id: 'phase-4',
-        title: 'Phase 4 · Confirm + method (Flow A)',
-        subtitle: '13a GPA gap (conditional) → snapshot → three full method screens. No projection until after method.',
+        title: 'Phase 4 · The reveal',
+        subtitle: 'GPA gap reframe (high GPA + low SAT) → projected score chart → summary of inputs.',
         screens: [
           { id: 'i-gap', label: '13a · GPA Gap · school vs SAT habits', C: () => <QFIGPAGap /> },
-          { id: 's1', label: '14 · Summary of inputs', C: () => <QFS1Summary /> },
-          { id: 'm1', label: '15 · Method · diagnostic + plan', C: () => <QFS15MethodPlan /> },
-          { id: 'm2', label: '16 · Method · mistake-driven', C: () => <QFS16MethodMistake /> },
-          { id: 'm3', label: '17 · Method · 1-on-1 tutoring', C: () => <QFS17MethodTutor /> },
+          { id: 'v1', label: '14 · Score projection',  C: () => <QFV1Projection /> },
+          { id: 's1', label: '15 · Summary of inputs', C: () => <QFS1Summary /> },
         ],
       },
       {
         id: 'phase-5',
-        title: 'Phase 5 · Payoff + proof + support',
-        subtitle: 'Projection (earned) → stats → tutor grid. Then convert.',
+        title: 'Phase 5 · Proof block',
+        subtitle: 'Our method → the stats backing it → who the tutors are. Three premium full screens.',
         screens: [
-          { id: 'v1', label: '18 · Score projection', C: () => <QFV1Projection /> },
-          { id: 's3', label: '19 · Stats · 4.5× the avg', C: () => <QFS3Stats /> },
-          { id: 's4', label: '20 · Authority · tutors', C: () => <QFS4Authority /> },
-          { id: 's2', label: '· Legacy · 4-step method (one screen)', C: () => <QFS2Science /> },
+          { id: 's2', label: '15 · Our method · 4 steps', C: () => <QFS2Science /> },
+          { id: 's3', label: '16 · Stats · 4.5× the avg', C: () => <QFS3Stats /> },
+          { id: 's4', label: '17 · Authority · tutors',   C: () => <QFS4Authority /> },
         ],
       },
       {
@@ -160,11 +145,11 @@
         title: 'Phase 6 · Convert',
         subtitle: 'Approved + create account (first typed input, after all sunk cost). Pick a plan. See plan details + social proof. Acknowledgment + book the call.',
         screens: [
-          { id: 's5', label: '21 · Approved + account', C: () => <QFS5Approved /> },
-          { id: 's6', label: '22 · Plan preference',    C: () => <QFS6Preference /> },
-          { id: 's7', label: '23 · Plan details',       C: () => <QFS7PlanDetails /> },
-          { id: 's8', label: '24 · Acknowledgment',     C: () => <QFS8Acknowledgment /> },
-          { id: 's9', label: '25 · Book the call',      C: () => <QFS9Booking /> },
+          { id: 's5', label: '18 · Approved + account', C: () => <QFS5Approved /> },
+          { id: 's6', label: '19 · Plan preference',    C: () => <QFS6Preference /> },
+          { id: 's7', label: '20 · Plan details',       C: () => <QFS7PlanDetails /> },
+          { id: 's8', label: '21 · Acknowledgment',     C: () => <QFS8Acknowledgment /> },
+          { id: 's9', label: '22 · Book the call',      C: () => <QFS9Booking /> },
         ],
       },
     ];

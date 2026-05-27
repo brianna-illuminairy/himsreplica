@@ -1,49 +1,65 @@
 // Quiz funnel — Summary → Science → Stats → Authority screens (S1–S4).
-// Method + proof copy synced from production /satplan (localhost:3000).
+// Steps 15–18.
 
 // ─────────────────────────────────────────────────────────────
-// S1 · SUMMARY — ranges only (what the quiz actually captured)
+// S1 · SUMMARY OF INPUTS (step 15) — "here's what we heard"
 // ─────────────────────────────────────────────────────────────
 function QFS1Summary({ inputs, onContinue = () => {} }) {
   const data = inputs || {
-    testDate: 'October 3',
+    grade: '11th grade',
+    testDate: 'October 3, 2026',
     timesTaken: 'Once before',
-    currentRange: '1200–1300',
-    goalRange: '1450+',
-    gap: '~150+ points',
-    gpaRange: '3.8–4.0',
-    tried: 'Khan / Bluebook',
-    blockers: 'Math · No clear plan',
+    current: 1260,
+    target: 1450,
+    gpa: '3.8 – 4.0',
+    colleges: 'Top 25 schools',
+    deadline: 'Early Action · Nov 1',
+    tried: 'Khan Academy + group class',
+    worry: 'Math accuracy, pacing',
   };
-
   const rows = [
-    { lbl: 'Test date', val: data.testDate },
-    { lbl: 'Sittings', val: data.timesTaken },
-    { lbl: 'Last scored', val: data.currentRange, strong: true },
-    { lbl: 'Goal', val: data.goalRange, strong: true },
-    { lbl: 'Gap', val: data.gap, gap: true },
-    { lbl: 'GPA range', val: data.gpaRange },
-    { lbl: 'Tried so far', val: data.tried },
-    { lbl: 'Focus areas', val: data.blockers },
-  ].filter(r => r.val && r.val !== '—');
-
+    { lbl: 'Grade',          val: data.grade },
+    { lbl: 'Test date',      val: data.testDate, hot: true },
+    { lbl: 'Sittings so far',val: data.timesTaken },
+    { lbl: 'Current score',  val: data.current,  mono: true },
+    { lbl: 'Target score',   val: data.target,   mono: true, accent: true },
+    { lbl: 'GPA',            val: data.gpa,      mono: true },
+    { lbl: 'Target schools', val: data.colleges },
+    { lbl: 'Deadline',       val: data.deadline, hot: true },
+    { lbl: 'Tried',          val: data.tried },
+    { lbl: 'Biggest gaps',   val: data.worry },
+  ];
   return (
     <QFScreen
       stepIdx={14}
-      footer={<QFButton kind="forest" onClick={onContinue}>Next</QFButton>}
+      footer={<QFButton kind="forest" onClick={onContinue}>That's right</QFButton>}
     >
-      <div className="qf-summary-screen">
-        <div className="qf-card qf-summary-card">
+      <div className="gap-22">
+        <h1 className="qf-h1">
+          Here's what we <em>heard</em>.
+        </h1>
+        <p className="qf-lead">
+          Quick check before we build the plan. Anything off? Tap a row to edit.
+        </p>
+
+        <div className="qf-card" style={{ padding: 0, overflow: 'hidden' }}>
           {rows.map((r, i) => (
-            <div
-              key={r.lbl}
-              className={'qf-summary-row' + (r.gap ? ' qf-summary-row--gap' : '')}
-              style={{ borderTop: i === 0 ? 'none' : undefined }}
-            >
-              <span className="qf-summary-lbl">{r.lbl}</span>
-              <span className={'qf-summary-val' + (r.strong ? ' qf-summary-val--strong' : '')}>
-                {r.val}
-              </span>
+            <div key={i} style={{
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+              padding: '14px 18px',
+              borderTop: i === 0 ? 'none' : '1px solid var(--qf-line)',
+            }}>
+              <span style={{
+                fontFamily: 'var(--qf-mono)', fontSize: 10, letterSpacing: '0.2em',
+                color: 'var(--qf-ink-mute)', textTransform: 'uppercase',
+              }}>{r.lbl}</span>
+              <span style={{
+                fontFamily: r.mono ? 'var(--qf-display)' : 'var(--qf-body)',
+                fontWeight: r.mono ? 500 : 500,
+                fontSize: r.mono ? 18 : 14,
+                color: r.accent ? 'var(--qf-forest)' : r.hot ? 'var(--qf-amber)' : 'var(--qf-ink)',
+                textAlign: 'right', maxWidth: '60%',
+              }}>{r.val}</span>
             </div>
           ))}
         </div>
@@ -53,8 +69,7 @@ function QFS1Summary({ inputs, onContinue = () => {} }) {
 }
 
 // ─────────────────────────────────────────────────────────────
-// S2 · SCIENCE / METHOD (legacy — all 4 steps on one screen)
-// Live funnel uses S15 / S16 / S17 instead (Flow A).
+// S2 · SCIENCE / METHOD (step 16) — how the system works
 // ─────────────────────────────────────────────────────────────
 function QFS2Science({ onContinue = () => {} }) {
   return (
@@ -128,23 +143,29 @@ function QFS3Stats({ onContinue = () => {} }) {
     <QFScreen
       stepIdx={16}
       tone="bg-2"
-      footer={<QFButton kind="forest" onClick={onContinue}>Next</QFButton>}
+      footer={<QFButton kind="forest" onClick={onContinue}>Continue</QFButton>}
     >
       <div className="gap-22">
         <h1 className="qf-h1">
-          <em>+182</em> avg gain vs <em>+40</em> self-study.
+          <em>4.5×</em> the gain of average SAT prep.
         </h1>
+        <p className="qf-lead">
+          The College Board's published avg gain on retest is +40 points. Our students average +182 across the last 95 completed plans.
+        </p>
 
+        {/* Comparison bars */}
         <div className="qf-card" style={{ padding: 20 }}>
           {[
-            { lbl: 'Self-study', val: 40, color: 'rgba(20,32,46,0.30)' },
-            { lbl: 'Group / course', val: 70, color: 'rgba(20,32,46,0.55)' },
-            { lbl: 'illuminairy', val: 182, color: 'var(--qf-forest)', hot: true },
+            { lbl: 'Self-study',         val: 12,  color: 'rgba(20,32,46,0.18)' },
+            { lbl: 'Khan Academy',       val: 25,  color: 'rgba(20,32,46,0.28)' },
+            { lbl: 'College Board avg',  val: 40,  color: 'rgba(20,32,46,0.45)' },
+            { lbl: 'Private tutor (avg)',val: 70,  color: 'rgba(20,32,46,0.65)' },
+            { lbl: 'illuminairy',        val: 182, color: 'var(--qf-forest)', hot: true },
           ].map((b, i) => {
             const max = 182;
             const widthPct = (b.val / max) * 100;
             return (
-              <div key={i} style={{ marginBottom: i === 2 ? 0 : 14 }}>
+              <div key={i} style={{ marginBottom: i === 4 ? 0 : 14 }}>
                 <div style={{
                   display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
                   marginBottom: 6,
@@ -170,7 +191,18 @@ function QFS3Stats({ onContinue = () => {} }) {
               </div>
             );
           })}
+          <div className="qf-meta" style={{ marginTop: 14, textAlign: 'right' }}>Avg point gain · retake</div>
         </div>
+
+        <div className="qf-stats">
+          <div className="stat"><div className="num">95</div><div className="lbl">Plans completed</div></div>
+          <div className="stat"><div className="num accent">+182</div><div className="lbl">Avg points gained</div></div>
+          <div className="stat"><div className="num">78%</div><div className="lbl">Hit target</div></div>
+        </div>
+
+        <p className="qf-disclaimer">
+          Comparison data: College Board public retake reports + 95 completed illuminairy plans through Q1 2026. Self-study and tutor averages from published Princeton Review / ACT Inc. studies. Individual results vary.
+        </p>
       </div>
     </QFScreen>
   );
@@ -188,113 +220,70 @@ function QFS4Authority({ onContinue = () => {} }) {
   return (
     <QFScreen
       stepIdx={17}
-      footer={<QFButton kind="forest" onClick={onContinue}>Next</QFButton>}
+      footer={<QFButton kind="forest" onClick={onContinue}>I'm ready</QFButton>}
     >
       <div className="gap-22">
-        <h1 className="qf-h1">Top 1% SAT <em>tutors</em>.</h1>
+        <h1 className="qf-h1">
+          Vetted tutors. <em>One kid</em> at a time.
+        </h1>
+        <p className="qf-lead">
+          Every illuminairy tutor scored in the top 1% of the SAT and has 5+ years coaching it. We match by gap profile, not by who's free.
+        </p>
 
-        <div className="qf-tutor-strip">
+        {/* Tutor cards */}
+        <div className="gap-10">
           {tutors.map((t, i) => (
-            <div key={i} className="qf-tutor-face">
-              <div className="qf-img-ph" style={{ aspectRatio: '1/1', borderRadius: '50%' }}>
-                {t.name.split(' ').map(p => p[0]).join('')}
+            <div key={i} className="qf-card" style={{
+              display: 'grid', gridTemplateColumns: '52px 1fr',
+              gap: 14, alignItems: 'center', padding: 14,
+            }}>
+              <div className="qf-img-ph" style={{ aspectRatio: '1/1', borderRadius: '50%' }}>{t.name.split(' ').map(p=>p[0]).join('')}</div>
+              <div>
+                <div style={{ fontFamily: 'var(--qf-display)', fontSize: 18, fontWeight: 500, letterSpacing: '-0.01em' }}>
+                  {t.name}
+                </div>
+                <div style={{ fontSize: 13, color: 'var(--qf-ink-mid)', marginTop: 2 }}>{t.cred}</div>
+                <div style={{ display: 'flex', gap: 14, marginTop: 6 }}>
+                  <span className="qf-meta">{t.subj}</span>
+                  <span className="qf-meta" style={{ color: 'var(--qf-forest)' }}>{t.yrs}</span>
+                </div>
               </div>
-              <span className="qf-tutor-name">{t.name}</span>
             </div>
           ))}
         </div>
-      </div>
-    </QFScreen>
-  );
-}
 
-// ─────────────────────────────────────────────────────────────
-// S15 · Diagnostic-driven plan (Flow A · method 1 of 3)
-// ─────────────────────────────────────────────────────────────
-function QFS15MethodPlan({ onContinue = () => {} }) {
-  return (
-    <QFScreen
-      stepIdx={15}
-      footer={<QFButton kind="forest" onClick={onContinue}>Next</QFButton>}
-    >
-      <div className="qf-method-screen">
-        <h1 className="qf-h1">
-          Test <em>28 skills</em>. Fix the top <em>5–6</em>.
-        </h1>
-        <div className="qf-method-flow" aria-hidden="true">
-          <span className="qf-method-step">Diagnose</span>
-          <span className="qf-method-arrow">→</span>
-          <span className="qf-method-step">Rank</span>
-          <span className="qf-method-arrow">→</span>
-          <span className="qf-method-step">Plan</span>
+        {/* Trust strip */}
+        <div className="qf-card wash" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 0, padding: 0 }}>
+          {[
+            ['Top 1%', 'SAT-scored tutors'],
+            ['Background', 'Checked annually'],
+            ['Replaceable', 'Free re-match'],
+          ].map(([a, b], i) => (
+            <div key={i} style={{
+              padding: '16px 8px', textAlign: 'center',
+              borderRight: i < 2 ? '1px solid rgba(32,80,64,0.15)' : 'none',
+            }}>
+              <div style={{
+                fontFamily: 'var(--qf-display)', fontSize: 16, color: 'var(--qf-forest)',
+                fontWeight: 500, letterSpacing: '-0.01em',
+              }}>{a}</div>
+              <div className="qf-meta" style={{ marginTop: 4, color: 'var(--qf-forest)' }}>{b}</div>
+            </div>
+          ))}
         </div>
-      </div>
-    </QFScreen>
-  );
-}
 
-// Session ladder — mirrors /satplan?step=prep-failed-mistake-driven
-function QFMistakeGraphic({ skillLabel = 'Geometry: Right Triangles' }) {
-  const rows = [
-    { title: 'Tutor solves', badge: '1', kind: 'tutor' },
-    { title: 'Tutor & student solve', badge: '2', kind: 'tutor' },
-    { title: 'Student solves w/ hint', badge: '3', kind: 'ok' },
-    { title: 'Student solves', badge: '4', kind: 'ok' },
-    { title: 'Student practices', badge: '5', kind: 'ok', auto: true },
-  ];
-  return (
-    <div className="qf-mistake-card" role="img" aria-label="One skill: tutor leads through practice">
-      <div className="qf-mistake-banner" aria-hidden="true">
-        <strong className="qf-mistake-banner-skill">{skillLabel}</strong>
-      </div>
-      <ol className="qf-mistake-ladder" aria-hidden="true">
-        {rows.map(r => (
-          <li
-            key={r.title}
-            className={'qf-mistake-row' + (r.auto ? ' qf-mistake-row--auto' : '')}
-          >
-            <div className="qf-mistake-row-copy"><strong>{r.title}</strong></div>
-            <span className={'qf-mistake-badge qf-mistake-badge--' + r.kind}>{r.badge}</span>
-          </li>
-        ))}
-      </ol>
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────
-// S16 · Mistake-driven learning (Flow A · method 2 of 3)
-// ─────────────────────────────────────────────────────────────
-function QFS16MethodMistake({ onContinue = () => {} }) {
-  return (
-    <QFScreen
-      stepIdx={16}
-      footer={<QFButton kind="forest" onClick={onContinue}>Next</QFButton>}
-    >
-      <div className="qf-diag-compact">
-        <h1 className="qf-h1" style={{ marginBottom: 18 }}>
-          Fix the <em>misses</em>, not the whole test.
-        </h1>
-        <QFMistakeGraphic />
-      </div>
-    </QFScreen>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────
-// S17 · 1-on-1 tutoring (Flow A · method 3 of 3)
-// ─────────────────────────────────────────────────────────────
-function QFS17MethodTutor({ onContinue = () => {} }) {
-  return (
-    <QFScreen
-      stepIdx={17}
-      footer={<QFButton kind="forest" onClick={onContinue}>Next</QFButton>}
-    >
-      <div className="qf-diag-compact">
-        <h1 className="qf-h1">Live <em>1:1</em> until test day.</h1>
-        <div className="qf-img-ph" style={{ aspectRatio: '4/3', marginTop: 22 }}>
-          Tutor + student
+        {/* Press placeholder */}
+        <div style={{ display: 'flex', gap: 12, justifyContent: 'space-around', opacity: 0.55, paddingTop: 4 }}>
+          {['FORBES', 'WSJ', 'EDSURGE'].map(l => (
+            <div key={l} style={{
+              fontFamily: 'var(--qf-mono)', fontSize: 10, letterSpacing: '0.25em',
+              color: 'var(--qf-ink-mute)', fontWeight: 600,
+            }}>{l}</div>
+          ))}
         </div>
+        <p className="qf-disclaimer center" style={{ textAlign: 'center' }}>
+          Press placeholders · replace with real coverage.
+        </p>
       </div>
     </QFScreen>
   );
@@ -302,9 +291,5 @@ function QFS17MethodTutor({ onContinue = () => {} }) {
 
 window.QFS1Summary = QFS1Summary;
 window.QFS2Science = QFS2Science;
-window.QFMistakeGraphic = QFMistakeGraphic;
-window.QFS15MethodPlan = QFS15MethodPlan;
-window.QFS16MethodMistake = QFS16MethodMistake;
-window.QFS17MethodTutor = QFS17MethodTutor;
 window.QFS3Stats = QFS3Stats;
 window.QFS4Authority = QFS4Authority;

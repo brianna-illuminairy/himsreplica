@@ -3,8 +3,6 @@
 
 const TOTAL_STEPS = 22;
 
-const QFNavCtx = React.createContext({ onBack: null, showBack: true });
-
 // ─────────────────────────────────────────────────────────────
 // QFScreen
 //   stepIdx        — 1-based current step (for progress)
@@ -19,7 +17,6 @@ function QFScreen({
   stepIdx,
   showProgress = true,
   showBack = true,
-  onBack,
   wordmark = true,
   tone = 'paper',
   ornament,
@@ -33,21 +30,13 @@ function QFScreen({
   const inkColor = tone === 'ink' ? 'var(--qf-paper)' : 'var(--qf-ink)';
 
   const fillPct = Math.max(0, Math.min(1, (stepIdx || 0) / TOTAL_STEPS)) * 100;
-  const nav = React.useContext(QFNavCtx);
-  const backHandler = onBack || nav.onBack;
-  const backVisible = showBack && nav.showBack !== false;
 
   return (
     <div className="qf-page" style={{ color: inkColor }}>
       {/* Dark chrome band — always dark navy with glowing aurora */}
       <div className="qf-top">
         <div className="qf-top-row">
-          <button
-            type="button"
-            className={"qf-back" + (backVisible ? '' : ' hidden')}
-            aria-label="Back"
-            onClick={backHandler}
-          >
+          <button className={"qf-back" + (showBack ? '' : ' hidden')} aria-label="Back">
             ←
           </button>
           {wordmark
@@ -201,5 +190,4 @@ window.QFQuestionHead = QFQuestionHead;
 window.QFOptOut = QFOptOut;
 window.QFWhyWeAsk = QFWhyWeAsk;
 window.QFConstellation = QFConstellation;
-window.QFNavCtx = QFNavCtx;
 window.TOTAL_STEPS = TOTAL_STEPS;

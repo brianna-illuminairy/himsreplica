@@ -240,16 +240,18 @@ function QFQ7Tried({ value = ['khan'], onToggle = () => {}, onContinue = () => {
 // ─────────────────────────────────────────────────────────────
 // Q8 · GOAL (step 8) — target score, single tap rows
 // ─────────────────────────────────────────────────────────────
-function QFQ8Goal({ value = '1400-1500', onSelect = () => {} }) {
+function QFQ8Goal({ value = '1450', onSelect = () => {} }) {
   const opts = [
-    { id: '1200-1300', label: '1200-1300' },
-    { id: '1300-1400', label: '1300-1400' },
-    { id: '1400-1500', label: '1400-1500' },
-    { id: '1500plus',  label: '1500+' },
+    { id: '1300', label: '1300+' },
+    { id: '1400', label: '1400+' },
+    { id: '1450', label: '1450+' },
+    { id: '1500', label: '1500+' },
+    { id: '1550', label: '1550+' },
+    { id: 'tbd',  label: 'Not sure' },
   ];
   return (
     <QFScreen stepIdx={10}>
-      <QFQuestionHead title="What&apos;s their <em>target score</em>?" />
+      <QFQuestionHead title="What score are you <em>aiming for</em>?" />
       <div className="qf-options">
         {opts.map(o => (
           <QFOption key={o.id}
@@ -267,11 +269,11 @@ function QFQ8Goal({ value = '1400-1500', onSelect = () => {} }) {
 // ─────────────────────────────────────────────────────────────
 function QFQ9GPA({ value = '3.8-4.0', onSelect = () => {} }) {
   const opts = [
-    { id: 'u3.0',    label: 'Below 3.0' },
-    { id: '3.0-3.5', label: '3.0 – 3.5' },
-    { id: '3.5-3.8', label: '3.5 – 3.8' },
-    { id: '3.8-4.0', label: '3.8 – 4.0' },
     { id: '4.0+',    label: '4.0+' },
+    { id: '3.8-4.0', label: '3.8 – 4.0' },
+    { id: '3.5-3.8', label: '3.5 – 3.8' },
+    { id: '3.0-3.5', label: '3.0 – 3.5' },
+    { id: 'u3.0',    label: 'Below 3.0' },
     { id: 'na',      label: 'Not sure' },
   ];
   return (

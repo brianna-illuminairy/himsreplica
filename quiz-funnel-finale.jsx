@@ -9,14 +9,22 @@ function QFS5Approved({ onContinue = () => {} }) {
   return (
     <QFScreen
       stepIdx={18}
+      ornament="glow"
       footer={<QFButton kind="forest" onClick={onContinue}>See their plan</QFButton>}
     >
       <div className="gap-22">
-        <h1 className="qf-h1 center qf-h1--stack" style={{ textAlign: 'center' }}>
-          Good news — your kid <em>qualifies</em>.
-          <span className="qf-h1-second">We can build a plan before test day.</span>
-          <span className="qf-h1-second">Save your spot to see it.</span>
+        <div className="qf-eyebrow center" style={{ textAlign: 'center', color: 'var(--qf-forest)' }}>
+          ✓  Eligible for an illuminairy plan
+        </div>
+
+        <h1 className="qf-h1 center" style={{ textAlign: 'center' }}>
+          Good news. Your kid <em>qualifies</em> for a personalized plan.
         </h1>
+
+        <p className="qf-lead center" style={{ textAlign: 'center' }}>
+          Based on their profile and your timeline, we can build a plan that finishes before their test date.
+          Save your spot to see the recommendation.
+        </p>
 
         <div className="qf-card gap-14" style={{ padding: 18 }}>
           <div className="qf-field">
@@ -37,6 +45,9 @@ function QFS5Approved({ onContinue = () => {} }) {
           </div>
         </div>
 
+        <p className="qf-disclaimer center" style={{ textAlign: 'center' }}>
+          We never share your details. SAT is a trademark of the College Board.
+        </p>
       </div>
     </QFScreen>
   );
@@ -52,7 +63,12 @@ function QFS6Preference({ value = 'full', onSelect = () => {}, onContinue = () =
       footer={<QFButton kind="forest" onClick={onContinue}>Continue with this plan</QFButton>}
     >
       <div className="gap-22">
-        <h1 className="qf-h1">Pick how to <em>start</em>.</h1>
+        <h1 className="qf-h1">
+          Two ways to <em>start</em>.
+        </h1>
+        <p className="qf-lead">
+          Most parents start with the full plan — it's where we see the biggest gains. You can switch later.
+        </p>
 
         <div className="gap-14" style={{ paddingTop: 6 }}>
           {/* Featured: Diagnostic + Tutoring */}
@@ -141,9 +157,86 @@ function QFS7PlanDetails({ onContinue = () => {} }) {
       stepIdx={20}
       footer={<QFButton kind="forest" onClick={onContinue}>This is what we want</QFButton>}
     >
-      <h1 className="qf-h1">12 weeks. <em>One plan.</em></h1>
-      <div className="qf-img-ph" style={{ aspectRatio: '4/3', marginTop: 24 }}>
-        Plan mockup
+      <div className="gap-22">
+        <h1 className="qf-h1">
+          12 weeks. <em>One plan.</em> Built around their gaps.
+        </h1>
+
+        {/* Hero visual placeholder */}
+        <div className="qf-img-ph" style={{ aspectRatio: '4/3' }}>
+          Plan mockup · diagnostic readout + weekly cadence
+        </div>
+
+        {/* Timeline */}
+        <div className="gap-10">
+          {[
+            { wk: 'Week 1',     ttl: 'Diagnostic',         desc: 'Map their 5 high-impact gaps.' },
+            { wk: 'Weeks 2–4',  ttl: 'Foundation drills',  desc: 'Fix the 2 biggest score-killers first.' },
+            { wk: 'Weeks 5–8',  ttl: 'Skill building',     desc: 'Move to gaps 3-5 + bi-weekly retest.' },
+            { wk: 'Weeks 9–11', ttl: 'Pacing + simulation',desc: 'Full-length timed practice tests.' },
+            { wk: 'Week 12',    ttl: 'Test-day prep',      desc: 'Confidence drills. Logistics. Rest.' },
+          ].map((s, i) => (
+            <div key={i} style={{
+              display: 'grid', gridTemplateColumns: '74px 1fr', gap: 14,
+              padding: '14px 0',
+              borderTop: i === 0 ? 'none' : '1px solid var(--qf-line)',
+            }}>
+              <div className="qf-meta" style={{ color: 'var(--qf-forest)', paddingTop: 4 }}>{s.wk}</div>
+              <div>
+                <div style={{
+                  fontFamily: 'var(--qf-display)', fontSize: 17, fontWeight: 500, letterSpacing: '-0.01em',
+                }}>{s.ttl}</div>
+                <div style={{ fontSize: 13, color: 'var(--qf-ink-mid)', marginTop: 2, lineHeight: 1.45 }}>{s.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Key benefits */}
+        <div className="qf-card wash">
+          <div className="qf-meta" style={{ color: 'var(--qf-forest)', marginBottom: 12 }}>Why parents pick this</div>
+          <ul className="qf-checklist">
+            <li><span className="check">✓</span>You see weekly progress, not after-the-fact reports.</li>
+            <li><span className="check">✓</span>Their tutor texts back same day. You stop nagging.</li>
+            <li><span className="check">✓</span>Plan ends with the test. No open-ended subscription.</li>
+            <li><span className="check">✓</span>If gains stall by week 6, we re-match the tutor — free.</li>
+          </ul>
+        </div>
+
+        {/* Social proof */}
+
+        <div className="gap-14">
+          {[
+            { ba: '1180 → 1410', name: 'David D.', school: 'Dad of a junior · CA',
+              quote: "I was skeptical of online tutoring. But the diagnostic showed me exactly what was wrong, and 12 weeks later he's at 1410." },
+            { ba: '1240 → 1430', name: 'Priya S.', school: 'Mom of a senior · NJ',
+              quote: "We'd done Khan and a Princeton class. Neither caught her pacing problem. illuminairy did — in the first hour." },
+          ].map((r, i) => (
+            <div key={i} className="qf-card" style={{ padding: 18 }}>
+              <div style={{
+                display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
+                borderBottom: '1px solid var(--qf-line)', paddingBottom: 12, marginBottom: 12,
+              }}>
+                <span style={{
+                  fontFamily: 'var(--qf-display)', fontSize: 22, color: 'var(--qf-forest)',
+                  fontWeight: 500, letterSpacing: '-0.01em',
+                }}>{r.ba}</span>
+                <span className="qf-meta" style={{ color: 'var(--qf-forest)' }}>✓ Verified</span>
+              </div>
+              <p style={{
+                fontFamily: 'var(--qf-display)', fontSize: 16, lineHeight: 1.5,
+                fontWeight: 500, color: 'var(--qf-ink-2)', margin: 0,
+              }}>"{r.quote}"</p>
+              <div className="qf-meta" style={{ marginTop: 10 }}>
+                — {r.name} · {r.school}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <p className="qf-disclaimer">
+          Before/after scores shared by parents at plan completion. Avg gain across last 95 plans: +182 points. Individual results vary.
+        </p>
       </div>
     </QFScreen>
   );
@@ -156,13 +249,41 @@ function QFS8Acknowledgment({ name = "your kid", onContinue = () => {} }) {
   return (
     <QFScreen
       stepIdx={21}
+      ornament="glow"
       footer={<QFButton kind="forest" onClick={onContinue}>Book the call</QFButton>}
     >
-      <div className="qf-ack-screen">
-        <h1 className="qf-h1 center qf-h1--stack" style={{ textAlign: 'center' }}>
-          Plan <em>reserved</em>.
-          <span className="qf-h1-second">Book a 15-min call to lock in their diagnostic.</span>
+      <div className="gap-22 center" style={{ textAlign: 'center', alignItems: 'center' }}>
+        {/* Orb mark */}
+        <div style={{
+          width: 84, height: 84, borderRadius: '50%',
+          background: 'radial-gradient(circle at 35% 35%, var(--qf-glow), var(--qf-forest) 78%)',
+          boxShadow: '0 0 60px rgba(184, 224, 197, 0.45)',
+          marginTop: 8,
+        }} />
+
+        <div className="qf-eyebrow center" style={{ textAlign: 'center', color: 'var(--qf-forest)' }}>
+          Plan reserved
+        </div>
+
+        <h1 className="qf-h1 center" style={{ textAlign: 'center' }}>
+          We're <em>on it</em>.
         </h1>
+
+        <p className="qf-lead" style={{ maxWidth: 320 }}>
+          Your kid's plan is reserved. The last step is a 15-min call so we can finalize their diagnostic schedule and match them with the right tutor.
+        </p>
+
+        <QFConstellation />
+
+        <ul className="qf-checklist" style={{ width: '100%', textAlign: 'left' }}>
+          <li><span className="check">✓</span>15 minutes · just you, no student required</li>
+          <li><span className="check">✓</span>You'll meet their matched tutor by name</li>
+          <li><span className="check">✓</span>Diagnostic scheduled on the call</li>
+        </ul>
+
+        <p className="qf-disclaimer">
+          No charge until after the call. Cancel anytime in the first 14 days.
+        </p>
       </div>
     </QFScreen>
   );
@@ -186,7 +307,12 @@ function QFS9Booking({ onComplete = () => {} }) {
       footer={<QFButton kind="forest" onClick={onComplete}>Confirm Thursday · 5:30 PM</QFButton>}
     >
       <div className="gap-22">
-        <h1 className="qf-h1">Pick a time for your <em>15-minute</em> call.</h1>
+        <h1 className="qf-h1">
+          Pick a time for your <em>15-minute</em> call.
+        </h1>
+        <p className="qf-lead">
+          With your kid's plan specialist. We'll confirm the diagnostic and tutor match. No charge today.
+        </p>
 
         {/* Day strip */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8 }}>

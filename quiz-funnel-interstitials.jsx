@@ -23,7 +23,7 @@ const STAKES_OUTCOME = {
 
 function QFI1Proof({ onContinue = () => {}, q2 = 'top-choice', vars = {} }) {
   const v = {
-    test_date_phrase: 'October 3rd',
+    test_date_phrase: 'October 3',
     stakes_outcome:   STAKES_OUTCOME[q2] || STAKES_OUTCOME['top-choice'],
     ...vars,
   };
@@ -31,16 +31,21 @@ function QFI1Proof({ onContinue = () => {}, q2 = 'top-choice', vars = {} }) {
   return (
     <QFScreen
       stepIdx={6}
+      ornament="glow"
       footer={<QFButton kind="forest" onClick={onContinue}>Continue</QFButton>}
     >
-      <div style={{ marginTop: 8 }}>
-        <h1 className="qf-h1" style={{ marginBottom: 0 }}>
+      <div className="gap-22" style={{ marginTop: 4 }}>
+        <p className="qf-lead">
           {hasDate ? (
-            <>Let&apos;s build your plan for the {v.test_date_phrase} SAT so {v.stakes_outcome}.</>
+            <>We're building a plan to help your kid get their SAT score up by the <em>{v.test_date_phrase}</em> SAT, so that <em>{v.stakes_outcome}</em>.</>
           ) : (
-            <>Let&apos;s build your plan before test day so {v.stakes_outcome}.</>
+            <>We're building a plan to help your kid get their SAT score up, so that <em>{v.stakes_outcome}</em>.</>
           )}
-        </h1>
+        </p>
+
+        <p className="qf-lead">
+          But first, we need to better understand why they struggled on the SAT.
+        </p>
       </div>
     </QFScreen>
   );
@@ -173,137 +178,6 @@ function QFI2Compute({
   );
 }
 
-// Compute · light recap (readable — no starfield / binary / locked buttons)
-function QFI2ComputeCalm({
-  onContinue = () => {},
-  q4 = '1200-1300',
-  q5 = 'oct3',
-  q6 = ['math', 'no-plan'],
-}) {
-  const hasQ4 = q4 && q4 !== 'na' && CQ4_BANDS[q4];
-  const hasDate = q5 && q5 !== 'tbd' && q5 !== '2027';
-  const problemSummary = q6.slice(0, 2).map(id => CQ6_PHRASE[id] || id).join(' + ');
-
-  const TEST_DATES = {
-    aug22: new Date('2026-08-22'), oct3: new Date('2026-10-03'),
-    nov7: new Date('2026-11-07'), dec5: new Date('2026-12-05'),
-  };
-  const today = new Date('2026-05-26');
-  const daysToTest = TEST_DATES[q5]
-    ? Math.round((TEST_DATES[q5] - today) / (1000 * 60 * 60 * 24))
-    : null;
-
-  const chips = [];
-  if (hasQ4) chips.push(CQ4_BANDS[q4]);
-  if (hasDate) chips.push(CQ5_SHORT[q5] || CQ5_LONG[q5]);
-  if (daysToTest) chips.push(`${daysToTest} days`);
-  if (problemSummary) chips.push(problemSummary);
-
-  return (
-    <QFScreen
-      stepIdx={10}
-      footer={<QFButton kind="forest" onClick={onContinue}>Continue</QFButton>}
-    >
-      <h1 className="qf-h1">Got it — one more question.</h1>
-      {chips.length > 0 && (
-        <div className="qf-chip-row" aria-hidden="true">
-          {chips.map(c => (
-            <span key={c} className="qf-chip-pill">{c}</span>
-          ))}
-        </div>
-      )}
-    </QFScreen>
-  );
-}
-
-const BUILD_Q7 = {
-  khan: 'Khan / Bluebook',
-  group: 'Group class',
-  online: 'Online course',
-  app: 'SAT app',
-  book: 'Prep book',
-  nothing: 'Not much prep',
-};
-const BUILD_Q6 = {
-  math: 'Math',
-  reading: 'Reading & writing',
-  'self-study': 'Self-study not sticking',
-  'no-plan': 'No clear plan',
-  wont: "Won't study alone",
-  'too-busy': 'Too busy',
-};
-
-// Build plan · parent labels, light stagger (before goal score question)
-function QFI2BuildPlan({
-  onContinue = () => {},
-  q4 = '1200-1300',
-  q5 = 'oct3',
-  q6 = ['math', 'no-plan'],
-  q7 = ['khan'],
-}) {
-  const hasQ4 = q4 && q4 !== 'na' && CQ4_BANDS[q4];
-  const hasDate = q5 && q5 !== 'tbd' && q5 !== '2027';
-  const TEST_DATES = {
-    aug22: new Date('2026-08-22'), oct3: new Date('2026-10-03'),
-    nov7: new Date('2026-11-07'), dec5: new Date('2026-12-05'),
-  };
-  const today = new Date('2026-05-26');
-  const daysToTest = TEST_DATES[q5]
-    ? Math.round((TEST_DATES[q5] - today) / (1000 * 60 * 60 * 24))
-    : null;
-
-  const tried = (q7 || []).map(id => BUILD_Q7[id]).filter(Boolean).join(' · ');
-  const blockers = (q6 || []).map(id => BUILD_Q6[id]).filter(Boolean).join(' · ');
-  const failedParts = [tried, blockers].filter(Boolean);
-  const whatFailed = failedParts.length ? failedParts.join(' · ') : null;
-
-  const stepDefs = [];
-  if (hasQ4) stepDefs.push({ label: 'Last scored', value: CQ4_BANDS[q4] });
-  if (hasDate) stepDefs.push({ label: 'Next test', value: CQ5_LONG[q5] || CQ5_SHORT[q5] });
-  if (daysToTest) stepDefs.push({ label: 'Days to prepare', value: `${daysToTest} days` });
-  if (whatFailed) stepDefs.push({ label: "What hasn't worked", value: whatFailed });
-  stepDefs.push({ label: 'Building their plan', value: '…', pulse: true });
-  stepDefs.push({ label: 'Still need', value: 'Their target score', pending: true });
-
-  const [shown, setShown] = React.useState(0);
-
-  React.useEffect(() => {
-    setShown(0);
-    const timers = [];
-    for (let i = 1; i <= stepDefs.length; i += 1) {
-      timers.push(setTimeout(() => setShown(i), 380 * i));
-    }
-    return () => timers.forEach(clearTimeout);
-  }, [q4, q5, (q6 || []).join(','), (q7 || []).join(',')]);
-
-  return (
-    <QFScreen
-      stepIdx={10}
-      footer={<QFButton kind="forest" onClick={onContinue}>Continue</QFButton>}
-    >
-      <h1 className="qf-h1" style={{ marginBottom: 20 }}>
-        Building their plan from what you shared.
-      </h1>
-      <div className="qf-build-list">
-        {stepDefs.slice(0, shown).map((step, i) => (
-          <div
-            key={step.label}
-            className={
-              'qf-build-row'
-              + (step.pending ? ' qf-build-row--pending' : '')
-              + (step.pulse ? ' qf-build-row--pulse' : '')
-            }
-          >
-            <span className="qf-build-ck">{step.pending ? '→' : '✓'}</span>
-            <span className="qf-build-lbl">{step.label}</span>
-            <span className="qf-build-val">{step.value}</span>
-          </div>
-        ))}
-      </div>
-    </QFScreen>
-  );
-}
-
 // ─────────────────────────────────────────────────────────────
 // I3 · BRIDGE / GOOD NEWS (step 11)
 //   After Q8 Goal. Optimistic framing of timeline + personalized-plan
@@ -365,43 +239,94 @@ const GAP_Q9_LABEL = {
   '3.0-3.5': '3.0–3.5', '3.5-3.8': '3.5–3.8', '3.8-4.0': '3.8–4.0', '4.0+': '4.0+',
 };
 
-const GPA_HABIT_ROWS = [
-  { school: 'Reading', sat: 'Skimming' },
-  { school: 'Showing work', sat: 'Calculator' },
-  { school: 'Double-checking', sat: 'Moving on' },
-  { school: 'Sticking with one hard problem', sat: 'Skipping and coming back' },
-];
-
 function QFIGPAGap({
   onContinue = () => {},
   q4 = '1200-1300',
   q9 = '3.8-4.0',
 }) {
+  const gpaLabel = GAP_Q9_LABEL[q9] || q9;
+  const scoreLabel = GAP_Q4_LABEL[q4] || q4;
+
   return (
     <QFScreen
       stepIdx={13}
       footer={<QFButton kind="forest" onClick={onContinue}>Continue</QFButton>}
     >
-      <div className="qf-gpa-gap-screen">
-        <h1 className="qf-h1">Why smart kids struggle on the SAT</h1>
-        <div className="qf-card qf-habit-table-wrap">
-          <table className="qf-habit-table">
-            <thead>
-              <tr>
-                <th scope="col">In school</th>
-                <th scope="col">On the SAT</th>
-              </tr>
-            </thead>
-            <tbody>
-              {GPA_HABIT_ROWS.map(row => (
-                <tr key={row.school}>
-                  <td>{row.school}</td>
-                  <td>{row.sat}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      <div className="gap-22" style={{ marginTop: 4 }}>
+        <h1 className="qf-h1">
+          Why smart kids score <em>low</em> on the SAT.
+        </h1>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div style={{
+            background: 'var(--qf-bg-2)',
+            border: '1px solid var(--qf-line)',
+            borderRadius: 12,
+            padding: 18,
+          }}>
+            <div className="qf-meta" style={{ color: 'var(--qf-ink-mute)', marginBottom: 8 }}>In school</div>
+            <div style={{
+              fontFamily: 'var(--qf-display)', fontSize: 20, fontWeight: 500,
+              letterSpacing: '-0.012em', color: 'var(--qf-ink)', marginBottom: 14,
+            }}>
+              Rewards taking your time.
+            </div>
+            <ul className="qf-checklist" style={{ gap: 8 }}>
+              <li><span className="check" style={{ background: 'var(--qf-ink-mute)' }}>·</span>Reading and re-reading passages</li>
+              <li><span className="check" style={{ background: 'var(--qf-ink-mute)' }}>·</span>Showing every step by hand</li>
+              <li><span className="check" style={{ background: 'var(--qf-ink-mute)' }}>·</span>Double-checking until it feels certain</li>
+              <li><span className="check" style={{ background: 'var(--qf-ink-mute)' }}>·</span>Sticking with one hard problem until it's solved</li>
+            </ul>
+          </div>
+
+          <div style={{
+            background: 'var(--qf-ink)',
+            borderRadius: 12,
+            padding: 18,
+            color: '#F5F8FA',
+            position: 'relative',
+            overflow: 'hidden',
+            border: '1px solid rgba(119, 200, 154, 0.18)',
+          }}>
+            <div style={{
+              position: 'absolute', top: -60, right: -40,
+              width: 220, height: 220,
+              background: 'radial-gradient(circle, rgba(119,200,154,0.22) 0%, rgba(0,87,168,0.10) 35%, transparent 65%)',
+              pointerEvents: 'none',
+            }} />
+            <div style={{ position: 'relative' }}>
+              <div className="qf-meta" style={{ color: 'var(--qf-glow)', marginBottom: 8 }}>On the SAT</div>
+              <div style={{
+                fontFamily: 'var(--qf-display)', fontSize: 20, fontWeight: 500,
+                letterSpacing: '-0.012em', color: '#F5F8FA', marginBottom: 14,
+              }}>
+                Rewards <em style={{ color: 'var(--qf-glow)' }}>speed</em>.
+              </div>
+              <ul className="qf-checklist on-dark" style={{ gap: 8 }}>
+                <li><span className="check">✓</span>Reading the question first, then skimming for the answer</li>
+                <li><span className="check">✓</span>Desmos and on-screen shortcuts when they apply</li>
+                <li><span className="check">✓</span>Knowing when to move on</li>
+                <li><span className="check">✓</span>Recognizing question patterns quickly</li>
+              </ul>
+            </div>
+          </div>
         </div>
+
+        <div style={{
+          background: 'var(--qf-bg-2)',
+          border: '1px solid var(--qf-line)',
+          borderRadius: 12,
+          padding: 16,
+        }}>
+          <p className="qf-lead">
+            The SAT is <em>2 hours 14 minutes</em>. It tests focus, stamina, and speed on a laptop, not a classroom desk.
+          </p>
+        </div>
+
+        {/* Fixability + expertise beat before Continue */}
+        <p className="qf-lead" style={{ marginTop: 4 }}>
+          This is one of the most <em>fixable</em> gaps we see with high-GPA students. <em>Retraining test-day habits</em> is what we do.
+        </p>
       </div>
     </QFScreen>
   );
@@ -415,7 +340,7 @@ function QFV1Projection({
   // Derive everything from the actual quiz answers.
   q4 = '1200-1300',     // recent SAT band
   q5 = 'oct3',          // test date
-  q8 = '1400-1500',     // goal
+  q8 = '1450',          // goal
   // Explicit overrides win (for storybook / canvas previews).
   current: currentProp,
   target: targetProp,
@@ -433,12 +358,9 @@ function QFV1Projection({
   };
   const current = currentProp ?? Q4_TO_SCORE[q4] ?? 1250;
 
-  // ── Map Q8 band → numeric target anchor. ──
+  // ── Map Q8 → numeric target. "tbd" defaults to current + 200 (rounded). ──
   const Q8_TO_TARGET = {
-    '1200-1300': 1250,
-    '1300-1400': 1350,
-    '1400-1500': 1450,
-    '1500plus': 1500,
+    '1300': 1300, '1400': 1400, '1450': 1450, '1500': 1500, '1550': 1550,
   };
   const target = targetProp ?? Q8_TO_TARGET[q8] ?? Math.min(1600, Math.round((current + 200) / 50) * 50);
 
@@ -481,7 +403,8 @@ function QFV1Projection({
   return (
     <QFScreen
       stepIdx={13}
-      footer={<QFButton kind="forest" onClick={onContinue}>Next</QFButton>}
+      ornament="glow"
+      footer={<QFButton kind="forest" onClick={onContinue}>See my kid's plan</QFButton>}
     >
       <div className="gap-22">
         <h1 className="qf-h1 center" style={{ textAlign: 'center' }}>
@@ -489,6 +412,7 @@ function QFV1Projection({
             ? <>By <em>{testDate}</em>, they could be at <em>{projected}</em>.</>
             : <>They could be at <em>{projected}</em> by <em>{testDate}</em>.</>}
         </h1>
+
         <div className="qf-graph">
           {/* Header: current vs target chips */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 12 }}>
@@ -550,15 +474,25 @@ function QFV1Projection({
           </div>
         </div>
 
+        <div className="qf-card wash" style={{ padding: 16 }}>
+          <div className="qf-meta" style={{ color: 'var(--qf-forest)', marginBottom: 6 }}>What's behind this number</div>
+          <p style={{ fontSize: 14, lineHeight: 1.5, color: 'var(--qf-ink-2)', margin: 0 }}>
+            We modeled <strong>{current} → {projected}</strong> from the last 95 plans matching their profile.
+            Confirmed only after a 1:1 diagnostic.
+          </p>
+        </div>
       </div>
     </QFScreen>
   );
 }
 
 // ─────────────────────────────────────────────────────────────
-// I · DIAGNOSIS (screen 09) — Hims-style: ONE root-cause sentence + chart.
-//   Pattern from /satplan: "Why group SAT classes fail" — not "Here's what we see."
-//   Verbose multi-block version → QFIDiagnosisVerbose (canvas archive only).
+// I · DIAGNOSIS (end of phase 2) — "Here's what we're seeing"
+//   Two-level pay-off:
+//     LEVEL 1 — 28-skill problem framing + ~40/~70/~182 chart (canonical proof)
+//     LEVEL 2 — Block A (Q7 prep failed) + Block B (Q6 root cause; dual = combo)
+//     STATIC — C (what they need) + D (good news with date + days)
+//   No +XXX point promise on screen 09.
 // ─────────────────────────────────────────────────────────────
 const D_CHART_LEVEL1 = [
   { method: 'Self-study / SAT app',       points: 40,  color: 'rgba(20,32,46,0.30)' },
@@ -620,169 +554,27 @@ const D_TEST_DATES = {
   'nov7': new Date('2026-11-07'), 'dec5': new Date('2026-12-05'),
 };
 
-// One Hims-style headline per Q7 path (/satplan prep-failed-* pattern).
-const D_DIAG_HEADLINE = {
-  khan:    'Why Khan and Bluebook aren\u2019t moving their score.',
-  group:   'Why group SAT classes fail.',
-  online:  'Why online SAT courses fail.',
-  app:     'Why SAT apps fail to raise scores.',
-  book:    'Why paper prep fails the digital SAT.',
-  nothing: 'Why guessing what to study fails.',
-};
-
-const D_COMPARE_LINE_1 = {
-  khan: 'What they tried on Khan and Bluebook usually can\u2019t beat a tutor on the misses they keep making.',
-  group: 'A group class can\u2019t pause for their weak spots \u2014 1:1 tutoring can.',
-  online: 'A fixed online course isn\u2019t built around their gaps \u2014 1:1 is.',
-  app: 'An app drills questions; it doesn\u2019t teach through their mistakes.',
-  book: 'Paper prep doesn\u2019t train digital pacing and Desmos.',
-  nothing: 'Without a plan, they\u2019re studying blind \u2014 1:1 starts with a diagnostic.',
-};
-
-const D_Q7_CHART_IDX = {
-  khan: 0, app: 0, book: 0, nothing: 0,
-  group: 1, online: 1,
-};
-
-function QFCompareBar({ bar, max, delayMs, theirs }) {
-  const [heightPct, setHeightPct] = React.useState(0);
-  React.useEffect(() => {
-    setHeightPct(0);
-    const t = setTimeout(() => {
-      setHeightPct((bar.points / max) * 100);
-    }, delayMs);
-    return () => clearTimeout(t);
-  }, [bar.points, delayMs]);
-  const lbl = theirs ? `${bar.method} (them)` : bar.method;
-  return (
-    <div className="qf-v-col">
-      <div className={'qf-chart-points qf-v-points' + (bar.hot ? ' qf-chart-points--hot' : '')}>
-        +{bar.points}
-      </div>
-      <div className="qf-v-track">
-        <div
-          className="qf-v-fill"
-          style={{
-            height: `${heightPct}%`,
-            background: bar.color,
-          }}
-        />
-      </div>
-      <div className={'qf-chart-lbl qf-v-lbl' + (theirs || bar.hot ? ' qf-chart-lbl--hot' : '')}>
-        {lbl}
-      </div>
-    </div>
-  );
-}
-
-function QFIDiagnosisCompare({
-  onContinue = () => {},
-  q6 = ['math', 'no-plan'],
-  q7 = ['khan'],
-}) {
-  const aKey = D_Q7_PRIORITY.find(p => q7.includes(p)) || 'nothing';
-  const chartIdx = D_Q7_CHART_IDX[aKey] != null ? D_Q7_CHART_IDX[aKey] : 0;
-  const line1 = D_COMPARE_LINE_1[aKey] || D_COMPARE_LINE_1.nothing;
-  const line2 = 'A diagnostic ranks the 5\u20136 skills costing them the most points.';
-
-  return (
-    <QFScreen
-      stepIdx={9}
-      footer={<QFButton kind="forest" onClick={onContinue}>Continue</QFButton>}
-    >
-      <div className="qf-diag-compact">
-        <h1 className="qf-h1 qf-diag-title">
-          Let&apos;s compare how they&apos;ve been prepping to what actually moves scores.
-        </h1>
-
-        <div className="qf-card qf-diag-chart">
-          <div className="qf-v-chart">
-            {D_CHART_LEVEL1.map((b, i) => (
-              <QFCompareBar
-                key={b.method}
-                bar={b}
-                max={182}
-                delayMs={220 + i * 260}
-                theirs={i === chartIdx}
-              />
-            ))}
-          </div>
-        </div>
-
-        <p className="qf-lead qf-diag-lead qf-diag-lead--first">{line1}</p>
-        <p className="qf-lead qf-diag-lead">{line2}</p>
-
-        <p className="qf-cite">
-          Source: College Board retake summaries; illuminairy completed plans (n=95). Individual results vary.
-        </p>
-      </div>
-    </QFScreen>
-  );
-}
-
 function QFIDiagnosis({
   onContinue = () => {},
   q6 = ['math', 'no-plan'],
   q7 = ['khan'],
   q5 = 'oct3',
 }) {
-  const aKey = D_Q7_PRIORITY.find(p => q7.includes(p)) || 'nothing';
-  const headline = D_DIAG_HEADLINE[aKey] || D_DIAG_HEADLINE.nothing;
-
-  return (
-    <QFScreen
-      stepIdx={9}
-      flushBody
-      footer={<QFButton kind="forest" onClick={onContinue}>Continue</QFButton>}
-    >
-      <div className="qf-diag-compact">
-        <h1 className="qf-h1" style={{ marginBottom: 20 }}>
-          {headline}
-        </h1>
-
-        <div className="qf-card qf-diag-chart" style={{ padding: 18 }}>
-          {D_CHART_LEVEL1.map((b, i) => {
-            const max = 182;
-            const widthPct = (b.points / max) * 100;
-            return (
-              <div key={i} className="qf-chart-row" style={{ marginBottom: i === D_CHART_LEVEL1.length - 1 ? 0 : 12 }}>
-                <div style={{
-                  display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 5,
-                }}>
-                  <span style={{
-                    fontSize: 12, fontWeight: b.hot ? 600 : 500,
-                    color: b.hot ? 'var(--qf-forest)' : 'var(--qf-ink-2)',
-                  }}>{b.method}</span>
-                  <span style={{
-                    fontFamily: 'var(--qf-body)', fontSize: b.hot ? 22 : 15, fontWeight: 600,
-                    color: b.hot ? 'var(--qf-forest)' : 'var(--qf-ink-mid)',
-                  }}>+{b.points}</span>
-                </div>
-                <div style={{ height: 5, background: 'rgba(20,32,46,0.06)', borderRadius: 4, overflow: 'hidden' }}>
-                  <div style={{ width: `${widthPct}%`, height: '100%', background: b.color, borderRadius: 4 }} />
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-      </div>
-    </QFScreen>
-  );
-}
-
-function QFIDiagnosisVerbose({
-  onContinue = () => {},
-  q6 = ['math', 'no-plan'],
-  q7 = ['khan'],
-  q5 = 'oct3',
-}) {
+  // Block A: highest-priority Q7 selection
   const aKey = D_Q7_PRIORITY.find(p => q7.includes(p)) || 'nothing';
   const blockA = D_BLOCK_A[aKey];
+
+  // Block B: DUAL combo if 2+ Q6, else SINGLE lookup, else fallback to A
   const bKeys = D_Q6_PRIORITY.filter(p => q6.includes(p)).slice(0, 2);
   let blockB = '';
-  if (bKeys.length >= 2) blockB = D_DUAL_B[`${bKeys[0]}+${bKeys[1]}`] || '';
-  else if (bKeys.length === 1) blockB = D_SINGLE_B[aKey]?.[bKeys[0]] || '';
+  if (bKeys.length >= 2) {
+    const comboKey = `${bKeys[0]}+${bKeys[1]}`;
+    blockB = D_DUAL_B[comboKey] || '';
+  } else if (bKeys.length === 1) {
+    blockB = D_SINGLE_B[aKey]?.[bKeys[0]] || '';
+  }
+
+  // Block D: good news + date + days
   const today = new Date('2026-05-26');
   const days = D_TEST_DATES[q5]
     ? Math.round((D_TEST_DATES[q5] - today) / (1000 * 60 * 60 * 24))
@@ -790,18 +582,27 @@ function QFIDiagnosisVerbose({
   const dateShort = D_TEST_DATE_SHORT[q5];
   const blockD = (days && dateShort)
     ? `Good news: we can build that plan with one-on-one tutoring before the ${dateShort} SAT. You still have about ${days} days to get this right.`
-    : 'Good news: we can build that plan with one-on-one tutoring before the test.';
+    : "Good news: we can build that plan with one-on-one tutoring before the test.";
+
   const labelStyle = { color: 'var(--qf-forest)', marginBottom: 8 };
 
   return (
-    <QFScreen stepIdx={9} footer={<QFButton kind="forest" onClick={onContinue}>Continue</QFButton>}>
+    <QFScreen
+      stepIdx={9}
+      footer={<QFButton kind="forest" onClick={onContinue}>Continue</QFButton>}
+    >
       <div className="gap-22" style={{ marginTop: 4 }}>
-        <h1 className="qf-h1">Here&apos;s what we&apos;re <em>seeing</em>.</h1>
+        <h1 className="qf-h1">
+          Here's what we're <em>seeing</em>.
+        </h1>
+
+        {/* Level 1 — the 28 skills problem + chart */}
         <div>
           <div className="qf-meta" style={labelStyle}>The 28-skill problem</div>
           <p className="qf-lead" style={{ marginBottom: 18 }}>
             The SAT covers <em>28 skills</em> across years of school. Most prep tries to cover all 28 — it never diagnoses which few are actually costing your kid the most points.
           </p>
+
           <div className="qf-card" style={{ padding: 18 }}>
             <div className="qf-meta" style={{ color: 'var(--qf-ink-mute)', marginBottom: 14 }}>Avg points between retakes</div>
             {D_CHART_LEVEL1.map((b, i) => {
@@ -809,22 +610,65 @@ function QFIDiagnosisVerbose({
               const width = (b.points / max) * 100;
               return (
                 <div key={i} style={{ marginBottom: i === D_CHART_LEVEL1.length - 1 ? 0 : 14 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 6 }}>
-                    <span style={{ fontSize: 13, fontWeight: b.hot ? 600 : 500, color: b.hot ? 'var(--qf-forest)' : 'var(--qf-ink-2)' }}>{b.method}</span>
-                    <span style={{ fontFamily: 'var(--qf-display)', fontSize: b.hot ? 24 : 16, fontWeight: 500, color: b.hot ? 'var(--qf-forest)' : 'var(--qf-ink-mid)' }}>+{b.points}</span>
+                  <div style={{
+                    display: 'flex', justifyContent: 'space-between',
+                    alignItems: 'baseline', marginBottom: 6,
+                  }}>
+                    <span style={{
+                      fontSize: 13, fontWeight: b.hot ? 600 : 500,
+                      color: b.hot ? 'var(--qf-forest)' : 'var(--qf-ink-2)',
+                    }}>{b.method}</span>
+                    <span style={{
+                      fontFamily: 'var(--qf-display)',
+                      fontSize: b.hot ? 24 : 16,
+                      fontWeight: 500,
+                      color: b.hot ? 'var(--qf-forest)' : 'var(--qf-ink-mid)',
+                      letterSpacing: '-0.012em',
+                    }}>+{b.points}</span>
                   </div>
-                  <div style={{ height: 6, background: 'rgba(20,32,46,0.06)', borderRadius: 4, overflow: 'hidden' }}>
-                    <div style={{ width: `${width}%`, height: '100%', background: b.color, borderRadius: 4 }} />
+                  <div style={{
+                    height: 6, background: 'rgba(20,32,46,0.06)',
+                    borderRadius: 4, overflow: 'hidden',
+                  }}>
+                    <div style={{
+                      width: `${width}%`, height: '100%',
+                      background: b.color, borderRadius: 4,
+                    }} />
                   </div>
                 </div>
               );
             })}
           </div>
+          <p className="qf-disclaimer" style={{ marginTop: 10, textAlign: 'center' }}>
+            Sources: College Board retake data (250,000+ test takers) · Bloom (1984) — 2-sigma effect of 1:1 tutoring.
+          </p>
         </div>
-        <div><div className="qf-meta" style={labelStyle}>How they prepped</div><p className="qf-lead">{blockA}</p></div>
-        {blockB && <div><div className="qf-meta" style={labelStyle}>What&apos;s actually wrong</div><p className="qf-lead">{blockB}</p></div>}
-        <div><div className="qf-meta" style={labelStyle}>What they need</div><p className="qf-lead">{D_BLOCK_C}</p></div>
-        <div><div className="qf-meta" style={labelStyle}>Good news</div><p className="qf-lead">{blockD}</p></div>
+
+        {/* Level 2 — Block A: How they prepped (Q7 prep failure) */}
+        <div>
+          <div className="qf-meta" style={labelStyle}>How they prepped</div>
+          <p className="qf-lead">{blockA}</p>
+        </div>
+
+        {/* Level 2 — Block B: What's actually wrong (Q6 root cause) */}
+        {blockB && (
+          <div>
+            <div className="qf-meta" style={labelStyle}>What's actually wrong</div>
+            <p className="qf-lead">{blockB}</p>
+          </div>
+        )}
+
+        {/* Static C — What they need */}
+        <div>
+          <div className="qf-meta" style={labelStyle}>What they need</div>
+          <p className="qf-lead">{D_BLOCK_C}</p>
+        </div>
+
+        {/* Dynamic D — Good news */}
+        <div>
+          <div className="qf-meta" style={labelStyle}>Good news</div>
+          <p className="qf-lead">{blockD}</p>
+        </div>
       </div>
     </QFScreen>
   );
@@ -948,9 +792,6 @@ function QFIDiagnosisReport({
 
 window.QFI1Proof = QFI1Proof;
 window.QFI2Compute = QFI2Compute;
-window.QFI2ComputeCalm = QFI2ComputeCalm;
-window.QFI2BuildPlan = QFI2BuildPlan;
-window.QFIDiagnosisCompare = QFIDiagnosisCompare;
 window.QFIDiagnosis = QFIDiagnosis;
 window.QFIDiagnosisReport = QFIDiagnosisReport;
 window.QFI3Bridge = QFI3Bridge;
