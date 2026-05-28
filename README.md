@@ -7,12 +7,19 @@ the funnel ends by booking a free strategy call (no checkout in-funnel).
 
 **Design north star:** [`FUNNEL-PRINCIPLES.md`](FUNNEL-PRINCIPLES.md) — Hims density, parent voice, no marketer-speak.
 
+> ⚠️ **The production funnel is `app-next/` (Next.js). That is the only code that runs.**
+> The `legacy/` folder is the archived prototype — do not use or import from it.
+
 ---
 
-## The real app is `app-next/` (Next.js)
+## Repo layout
 
-The root `*.jsx` / `*.html` files are the **legacy React+Babel prototype** (kept for reference / design canvas).
-All active work happens in **`app-next/`** — a Next.js App Router app, plain JSX, no TypeScript.
+```
+app-next/        ← PRODUCTION funnel (Next.js). All work happens here.
+uploads/         ← source/raw image options (renamed to readable names)
+legacy/          ← archived prototype + design canvas. Reference only — DO NOT USE.
+README.md · FUNNEL-PRINCIPLES.md · DECISIONS.md
+```
 
 ### Run locally
 
