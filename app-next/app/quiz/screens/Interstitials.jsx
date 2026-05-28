@@ -759,7 +759,7 @@ export function QFIDiagnosis({ onContinue, onBack, q4 = '1200-1300', q6 = ['math
             )}
           </h1>
           <p className="qf-lead">
-            That's because their work spread across all <em>28 SAT skills</em> instead of focusing on the <em>5–6 causing the biggest score drops.</em>
+            Those approaches spread focus across all <em>28 SAT skills</em> instead of going deep on the <em>few skills driving the biggest score gains.</em>
           </p>
         </div>
 
