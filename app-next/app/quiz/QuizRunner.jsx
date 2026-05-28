@@ -100,7 +100,7 @@ export default function QuizRunner() {
     case 's2':  return <QFS2Science   onContinue={next} onBack={back} />;
     case 's3':  return <QFS3Stats     onContinue={next} onBack={back} />;
     case 's4':  return <QFS4Authority onContinue={next} onBack={back} />;
-    case 's5':  return <QFS5Approved  onContinue={next} onBack={back} />;
+    case 's5':  return <QFS5Approved  onContinue={next} onBack={back} answers={a} />;
     case 's7':  return <QFS7PlanDetails onContinue={next} onBack={back} q5={a.q5} />;
     case 's8':  return <QFS8Acknowledgment onContinue={next} onBack={back} />;
     case 's9':  return <QFS9Booking   onComplete={() => goTo('s9')} onBack={back} />;

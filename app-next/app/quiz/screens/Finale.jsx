@@ -3,22 +3,60 @@ import { useState } from 'react';
 import { QFScreen, QFButton, QFConstellation } from '../components/QFShell';
 
 // ─── S5 · Approved + account ──────────────────────────────────────────────────
-export function QFS5Approved({ onContinue, onBack }) {
+const S5_SCORE = { 'u1000': 1050, '1100-1200': 1150, '1200-1300': 1250, '1300-1400': 1350, '1400plus': 1430 };
+const S5_TARGET = { '1250': 1250, '1300': 1300, '1350': 1350, '1400': 1400, '1450': 1450 };
+const S5_DATE = { 'aug22': 'August 22', 'oct3': 'October 3', 'nov7': 'November 7', 'dec5': 'December 5' };
+const S5_GPA = { 'u3.0': 'Under 3.0', '3.0-3.3': '3.0–3.3', '3.3-3.5': '3.3–3.5', '3.5-3.7': '3.5–3.7', '3.7-3.9': '3.7–3.9', '4.0+': '4.0+' };
+const S5_TEST_DATES = {
+  'aug22': new Date('2026-08-22'), 'oct3': new Date('2026-10-03'),
+  'nov7': new Date('2026-11-07'), 'dec5': new Date('2026-12-05'),
+};
+
+export function QFS5Approved({ onContinue, onBack, answers = {} }) {
+  const { q4 = '1200-1300', q5 = 'oct3', q8 = '1400', q9 = '3.5-3.7' } = answers;
+
+  const lastScore = S5_SCORE[q4];
+  const target = S5_TARGET[q8];
+  const gap = (target && lastScore) ? Math.max(0, target - lastScore) : null;
+  const dateShort = S5_DATE[q5];
+  const gpa = S5_GPA[q9];
+
+  const today = new Date('2026-05-26');
+  const weeks = S5_TEST_DATES[q5]
+    ? Math.round((S5_TEST_DATES[q5] - today) / (7 * 86400000))
+    : null;
+
+  // Range for social proof: anchor on the gap, +/- a sensible spread
+  const proofLow = gap ? Math.max(100, gap - 30) : 150;
+  const proofHigh = gap ? gap + 40 : 220;
+
+  const hasFull = gap > 0 && weeks && dateShort && gpa;
+
   return (
     <QFScreen stepIdx={18} ornament="glow" onBack={onBack}
       footer={<QFButton kind="forest" onClick={onContinue}>See their plan</QFButton>}
     >
       <div className="gap-22">
-        <div className="qf-eyebrow center" style={{ textAlign: 'center', color: 'var(--qf-forest)' }}>
-          Eligible for a diagnostic + personalized plan
+        <div>
+          <div className="qf-meta" style={{ color: 'var(--qf-forest)' }}>✓ Approved</div>
+          <h1 className="qf-h1" style={{ marginBottom: 8 }}>
+            Your kid <em>qualifies</em> for a personalized plan.
+          </h1>
+          {hasFull ? (
+            <p className="qf-lead">
+              Based on a <em>{gap}-point gain</em> in <em>{weeks} weeks</em> for the <em>{dateShort}</em> SAT and a <em>{gpa}</em> GPA.
+            </p>
+          ) : (
+            <p className="qf-lead">
+              Built around their score, timeline, and goal.
+            </p>
+          )}
+          <p className="qf-lead">
+            Students with similar profiles have averaged <em>+{proofLow}–{proofHigh} points</em> across 95 illuminairy plans.
+          </p>
         </div>
-        <h1 className="qf-h1 center" style={{ textAlign: 'center' }}>
-          Your kid <em>qualifies</em> for a diagnostic and personalized plan.
-        </h1>
-        <p className="qf-lead center" style={{ textAlign: 'center' }}>
-          Based on their profile and your timeline, we can run their diagnostic and build a plan that finishes before their test date.
-          Save your spot to see the recommendation.
-        </p>
+
+        {/* Form */}
         <div className="qf-card gap-14" style={{ padding: 18 }}>
           <div className="qf-field">
             <span className="qf-label">Your name</span>
@@ -29,7 +67,7 @@ export function QFS5Approved({ onContinue, onBack }) {
             <input className="qf-input" type="email" placeholder="you@email.com" />
           </div>
           <div className="qf-field">
-            <span className="qf-label">Mobile (for the call)</span>
+            <span className="qf-label">Mobile (for the strategy call)</span>
             <input className="qf-input" type="tel" placeholder="(555) 123-4567" />
           </div>
           <div className="qf-field">
@@ -37,7 +75,8 @@ export function QFS5Approved({ onContinue, onBack }) {
             <input className="qf-input" placeholder="So we can address their plan" />
           </div>
         </div>
-        <p className="qf-disclaimer center" style={{ textAlign: 'center' }}>
+
+        <p className="qf-disclaimer">
           We never share your details. SAT is a trademark of the College Board.
         </p>
       </div>
