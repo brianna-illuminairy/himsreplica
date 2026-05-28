@@ -52,7 +52,7 @@ export function QFS5Approved({ onContinue, onBack, answers = {} }) {
             </p>
           )}
           <p className="qf-lead">
-            Students with similar profiles have averaged <em>+{proofLow}–{proofHigh} points</em> across our most recent 95 illuminairy plans.
+            Students with similar profiles have averaged <em>+{proofLow}–{proofHigh} points</em>.
           </p>
         </div>
 
@@ -77,7 +77,7 @@ export function QFS5Approved({ onContinue, onBack, answers = {} }) {
         </div>
 
         <p className="qf-disclaimer">
-          We never share your details. SAT is a trademark of the College Board.
+          We never share your details.
         </p>
       </div>
     </QFScreen>
