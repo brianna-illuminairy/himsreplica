@@ -915,9 +915,8 @@ export function QFIMethod({ onContinue, onBack }) {
             />
           </div>
 
-          {/* Below: before → after score report pair */}
+          {/* Below: before → after score report pair (no overlay pills) */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-            {/* Before */}
             <div style={{
               aspectRatio: '1 / 1', borderRadius: 14, overflow: 'hidden',
               position: 'relative', background: '#1f4099',
@@ -932,15 +931,7 @@ export function QFIMethod({ onContinue, onBack }) {
                 }}
                 onError={(e) => { e.currentTarget.style.display = 'none'; }}
               />
-              <span style={{
-                position: 'absolute', top: 8, left: 8,
-                fontFamily: 'var(--qf-mono)', fontSize: 9, fontWeight: 600,
-                letterSpacing: '0.16em', color: '#fff',
-                background: 'rgba(20,32,46,0.55)', padding: '3px 8px', borderRadius: 6,
-              }}>BEFORE</span>
             </div>
-
-            {/* After */}
             <div style={{
               aspectRatio: '1 / 1', borderRadius: 14, overflow: 'hidden',
               position: 'relative', background: '#1f4099',
@@ -955,13 +946,16 @@ export function QFIMethod({ onContinue, onBack }) {
                 }}
                 onError={(e) => { e.currentTarget.style.display = 'none'; }}
               />
-              <span style={{
-                position: 'absolute', top: 8, left: 8,
-                fontFamily: 'var(--qf-mono)', fontSize: 9, fontWeight: 600,
-                letterSpacing: '0.16em', color: '#fff',
-                background: 'var(--qf-forest)', padding: '3px 8px', borderRadius: 6,
-              }}>AFTER</span>
             </div>
+          </div>
+
+          {/* Case caption */}
+          <div style={{
+            textAlign: 'center',
+            fontFamily: 'var(--qf-mono)', fontSize: 11, letterSpacing: '0.1em',
+            color: 'var(--qf-forest)', fontWeight: 600,
+          }}>
+            1180 <span style={{ color: 'var(--qf-ink-mute)' }}>→</span> 1410 in 12 weeks
           </div>
         </div>
       </div>
