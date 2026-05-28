@@ -99,7 +99,7 @@ export function QFS2Science({ onContinue, onBack, q6 = ['math'] }) {
 
   return (
     <QFScreen stepIdx={15} ornament="glow" onBack={onBack}
-      footer={<QFButton kind="forest" onClick={onContinue}>Show me the data</QFButton>}
+      footer={<QFButton kind="forest" onClick={onContinue}>Does it work?</QFButton>}
     >
       <div className="gap-22">
         <div>
