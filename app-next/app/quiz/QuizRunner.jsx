@@ -6,7 +6,7 @@ import {
   QFQ6Blocker, QFQ7Tried, QFQ8Goal, QFQ9GPA,
 } from './screens/Questions';
 import {
-  QFI1Proof, QFI2Compute, QFI3Bridge, QFIGPAGap, QFV1Projection, QFIDiagnosis, QFIMethod,
+  QFI1Proof, QFI2Compute, QFI3Bridge, QFIGPAGap, QFV1Projection, QFIDiagnosis, QFIMethod, QFISteps,
 } from './screens/Interstitials';
 import {
   QFS1Summary, QFS2Science, QFS3Stats, QFS4Authority,
@@ -23,6 +23,7 @@ const BASE_STEPS = [
   'q6','q7',
   'i-diag',
   'i-method',
+  'i-steps',
   'i2','q8','i3','q9',
   // i-gap inserted here conditionally
   'v1',
@@ -90,6 +91,7 @@ export default function QuizRunner() {
     case 'q7':  return <QFQ7Tried     value={a.q7} onToggle={id => toggleQ('q7', id)} onContinue={next} onBack={back} q3={a.q3} />;
     case 'i-diag': return <QFIDiagnosis onContinue={next} onBack={back} q4={a.q4} q6={a.q6} q7={a.q7} q5={a.q5} />;
     case 'i-method': return <QFIMethod onContinue={next} onBack={back} />;
+    case 'i-steps': return <QFISteps onContinue={next} onBack={back} />;
     case 'i2':  return <QFI2Compute   onContinue={next} onBack={back} q4={a.q4} q5={a.q5} q6={a.q6} />;
     case 'q8':  return <QFQ8Goal      value={a.q8} onSelect={v => setQAndAdvance('q8', v)} onBack={back} />;
     case 'i3':  return <QFI3Bridge    onContinue={next} onBack={back} q5={a.q5} />;
