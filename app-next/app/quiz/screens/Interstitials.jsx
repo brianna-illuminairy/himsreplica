@@ -728,20 +728,20 @@ export function QFIDiagnosis({ onContinue, onBack, q4 = '1200-1300', q6 = ['math
     return () => clearTimeout(t);
   }, []);
 
-  // Star positions in 360×220 viewBox: 5 lit stars + 23 scattered dim dots
+  // Star positions in 360×140 viewBox: 5 lit stars + 23 scattered dim dots (compact)
   const LIT = [
-    { x: 40,  y: 130 },
-    { x: 115, y: 105 },
-    { x: 190, y: 140 },
-    { x: 260, y: 110 },
-    { x: 320, y: 135 },
+    { x: 40,  y: 80 },
+    { x: 115, y: 55 },
+    { x: 190, y: 90 },
+    { x: 260, y: 60 },
+    { x: 320, y: 85 },
   ];
   const LINKS = [[0,1],[1,2],[2,3],[3,4]];
   const maxPts = Math.max(...skills.map(s => s.pts));
   const DIM = [
-    [22,28],[55,60],[80,35],[140,45],[165,30],[200,50],[235,35],[290,28],[335,32],[352,75],
-    [25,180],[60,200],[95,215],[135,190],[175,205],[215,195],[255,215],[295,200],[330,185],[355,210],
-    [73,75],[245,55],[300,60],
+    [20,12],[50,22],[80,15],[140,25],[170,12],[200,18],[235,10],[290,15],[335,18],
+    [22,118],[60,128],[95,135],[175,128],[215,120],[255,134],[295,124],[330,115],[355,128],
+    [73,42],[245,32],[300,40],[353,72],[20,72],
   ];
 
   return (
@@ -764,8 +764,8 @@ export function QFIDiagnosis({ onContinue, onBack, q4 = '1200-1300', q6 = ['math
         </div>
 
         {/* Labeled aurora constellation — replaces the skill table */}
-        <div style={{ position: 'relative', padding: '4px 0 6px' }}>
-          <svg viewBox="0 0 360 220"
+        <div style={{ position: 'relative', padding: 0 }}>
+          <svg viewBox="0 0 360 140"
             style={{ width: '100%', display: 'block', overflow: 'visible' }}>
             {/* Dim scattered (the 23 that don't matter) */}
             {DIM.map(([x, y], i) => (
