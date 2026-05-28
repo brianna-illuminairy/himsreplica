@@ -988,7 +988,13 @@ export function QFISteps({ onContinue, onBack }) {
     <QFScreen stepIdx={11} onBack={onBack}
       footer={<QFButton kind="forest" onClick={onContinue}>See their projection</QFButton>}
     >
-      <div style={{ position: 'relative', paddingTop: 20, paddingBottom: 20 }}>
+      <p style={{
+        fontFamily: 'var(--qf-body)', fontSize: 15, lineHeight: 1.5,
+        color: 'var(--qf-ink-2)', margin: '0 0 4px',
+      }}>
+        We build their plan around the few skills most likely to raise their score fastest.
+      </p>
+      <div style={{ position: 'relative', paddingTop: 16, paddingBottom: 20 }}>
         {/* Large plan visual (the "image") */}
         <div style={{
           background: 'var(--qf-paper)',
