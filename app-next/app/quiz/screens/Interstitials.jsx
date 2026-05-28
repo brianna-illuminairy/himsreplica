@@ -966,7 +966,7 @@ export function QFIMethod({ onContinue, onBack }) {
   );
 }
 
-// ─── I · Steps (Slide 2: ranked skill plan card + clean 3-row legend) ────────
+// ─── I · Steps (Slide 2: large plan visual + 3 Hims-style labels overlaid) ────
 export function QFISteps({ onContinue, onBack }) {
   const skills = [
     { rank: '01', name: 'Linear Functions',   pts: 50 },
@@ -978,107 +978,174 @@ export function QFISteps({ onContinue, onBack }) {
   const maxPts = 50;
   const totalGain = skills.reduce((s, x) => s + x.pts, 0);
 
-  const legend = [
-    { num: '01', label: 'Diagnose', desc: '60-min 1:1 test' },
-    { num: '02', label: 'Rank',     desc: 'By score impact' },
-    { num: '03', label: 'Plan',     desc: '12 weeks of 1:1 tutoring' },
-  ];
-
   return (
     <QFScreen stepIdx={11} onBack={onBack}
       footer={<QFButton kind="forest" onClick={onContinue}>See their projection</QFButton>}
     >
-      <div className="gap-22" style={{ paddingTop: 8 }}>
-        {/* Plan card — 5 ranked skills with impact bars */}
+      <div style={{ position: 'relative', paddingTop: 20, paddingBottom: 20 }}>
+        {/* Large plan visual (the "image") */}
         <div style={{
           background: 'var(--qf-paper)',
           border: '1px solid var(--qf-line)',
-          borderRadius: 16,
+          borderRadius: 18,
           overflow: 'hidden',
-          boxShadow: '0 4px 18px rgba(20,32,46,0.08)',
+          boxShadow: '0 10px 30px rgba(20,32,46,0.12)',
+          margin: '0 8px',
         }}>
           {/* Header */}
           <div style={{
-            background: 'var(--qf-ink)', padding: '12px 16px',
+            background: 'var(--qf-ink)', padding: '16px 20px',
             display: 'flex', justifyContent: 'space-between', alignItems: 'center',
           }}>
-            <span style={{
-              fontFamily: 'var(--qf-mono)', fontSize: 9, letterSpacing: '0.2em',
-              color: 'rgba(245,248,250,0.65)', textTransform: 'uppercase', fontWeight: 600,
-            }}>Sophia's Plan</span>
-            <span style={{
-              fontFamily: 'var(--qf-body)', fontSize: 12, fontWeight: 600,
-              color: 'var(--qf-glow)', letterSpacing: '-0.005em',
-            }}>+{totalGain} pts</span>
+            <div>
+              <div style={{
+                fontFamily: 'var(--qf-mono)', fontSize: 9, letterSpacing: '0.22em',
+                color: 'rgba(245,248,250,0.55)', textTransform: 'uppercase', fontWeight: 600,
+              }}>illuminairy plan</div>
+              <div style={{
+                fontFamily: 'var(--qf-display)', fontSize: 18, fontWeight: 500,
+                color: '#fff', marginTop: 3, letterSpacing: '-0.01em',
+              }}>Sophia M.</div>
+            </div>
+            <div style={{ textAlign: 'right' }}>
+              <div style={{
+                fontFamily: 'var(--qf-mono)', fontSize: 9, letterSpacing: '0.18em',
+                color: 'rgba(245,248,250,0.55)', textTransform: 'uppercase', fontWeight: 600,
+              }}>Goal</div>
+              <div style={{
+                fontFamily: 'var(--qf-display)', fontSize: 20, fontWeight: 600,
+                color: 'var(--qf-glow)', marginTop: 2, letterSpacing: '-0.01em',
+              }}>1400</div>
+            </div>
           </div>
 
-          {/* Ranked skill rows with horizontal impact bars */}
-          {skills.map((s, i) => {
-            const fillPct = (s.pts / maxPts) * 100;
-            return (
-              <div key={i} style={{
-                display: 'grid', gridTemplateColumns: '32px 1fr 50px',
-                alignItems: 'center', gap: 12,
-                padding: '14px 16px',
-                borderTop: i > 0 ? '1px solid var(--qf-line)' : 'none',
-              }}>
-                <div style={{
-                  fontFamily: 'var(--qf-mono)', fontSize: 11,
-                  color: 'var(--qf-forest)', fontWeight: 600, letterSpacing: '0.08em',
-                }}>{s.rank}</div>
-                <div>
+          {/* Ranked skill rows with impact bars */}
+          <div style={{ padding: '6px 0' }}>
+            {skills.map((s, i) => {
+              const fillPct = (s.pts / maxPts) * 100;
+              return (
+                <div key={i} style={{
+                  display: 'grid', gridTemplateColumns: '34px 1fr 52px',
+                  alignItems: 'center', gap: 12,
+                  padding: '14px 20px',
+                  borderTop: i > 0 ? '1px solid var(--qf-line)' : 'none',
+                }}>
                   <div style={{
-                    fontFamily: 'var(--qf-display)', fontSize: 14, fontWeight: 500,
-                    color: 'var(--qf-ink)', letterSpacing: '-0.005em',
-                    marginBottom: 5,
-                  }}>{s.name}</div>
-                  <div style={{
-                    height: 5, background: 'rgba(20,32,46,0.08)', borderRadius: 3,
-                    overflow: 'hidden',
-                  }}>
+                    fontFamily: 'var(--qf-mono)', fontSize: 11,
+                    color: 'var(--qf-forest)', fontWeight: 600, letterSpacing: '0.08em',
+                  }}>{s.rank}</div>
+                  <div>
                     <div style={{
-                      width: `${fillPct}%`, height: '100%',
-                      background: 'linear-gradient(to right, var(--qf-forest), var(--qf-glow))',
-                      borderRadius: 3,
-                    }} />
+                      fontFamily: 'var(--qf-display)', fontSize: 14.5, fontWeight: 500,
+                      color: 'var(--qf-ink)', letterSpacing: '-0.005em', marginBottom: 6,
+                    }}>{s.name}</div>
+                    <div style={{
+                      height: 6, background: 'rgba(20,32,46,0.08)', borderRadius: 3,
+                      overflow: 'hidden',
+                    }}>
+                      <div style={{
+                        width: `${fillPct}%`, height: '100%',
+                        background: 'linear-gradient(to right, var(--qf-forest), var(--qf-glow))',
+                        borderRadius: 3,
+                      }} />
+                    </div>
                   </div>
+                  <div style={{
+                    fontFamily: 'var(--qf-mono)', fontSize: 12,
+                    color: 'var(--qf-forest)', fontWeight: 600, letterSpacing: '0.04em',
+                    textAlign: 'right',
+                  }}>+{s.pts}</div>
                 </div>
-                <div style={{
-                  fontFamily: 'var(--qf-mono)', fontSize: 12,
-                  color: 'var(--qf-forest)', fontWeight: 600, letterSpacing: '0.04em',
-                  textAlign: 'right',
-                }}>+{s.pts}</div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
+
+          {/* Total gain footer */}
+          <div style={{
+            background: 'var(--qf-forest-soft)',
+            padding: '12px 20px',
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            borderTop: '1px solid rgba(47,110,71,0.25)',
+          }}>
+            <span style={{
+              fontFamily: 'var(--qf-mono)', fontSize: 10, letterSpacing: '0.16em',
+              color: 'var(--qf-forest)', fontWeight: 600, textTransform: 'uppercase',
+            }}>12 wks · +{totalGain} pts</span>
+            <span style={{
+              fontFamily: 'var(--qf-display)', fontSize: 14, color: 'var(--qf-forest)',
+              fontWeight: 600, letterSpacing: '-0.005em',
+            }}>1180 → 1400</span>
+          </div>
         </div>
 
-        {/* 3-row legend — clean, no callouts */}
+        {/* Floating Hims-style labels — pointing at parts */}
+        {/* DIAGNOSE — top-left, points to ranked skill names */}
         <div style={{
-          display: 'flex', flexDirection: 'column',
-          borderTop: '1px solid var(--qf-line)',
+          position: 'absolute',
+          top: 110, left: -6,
+          transform: 'rotate(-3deg)',
+          background: 'var(--qf-paper)',
+          border: '1.5px solid var(--qf-forest)',
+          borderRadius: 12,
+          padding: '8px 14px',
+          boxShadow: '0 8px 20px rgba(47,110,71,0.25)',
+          zIndex: 2,
+          maxWidth: 150,
         }}>
-          {legend.map((step) => (
-            <div key={step.num} style={{
-              display: 'grid', gridTemplateColumns: '34px 1fr auto',
-              alignItems: 'baseline', gap: 12,
-              padding: '14px 0',
-              borderBottom: '1px solid var(--qf-line)',
-            }}>
-              <span style={{
-                fontFamily: 'var(--qf-mono)', fontSize: 10,
-                color: 'var(--qf-forest)', letterSpacing: '0.14em', fontWeight: 600,
-              }}>{step.num}</span>
-              <span style={{
-                fontFamily: 'var(--qf-display)', fontSize: 18, fontWeight: 500,
-                letterSpacing: '-0.01em', color: 'var(--qf-ink)',
-              }}>{step.label}</span>
-              <span style={{
-                fontFamily: 'var(--qf-body)', fontSize: 13,
-                color: 'var(--qf-ink-mid)',
-              }}>{step.desc}</span>
-            </div>
-          ))}
+          <div style={{
+            fontFamily: 'var(--qf-display)', fontSize: 15, fontWeight: 600,
+            color: 'var(--qf-forest)', letterSpacing: '-0.01em',
+          }}>Diagnose</div>
+          <div style={{
+            fontFamily: 'var(--qf-body)', fontSize: 11.5,
+            color: 'var(--qf-ink-2)', marginTop: 2, lineHeight: 1.3,
+          }}>The 5–6 gap skills.</div>
+        </div>
+
+        {/* RANK — middle-right, points to impact bars/scores */}
+        <div style={{
+          position: 'absolute',
+          top: 235, right: -6,
+          transform: 'rotate(3deg)',
+          background: 'var(--qf-paper)',
+          border: '1.5px solid var(--qf-forest)',
+          borderRadius: 12,
+          padding: '8px 14px',
+          boxShadow: '0 8px 20px rgba(47,110,71,0.25)',
+          zIndex: 2,
+          maxWidth: 150,
+        }}>
+          <div style={{
+            fontFamily: 'var(--qf-display)', fontSize: 15, fontWeight: 600,
+            color: 'var(--qf-forest)', letterSpacing: '-0.01em',
+          }}>Rank</div>
+          <div style={{
+            fontFamily: 'var(--qf-body)', fontSize: 11.5,
+            color: 'var(--qf-ink-2)', marginTop: 2, lineHeight: 1.3,
+          }}>By point impact.</div>
+        </div>
+
+        {/* PLAN — bottom-left, points to the 12-week total footer */}
+        <div style={{
+          position: 'absolute',
+          bottom: 14, left: -6,
+          transform: 'rotate(-2deg)',
+          background: 'var(--qf-paper)',
+          border: '1.5px solid var(--qf-forest)',
+          borderRadius: 12,
+          padding: '8px 14px',
+          boxShadow: '0 8px 20px rgba(47,110,71,0.25)',
+          zIndex: 2,
+          maxWidth: 160,
+        }}>
+          <div style={{
+            fontFamily: 'var(--qf-display)', fontSize: 15, fontWeight: 600,
+            color: 'var(--qf-forest)', letterSpacing: '-0.01em',
+          }}>Plan</div>
+          <div style={{
+            fontFamily: 'var(--qf-body)', fontSize: 11.5,
+            color: 'var(--qf-ink-2)', marginTop: 2, lineHeight: 1.3,
+          }}>12 weeks of 1:1 tutoring.</div>
         </div>
       </div>
     </QFScreen>
