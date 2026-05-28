@@ -16,6 +16,15 @@ Parents arrive tired. Match **Hims**: almost every screen is **one sentence** of
 - Premium, calm — **no** binary rain, `prep_path`, terminal jargon
 - Plain labels: Last scored, not score band; Tutor solves, not Mistake Found
 
+## Anti-marketer-speak (hard rules)
+
+- **No glittering generalities.** "Real tutors / real results" is meaningless — vs. fake? Cut any adjective asserting what should be self-evident. (Saying "honestly" undermines honesty; same trap.)
+- **Lead with what we DO**, never what we don't ("We don't lecture" → cut).
+- **Specific > vague.** Reuse the parent's actual answers (score, target, date, GPA) on screen wherever possible.
+- **"Does it help convert?"** is the editing lens. If a line doesn't, cut it.
+- **No icons. Ever.**
+- Clinical / academic where trust matters (disclaimers, stats): precise, hedged honestly, never undermining the core claim. Benchmark numbers (e.g. +182 vs College Board's +40) earn credibility better than adjectives.
+
 ## Live screens (prototype)
 
 | Step | Component | Job |
