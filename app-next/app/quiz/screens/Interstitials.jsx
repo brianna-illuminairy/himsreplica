@@ -689,8 +689,8 @@ function priorPrepNames(q7 = []) {
   const items = q7.map(id => Q7_PHRASE[id]).filter(Boolean);
   if (items.length === 0) return null;
   if (items.length === 1) return items[0];
-  if (items.length === 2) return `${items[0]} and ${items[1]}`;
-  return `${items.slice(0, -1).join(', ')}, and ${items[items.length - 1]}`;
+  if (items.length === 2) return `${items[0]} & ${items[1]}`;
+  return `${items[0]}, ${items[1]} & more`;
 }
 
 function pickContentSkills(q6 = []) {
