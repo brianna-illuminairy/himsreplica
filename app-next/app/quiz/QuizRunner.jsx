@@ -97,7 +97,7 @@ export default function QuizRunner() {
     case 'i-gap': return <QFIGPAGap   onContinue={next} onBack={back} q4={a.q4} q9={a.q9} />;
     case 'v1':  return <QFV1Projection onContinue={next} onBack={back} q4={a.q4} q5={a.q5} q6={a.q6} q8={a.q8} />;
     case 's1':  return <QFS1Summary   answers={a} onContinue={next} onBack={back} />;
-    case 's2':  return <QFS2Science   onContinue={next} onBack={back} />;
+    case 's2':  return <QFS2Science   onContinue={next} onBack={back} q6={a.q6} />;
     case 's3':  return <QFS3Stats     onContinue={next} onBack={back} />;
     case 's4':  return <QFS4Authority onContinue={next} onBack={back} />;
     case 's5':  return <QFS5Approved  onContinue={next} onBack={back} answers={a} />;
