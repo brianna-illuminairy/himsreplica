@@ -883,7 +883,7 @@ export function QFIMethod({ onContinue, onBack }) {
   const steps = [
     { num: '01', label: 'Diagnose', desc: 'A 60-min 1:1 test reveals the 5–6 skills costing your kid the most points.' },
     { num: '02', label: 'Rank',     desc: 'Each skill scored by point impact. Tackle the highest-leverage first.' },
-    { num: '03', label: 'Plan',     desc: 'A weekly 1:1 tutoring plan built around those 5–6 skills.' },
+    { num: '03', label: 'Plan',     desc: 'A weekly 1:1 tutoring plan built around those 5–6 skills — for the fastest score improvements.' },
   ];
   return (
     <QFScreen stepIdx={10} onBack={onBack}
