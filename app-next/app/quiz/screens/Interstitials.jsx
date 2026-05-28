@@ -966,145 +966,119 @@ export function QFIMethod({ onContinue, onBack }) {
   );
 }
 
-// ─── I · Steps (Slide 2: Hims-style — plan mockup + floating callouts) ───────
+// ─── I · Steps (Slide 2: ranked skill plan card + clean 3-row legend) ────────
 export function QFISteps({ onContinue, onBack }) {
-  const planRows = [
-    { wk: 'Wk 1',     label: 'Diagnostic',          pts: null },
-    { wk: 'Wk 2',     label: 'Linear Functions',    pts: '+50' },
-    { wk: 'Wk 3',     label: 'Right Triangles',     pts: '+45' },
-    { wk: 'Wk 4',     label: 'Quadratics',          pts: '+40' },
-    { wk: 'Wk 5',     label: 'Word Problems',       pts: '+35' },
-    { wk: 'Wk 6',     label: 'Functions & Graphs',  pts: '+30' },
-    { wk: 'Wk 7–10',  label: 'Drills + retests',    pts: null },
-    { wk: 'Wk 11',    label: 'Pacing simulations',  pts: null },
-    { wk: 'Wk 12',    label: 'Test day',            pts: null },
+  const skills = [
+    { rank: '01', name: 'Linear Functions',   pts: 50 },
+    { rank: '02', name: 'Right Triangles',    pts: 45 },
+    { rank: '03', name: 'Quadratics',         pts: 40 },
+    { rank: '04', name: 'Word Problems',      pts: 35 },
+    { rank: '05', name: 'Functions & Graphs', pts: 30 },
   ];
+  const maxPts = 50;
+  const totalGain = skills.reduce((s, x) => s + x.pts, 0);
+
+  const legend = [
+    { num: '01', label: 'Diagnose', desc: '60-min 1:1 test' },
+    { num: '02', label: 'Rank',     desc: 'By score impact' },
+    { num: '03', label: 'Plan',     desc: '12 weeks of 1:1 tutoring' },
+  ];
+
   return (
     <QFScreen stepIdx={11} onBack={onBack}
       footer={<QFButton kind="forest" onClick={onContinue}>See their projection</QFButton>}
     >
-      <div style={{ paddingTop: 8 }}>
-        {/* Plan mockup with 3 floating Hims-style callouts */}
-        <div style={{ position: 'relative' }}>
-          {/* Plan card */}
+      <div className="gap-22" style={{ paddingTop: 8 }}>
+        {/* Plan card — 5 ranked skills with impact bars */}
+        <div style={{
+          background: 'var(--qf-paper)',
+          border: '1px solid var(--qf-line)',
+          borderRadius: 16,
+          overflow: 'hidden',
+          boxShadow: '0 4px 18px rgba(20,32,46,0.08)',
+        }}>
+          {/* Header */}
           <div style={{
-            background: 'var(--qf-paper)',
-            border: '1px solid var(--qf-line)',
-            borderRadius: 14,
-            overflow: 'hidden',
-            boxShadow: '0 4px 18px rgba(20,32,46,0.08)',
+            background: 'var(--qf-ink)', padding: '12px 16px',
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
           }}>
-            {/* Header */}
-            <div style={{
-              background: 'var(--qf-ink)', padding: '10px 14px',
-              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            <span style={{
+              fontFamily: 'var(--qf-mono)', fontSize: 9, letterSpacing: '0.2em',
+              color: 'rgba(245,248,250,0.65)', textTransform: 'uppercase', fontWeight: 600,
+            }}>Sophia's Plan</span>
+            <span style={{
+              fontFamily: 'var(--qf-body)', fontSize: 12, fontWeight: 600,
+              color: 'var(--qf-glow)', letterSpacing: '-0.005em',
+            }}>+{totalGain} pts</span>
+          </div>
+
+          {/* Ranked skill rows with horizontal impact bars */}
+          {skills.map((s, i) => {
+            const fillPct = (s.pts / maxPts) * 100;
+            return (
+              <div key={i} style={{
+                display: 'grid', gridTemplateColumns: '32px 1fr 50px',
+                alignItems: 'center', gap: 12,
+                padding: '14px 16px',
+                borderTop: i > 0 ? '1px solid var(--qf-line)' : 'none',
+              }}>
+                <div style={{
+                  fontFamily: 'var(--qf-mono)', fontSize: 11,
+                  color: 'var(--qf-forest)', fontWeight: 600, letterSpacing: '0.08em',
+                }}>{s.rank}</div>
+                <div>
+                  <div style={{
+                    fontFamily: 'var(--qf-display)', fontSize: 14, fontWeight: 500,
+                    color: 'var(--qf-ink)', letterSpacing: '-0.005em',
+                    marginBottom: 5,
+                  }}>{s.name}</div>
+                  <div style={{
+                    height: 5, background: 'rgba(20,32,46,0.08)', borderRadius: 3,
+                    overflow: 'hidden',
+                  }}>
+                    <div style={{
+                      width: `${fillPct}%`, height: '100%',
+                      background: 'linear-gradient(to right, var(--qf-forest), var(--qf-glow))',
+                      borderRadius: 3,
+                    }} />
+                  </div>
+                </div>
+                <div style={{
+                  fontFamily: 'var(--qf-mono)', fontSize: 12,
+                  color: 'var(--qf-forest)', fontWeight: 600, letterSpacing: '0.04em',
+                  textAlign: 'right',
+                }}>+{s.pts}</div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* 3-row legend — clean, no callouts */}
+        <div style={{
+          display: 'flex', flexDirection: 'column',
+          borderTop: '1px solid var(--qf-line)',
+        }}>
+          {legend.map((step) => (
+            <div key={step.num} style={{
+              display: 'grid', gridTemplateColumns: '34px 1fr auto',
+              alignItems: 'baseline', gap: 12,
+              padding: '14px 0',
+              borderBottom: '1px solid var(--qf-line)',
             }}>
               <span style={{
-                fontFamily: 'var(--qf-mono)', fontSize: 9, letterSpacing: '0.2em',
-                color: 'rgba(245,248,250,0.6)', textTransform: 'uppercase',
-              }}>12-Week Plan</span>
+                fontFamily: 'var(--qf-mono)', fontSize: 10,
+                color: 'var(--qf-forest)', letterSpacing: '0.14em', fontWeight: 600,
+              }}>{step.num}</span>
               <span style={{
-                fontFamily: 'var(--qf-body)', fontSize: 12, fontWeight: 600,
-                color: 'var(--qf-glow)',
-              }}>Goal: 1400</span>
+                fontFamily: 'var(--qf-display)', fontSize: 18, fontWeight: 500,
+                letterSpacing: '-0.01em', color: 'var(--qf-ink)',
+              }}>{step.label}</span>
+              <span style={{
+                fontFamily: 'var(--qf-body)', fontSize: 13,
+                color: 'var(--qf-ink-mid)',
+              }}>{step.desc}</span>
             </div>
-
-            {/* Rows */}
-            {planRows.map((r, i) => {
-              const isSkill = !!r.pts;
-              return (
-                <div key={i} style={{
-                  display: 'grid', gridTemplateColumns: '64px 1fr auto',
-                  alignItems: 'center', gap: 10,
-                  padding: '10px 14px',
-                  borderTop: i > 0 ? '1px solid var(--qf-line)' : 'none',
-                  background: isSkill ? 'var(--qf-forest-soft)' : undefined,
-                }}>
-                  <span style={{
-                    fontFamily: 'var(--qf-mono)', fontSize: 10,
-                    color: 'var(--qf-ink-mute)', letterSpacing: '0.06em', fontWeight: 600,
-                  }}>{r.wk}</span>
-                  <span style={{
-                    fontFamily: 'var(--qf-body)', fontSize: 13.5,
-                    color: 'var(--qf-ink)',
-                    fontWeight: isSkill ? 600 : 400,
-                  }}>{r.label}</span>
-                  {r.pts && (
-                    <span style={{
-                      fontFamily: 'var(--qf-mono)', fontSize: 11,
-                      color: 'var(--qf-forest)', fontWeight: 600, letterSpacing: '0.04em',
-                    }}>{r.pts}</span>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Callout 1: DIAGNOSE — points to the skill rows */}
-          <div style={{
-            position: 'absolute',
-            top: 70, left: -14,
-            transform: 'rotate(-2deg)',
-            background: 'var(--qf-paper)',
-            border: '1px solid var(--qf-forest)',
-            borderRadius: 10,
-            padding: '8px 12px',
-            boxShadow: '0 6px 14px rgba(47,110,71,0.20)',
-            maxWidth: 140,
-          }}>
-            <div style={{
-              fontFamily: 'var(--qf-mono)', fontSize: 9, letterSpacing: '0.18em',
-              color: 'var(--qf-forest)', fontWeight: 600, textTransform: 'uppercase',
-            }}>Diagnose</div>
-            <div style={{
-              fontFamily: 'var(--qf-body)', fontSize: 11,
-              color: 'var(--qf-ink-2)', marginTop: 2, lineHeight: 1.3,
-            }}>Top 5–6 skills.</div>
-          </div>
-
-          {/* Callout 2: RANK — points to the +pts column */}
-          <div style={{
-            position: 'absolute',
-            top: 200, right: -14,
-            transform: 'rotate(2deg)',
-            background: 'var(--qf-paper)',
-            border: '1px solid var(--qf-forest)',
-            borderRadius: 10,
-            padding: '8px 12px',
-            boxShadow: '0 6px 14px rgba(47,110,71,0.20)',
-            maxWidth: 140,
-          }}>
-            <div style={{
-              fontFamily: 'var(--qf-mono)', fontSize: 9, letterSpacing: '0.18em',
-              color: 'var(--qf-forest)', fontWeight: 600, textTransform: 'uppercase',
-            }}>Rank</div>
-            <div style={{
-              fontFamily: 'var(--qf-body)', fontSize: 11,
-              color: 'var(--qf-ink-2)', marginTop: 2, lineHeight: 1.3,
-            }}>By point impact.</div>
-          </div>
-
-          {/* Callout 3: PLAN — points to the test-day row */}
-          <div style={{
-            position: 'absolute',
-            bottom: 14, left: -14,
-            transform: 'rotate(-1.5deg)',
-            background: 'var(--qf-paper)',
-            border: '1px solid var(--qf-forest)',
-            borderRadius: 10,
-            padding: '8px 12px',
-            boxShadow: '0 6px 14px rgba(47,110,71,0.20)',
-            maxWidth: 150,
-          }}>
-            <div style={{
-              fontFamily: 'var(--qf-mono)', fontSize: 9, letterSpacing: '0.18em',
-              color: 'var(--qf-forest)', fontWeight: 600, textTransform: 'uppercase',
-            }}>Plan</div>
-            <div style={{
-              fontFamily: 'var(--qf-body)', fontSize: 11,
-              color: 'var(--qf-ink-2)', marginTop: 2, lineHeight: 1.3,
-            }}>Scheduled to test day.</div>
-          </div>
+          ))}
         </div>
       </div>
     </QFScreen>
