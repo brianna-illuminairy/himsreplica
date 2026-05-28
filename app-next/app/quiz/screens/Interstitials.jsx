@@ -986,7 +986,7 @@ export function QFISteps({ onContinue, onBack }) {
 
   return (
     <QFScreen stepIdx={11} onBack={onBack}
-      footer={<QFButton kind="forest" onClick={onContinue}>See their projection</QFButton>}
+      footer={<QFButton kind="forest" onClick={onContinue}>Build their plan</QFButton>}
     >
       <p style={{
         fontFamily: 'var(--qf-body)', fontSize: 15, lineHeight: 1.5,
