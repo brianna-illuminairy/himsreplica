@@ -909,7 +909,7 @@ export function QFIMethod({ onContinue, onBack }) {
             background: 'linear-gradient(135deg, #C8E6CF 0%, #77C89A 70%, #2F6E47 100%)',
           }}>
             <img
-              src="/photos/student-hero.png"
+              src="/photos/male-student.png"
               alt="An illuminairy student"
               style={{
                 position: 'absolute', inset: 0,
