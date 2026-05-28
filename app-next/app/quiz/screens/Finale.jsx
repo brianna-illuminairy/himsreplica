@@ -52,7 +52,7 @@ export function QFS5Approved({ onContinue, onBack, answers = {} }) {
             </p>
           )}
           <p className="qf-lead">
-            Students with similar profiles have averaged <em>+{proofLow}–{proofHigh} points</em> across 95 illuminairy plans.
+            Students with similar profiles have averaged <em>+{proofLow}–{proofHigh} points</em> across our most recent 95 illuminairy plans.
           </p>
         </div>
 
