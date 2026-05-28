@@ -104,10 +104,10 @@ export function QFS2Science({ onContinue, onBack, q6 = ['math'] }) {
       <div className="gap-22">
         <div>
           <h1 className="qf-h1" style={{ marginBottom: 8 }}>
-            We don't lecture. We <em>drill the mistakes</em>.
+            We teach, practice, and repeat — until it <em>clicks</em>.
           </h1>
           <p className="qf-lead">
-            Every session follows the same 6-step loop — for each of the 5–6 skills costing the most points — until it's <em>automatic</em>.
+            We show students how to solve it, practice together, then they solve independently.
           </p>
         </div>
 
