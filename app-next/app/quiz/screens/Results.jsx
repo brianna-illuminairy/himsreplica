@@ -104,10 +104,10 @@ export function QFS2Science({ onContinue, onBack, q6 = ['math'] }) {
       <div className="gap-22">
         <div>
           <h1 className="qf-h1" style={{ marginBottom: 8 }}>
-            We teach, practice, and repeat — until it <em>clicks</em>.
+            We teach through <em>examples</em>.
           </h1>
           <p className="qf-lead">
-            We show students how to solve it, practice together, then they solve independently.
+            We show how to solve it, practice together, then they solve it.
           </p>
         </div>
 
