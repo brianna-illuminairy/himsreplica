@@ -69,17 +69,32 @@ export function QFS1Summary({ answers = {}, onContinue, onBack }) {
   );
 }
 
-// ─── S2 · Method — "mistake-driven learning" mastery progression ──────────────
-// Based on user's reference: Mistake Found → Guided Correction → Supported Solve → Independent → Automatic
-// User's simplified language: tutor teaches → tutor does example → student & tutor solve → student solves w/ hint → student solves alone → student practices → tutor helps when stuck
-export function QFS2Science({ onContinue, onBack }) {
+// ─── S2 · Method — mistake-driven learning, 6-step mastery loop ──────────────
+const S2_EXAMPLE_SKILL = {
+  'math':       { full: 'Linear Functions',         tag: 'ALGEBRA' },
+  'reading':    { full: 'Inference & Main Idea',    tag: 'READING' },
+  'self-study': { full: 'Geometry: Right Triangles', tag: 'GEOMETRY' },
+  'no-plan':    { full: 'Linear Functions',         tag: 'ALGEBRA' },
+  'wont':       { full: 'Quadratics',               tag: 'ADV. MATH' },
+  'too-busy':   { full: 'Vocab in Context',         tag: 'READING' },
+};
+
+function pickS2Skill(q6 = []) {
+  for (const id of q6) {
+    if (S2_EXAMPLE_SKILL[id]) return S2_EXAMPLE_SKILL[id];
+  }
+  return S2_EXAMPLE_SKILL['math'];
+}
+
+export function QFS2Science({ onContinue, onBack, q6 = ['math'] }) {
+  const example = pickS2Skill(q6);
   const steps = [
-    { label: 'Tutor teaches',        note: 'Explains the concept behind the miss' },
-    { label: 'Tutor does example',   note: 'Works through a problem out loud' },
-    { label: 'Solve together',       note: 'Student and tutor work through it jointly' },
-    { label: 'Student solves w/ hint', note: 'Tutor gives a nudge when needed' },
-    { label: 'Student solves alone', note: 'No help — just like test day' },
-    { label: 'Targeted reps',        note: 'Practices the same question type until automatic' },
+    { label: 'Tutor teaches',          note: 'Explains the concept behind the miss' },
+    { label: 'Tutor does an example',  note: 'Works through a problem out loud' },
+    { label: 'Solve together',         note: 'Student and tutor work it jointly' },
+    { label: 'Student solves w/ hint', note: 'Tutor nudges when needed' },
+    { label: 'Student solves alone',   note: 'No help — just like test day' },
+    { label: 'Targeted reps',          note: 'Same question type until automatic' },
   ];
 
   return (
@@ -88,23 +103,20 @@ export function QFS2Science({ onContinue, onBack }) {
     >
       <div className="gap-22">
         <div>
-          <div className="qf-eyebrow" style={{ color: 'var(--qf-forest)', marginBottom: 8 }}>One session · One skill</div>
-          <h1 className="qf-h1">
-            Improve faster through <em>mistake-driven learning.</em>
+          <h1 className="qf-h1" style={{ marginBottom: 8 }}>
+            We don't lecture. We <em>drill the mistakes</em>.
           </h1>
+          <p className="qf-lead">
+            Every session follows the same 6-step loop — for each of the 5–6 skills costing the most points — until it's <em>automatic</em>.
+          </p>
         </div>
-
-        <p className="qf-lead">
-          Lectures and practice problems don't fix what your kid is getting wrong.
-          Every illuminairy session follows the same 6-step mastery loop — for every skill that costs points.
-        </p>
 
         {/* Mastery progression card */}
         <div style={{
           background: 'var(--qf-paper)', border: '1px solid var(--qf-line)',
           borderRadius: 14, overflow: 'hidden',
         }}>
-          {/* Session header */}
+          {/* Session header (dynamic example skill) */}
           <div style={{
             background: 'var(--qf-ink)', padding: '10px 16px',
             display: 'flex', justifyContent: 'space-between', alignItems: 'center',
@@ -116,7 +128,7 @@ export function QFS2Science({ onContinue, onBack }) {
             <span style={{
               fontFamily: 'var(--qf-body)', fontSize: 13, fontWeight: 600,
               color: 'var(--qf-glow)',
-            }}>Geometry: Right Triangles</span>
+            }}>{example.full}</span>
           </div>
 
           {steps.map((s, i) => (
@@ -152,7 +164,7 @@ export function QFS2Science({ onContinue, onBack }) {
             </div>
           ))}
 
-          {/* Mastery footer */}
+          {/* Mastery footer (dynamic tag) */}
           <div style={{
             display: 'flex', justifyContent: 'space-between', alignItems: 'center',
             padding: '10px 16px',
@@ -162,19 +174,13 @@ export function QFS2Science({ onContinue, onBack }) {
             <span style={{
               fontFamily: 'var(--qf-mono)', fontSize: 9, letterSpacing: '0.2em',
               color: 'var(--qf-forest)',
-            }}>GEOMETRY · MASTERY</span>
+            }}>{example.tag} · MASTERY</span>
             <span style={{
               fontFamily: 'var(--qf-display)', fontSize: 15, color: 'var(--qf-forest)',
               fontWeight: 500,
             }}>Automatic</span>
           </div>
         </div>
-
-        <p className="qf-lead">
-          The tutor stays in the loop between sessions — when they get stuck, there's someone to ask.
-        </p>
-
-        <QFConstellation />
       </div>
     </QFScreen>
   );

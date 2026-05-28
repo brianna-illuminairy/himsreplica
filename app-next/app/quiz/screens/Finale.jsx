@@ -26,16 +26,16 @@ export function QFS5Approved({ onContinue, onBack, answers = {} }) {
       <div className="gap-22">
         <div>
           <h1 className="qf-h1" style={{ marginBottom: 10 }}>
-            {gap && dateNumeric ? (
-              <><em>Approved</em> for a personalized plan to get their score up by <em>{gap} pts</em> by <em>{dateNumeric}</em>.</>
-            ) : gap ? (
-              <><em>Approved</em> for a personalized plan to get their score up by <em>{gap} pts</em>.</>
-            ) : (
-              <><em>Approved</em> for a personalized plan.</>
-            )}
+            You're <em>approved</em> for a personalized plan.
           </h1>
           <p className="qf-lead">
-            Students with similar profiles have averaged <em>+{proofLow}–{proofHigh} points</em>.
+            {gap && dateNumeric ? (
+              <>To help get their score up by <em>{gap} pts</em> for the <em>{dateNumeric}</em> SAT — students with similar profiles have averaged <em>+{proofLow}–{proofHigh} pts</em>.</>
+            ) : gap ? (
+              <>To help get their score up by <em>{gap} pts</em> — students with similar profiles have averaged <em>+{proofLow}–{proofHigh} pts</em>.</>
+            ) : (
+              <>Students with similar profiles have averaged <em>+{proofLow}–{proofHigh} pts</em>.</>
+            )}
           </p>
         </div>
 
