@@ -651,6 +651,14 @@ const D_TEST_DATES = {
   'nov7': new Date('2026-11-07'), 'dec5': new Date('2026-12-05'),
 };
 
+// Shared dynamic gain target: 150 when test is ≤6 weeks out, otherwise 200.
+export function gainTargetForQ5(q5) {
+  const d = D_TEST_DATES[q5];
+  if (!d) return 200;
+  const weeks = Math.round((d - new Date('2026-05-26')) / (7 * 86400000));
+  return weeks <= 6 ? 150 : 200;
+}
+
 const PREP_WHY_FAILED = {
   'khan':    "Khan covers all 28 skills shallowly. Your kid needs deep work on these 5 — not surface review.",
   'group':   "Group classes pace to the middle of the room. Nobody built a plan for the few skills actually costing your kid points.",
@@ -886,14 +894,15 @@ export function QFIDiagnosis({ onContinue, onBack, q4 = '1200-1300', q6 = ['math
 }
 
 // ─── Product-outcome (Hims-style: offer + outcome collage, 1 sentence) ───────
-export function QFIMethod({ onContinue, onBack }) {
+export function QFIMethod({ onContinue, onBack, q5 = 'oct3' }) {
+  const gain = gainTargetForQ5(q5);
   return (
     <QFScreen stepIdx={10} onBack={onBack}
       footer={<QFButton kind="forest" onClick={onContinue}>How it works</QFButton>}
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <p className="qf-lead" style={{ margin: 0 }}>
-          Great news — we have <em>a plan</em> that may work for them.
+          Great news — we've helped students like them create a plan to raise their score by <em>{gain}+ points</em>.
         </p>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
