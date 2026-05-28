@@ -89,12 +89,12 @@ function pickS2Skill(q6 = []) {
 export function QFS2Science({ onContinue, onBack, q6 = ['math'] }) {
   const example = pickS2Skill(q6);
   const steps = [
-    { label: 'Tutor teaches' },
-    { label: 'Tutor does an example' },
+    { label: 'Learn' },
+    { label: 'Watch' },
     { label: 'Solve together' },
-    { label: 'Student solves w/ hint' },
-    { label: 'Student solves alone' },
-    { label: 'Targeted reps' },
+    { label: 'Solve with hints' },
+    { label: 'Solve alone' },
+    { label: 'Repeat to mastery' },
   ];
 
   return (
