@@ -883,21 +883,21 @@ export function QFIMethod({ onContinue, onBack }) {
   const steps = [
     { num: '01', label: 'Diagnose', desc: 'A 60-min 1:1 test reveals the 5–6 skills costing your kid the most points.' },
     { num: '02', label: 'Rank',     desc: 'Each skill scored by point impact. Tackle the highest-leverage first.' },
-    { num: '03', label: 'Plan',     desc: '12 weeks of 1:1 tutoring focused only on those skills.' },
+    { num: '03', label: 'Plan',     desc: 'A custom 1:1 tutoring plan focused only on those skills, all the way to test day.' },
   ];
   return (
     <QFScreen stepIdx={10} onBack={onBack}
       footer={<QFButton kind="forest" onClick={onContinue}>See their projection</QFButton>}
     >
       <div className="gap-22">
-        {/* Editorial hero — uses /photos/method-hero.jpg if present, aurora fallback */}
+        {/* Editorial hero — uses /photos/method-hero.png if present, aurora fallback */}
         <div style={{
           width: '100%', aspectRatio: '4 / 3', borderRadius: 16, overflow: 'hidden',
           position: 'relative',
           background: 'linear-gradient(135deg, #1A4D2F 0%, #2F6E47 35%, #0057A8 75%, #121A2B 100%)',
         }}>
           <img
-            src="/photos/method-hero.jpg"
+            src="/photos/method-hero.png"
             alt="An illuminairy 1:1 tutoring session"
             style={{
               position: 'absolute', inset: 0,
