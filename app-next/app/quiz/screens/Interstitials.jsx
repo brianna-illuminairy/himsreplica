@@ -753,9 +753,9 @@ export function QFIDiagnosis({ onContinue, onBack, q4 = '1200-1300', q6 = ['math
         <div>
           <h1 className="qf-h1" style={{ marginBottom: 10 }}>
             {priorPrep ? (
-              <>They scored <em>{lastScore}</em> last time, even after <em>{priorPrep}</em>.</>
+              <><em>{lastScore}</em>, even after <em>{priorPrep}</em>.</>
             ) : (
-              <>They're scoring around <em>{lastScore}</em> on the SAT.</>
+              <><em>{lastScore}</em>.</>
             )}
           </h1>
           <p className="qf-lead">
