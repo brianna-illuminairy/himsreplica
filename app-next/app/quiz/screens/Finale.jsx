@@ -307,7 +307,7 @@ export function QFS8Acknowledgment({ name = "your kid", onContinue, onBack }) {
           fontFamily: 'var(--qf-body)', fontSize: 12.5,
           color: 'var(--qf-ink-mute)', lineHeight: 1.55, margin: 0,
         }}>
-          Score outcomes vary by starting score, completion of assigned work, and individual test-day factors — they are not guaranteed. Reported figures reflect students who completed every action on their plan; partial-completion outcomes are lower on average. No charge until you enroll on the call.
+          Score outcomes vary by starting score, completion of assigned work, and individual test-day factors — they are not guaranteed. Reported figures reflect students who completed every action on their plan; partial-completion outcomes are lower on average.
         </p>
       </div>
     </QFScreen>
