@@ -64,9 +64,9 @@ const CANCHOR_SCORES = {
   '1300-1400': 1350, '1400plus': 1450,
 };
 const CQ6_PHRASE = {
-  'math': 'math section', 'reading': 'reading & writing',
-  'self-study': 'self-study not sticking', 'wont': 'getting them to study consistently',
-  'no-plan': 'no clear study plan', 'too-busy': 'packed schedule',
+  'math': 'math score gains', 'reading': 'reading & writing gains',
+  'self-study': 'consistent follow-through', 'wont': 'accountability & consistency',
+  'no-plan': 'a clear, structured plan', 'too-busy': 'an efficient, time-boxed plan',
 };
 
 const STARS = [
