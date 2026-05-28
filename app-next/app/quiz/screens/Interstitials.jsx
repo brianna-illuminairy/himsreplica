@@ -920,45 +920,23 @@ export function QFIMethod({ onContinue, onBack }) {
             />
           </div>
 
-          {/* Score report — designed in code, no asset needed */}
+          {/* Score report — real College Board app screenshot */}
           <div style={{
             aspectRatio: '1 / 1', borderRadius: 14, overflow: 'hidden',
-            background: 'var(--qf-paper)',
-            border: '1px solid var(--qf-line)',
-            padding: '14px 12px',
-            display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
-            boxShadow: '0 2px 12px rgba(20,32,46,0.06)',
+            position: 'relative',
+            background: '#1f4099',
           }}>
-            <div>
-              <div style={{
-                fontFamily: 'var(--qf-mono)', fontSize: 8.5, letterSpacing: '0.2em',
-                color: 'var(--qf-ink-mute)', textTransform: 'uppercase', fontWeight: 600,
-              }}>Score Report</div>
-              <div style={{
-                fontFamily: 'var(--qf-mono)', fontSize: 8, color: 'var(--qf-ink-mute)',
-                marginTop: 3, letterSpacing: '0.04em',
-              }}>Sept 12, 2026</div>
-            </div>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{
-                fontFamily: 'var(--qf-mono)', fontSize: 11, color: 'var(--qf-ink-mute)',
-                letterSpacing: '0.06em',
-              }}>1180 →</div>
-              <div style={{
-                fontFamily: 'var(--qf-display)', fontSize: 42, color: 'var(--qf-forest)',
-                fontWeight: 500, letterSpacing: '-0.02em', lineHeight: 1, marginTop: 2,
-              }}>1410</div>
-              <div style={{
-                fontFamily: 'var(--qf-mono)', fontSize: 10, color: 'var(--qf-forest)',
-                marginTop: 6, fontWeight: 600, letterSpacing: '0.08em',
-              }}>+230 pts</div>
-            </div>
-            <div style={{
-              fontFamily: 'var(--qf-mono)', fontSize: 7.5, color: 'var(--qf-forest)',
-              letterSpacing: '0.06em', fontWeight: 600, textAlign: 'center',
-            }}>
-              ✓ ALGEBRA  ✓ READING  ✓ GEOMETRY
-            </div>
+            <img
+              src="/photos/score-report.png"
+              alt="College Board score report showing 1410"
+              style={{
+                position: 'absolute', inset: 0,
+                width: '100%', height: '100%',
+                objectFit: 'cover', objectPosition: 'center',
+                display: 'block',
+              }}
+              onError={(e) => { e.currentTarget.style.display = 'none'; }}
+            />
           </div>
         </div>
       </div>
