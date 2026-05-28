@@ -89,12 +89,12 @@ function pickS2Skill(q6 = []) {
 export function QFS2Science({ onContinue, onBack, q6 = ['math'] }) {
   const example = pickS2Skill(q6);
   const steps = [
-    { label: 'Tutor teaches',          note: 'Explains the concept behind the miss' },
-    { label: 'Tutor does an example',  note: 'Works through a problem out loud' },
-    { label: 'Solve together',         note: 'Student and tutor work it jointly' },
-    { label: 'Student solves w/ hint', note: 'Tutor nudges when needed' },
-    { label: 'Student solves alone',   note: 'No help — just like test day' },
-    { label: 'Targeted reps',          note: 'Same question type until automatic' },
+    { label: 'Tutor teaches' },
+    { label: 'Tutor does an example' },
+    { label: 'Solve together' },
+    { label: 'Student solves w/ hint' },
+    { label: 'Student solves alone' },
+    { label: 'Targeted reps' },
   ];
 
   return (
@@ -144,16 +144,10 @@ export function QFS2Science({ onContinue, onBack, q6 = ['math'] }) {
                 color: i === steps.length - 1 ? 'var(--qf-forest)' : 'var(--qf-ink-mute)',
                 letterSpacing: '0.05em',
               }}>0{i + 1}</span>
-              <div>
-                <div style={{
-                  fontFamily: 'var(--qf-body)', fontSize: 14, fontWeight: 600,
-                  color: 'var(--qf-ink)',
-                }}>{s.label}</div>
-                <div style={{
-                  fontFamily: 'var(--qf-body)', fontSize: 12, color: 'var(--qf-ink-mute)',
-                  marginTop: 2, lineHeight: 1.4,
-                }}>{s.note}</div>
-              </div>
+              <div style={{
+                fontFamily: 'var(--qf-body)', fontSize: 14, fontWeight: 600,
+                color: 'var(--qf-ink)',
+              }}>{s.label}</div>
               <div style={{
                 width: 24, height: 4, borderRadius: 2, flexShrink: 0,
                 background: i === steps.length - 1 ? 'var(--qf-forest)'
