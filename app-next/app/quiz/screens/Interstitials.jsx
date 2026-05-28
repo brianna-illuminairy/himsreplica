@@ -889,7 +889,7 @@ export function QFIMethod({ onContinue, onBack }) {
       <div className="gap-22">
         {/* Editorial hero — uses /photos/method-hero.png if present, aurora fallback */}
         <div style={{
-          width: '100%', aspectRatio: '4 / 3', borderRadius: 16, overflow: 'hidden',
+          width: '100%', aspectRatio: '16 / 9', borderRadius: 16, overflow: 'hidden',
           position: 'relative',
           background: 'linear-gradient(135deg, #1A4D2F 0%, #2F6E47 35%, #0057A8 75%, #121A2B 100%)',
         }}>
