@@ -889,7 +889,7 @@ export function QFIMethod({ onContinue, onBack }) {
           background: 'linear-gradient(135deg, #1A4D2F 0%, #2F6E47 50%, #0057A8 100%)',
         }}>
           <img
-            src="/photos/tutor-single.jpg"
+            src="/photos/tutor-single.png"
             alt="An illuminairy tutor"
             style={{
               position: 'absolute', inset: 0,
@@ -909,7 +909,7 @@ export function QFIMethod({ onContinue, onBack }) {
             background: 'linear-gradient(135deg, #C8E6CF 0%, #77C89A 70%, #2F6E47 100%)',
           }}>
             <img
-              src="/photos/student-hero.jpg"
+              src="/photos/student-hero.png"
               alt="An illuminairy student"
               style={{
                 position: 'absolute', inset: 0,
