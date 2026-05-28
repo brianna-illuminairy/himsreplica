@@ -719,9 +719,15 @@ function pickContentSkills(q6 = []) {
 // Short-timeline (≤6 weeks) rescale: skill points sum to 150 instead of 200
 const SHORT_PTS = [40, 35, 30, 25, 20];
 
+// Range-based score band for the headline (we only know their band, not exact score)
+const Q4_BAND = {
+  'u1000': 'Under 1100', '1100-1200': '1100s', '1200-1300': '1200s',
+  '1300-1400': '1300s', '1400plus': '1400+',
+};
+
 export function QFIDiagnosis({ onContinue, onBack, q4 = '1200-1300', q6 = ['math', 'no-plan'], q7 = ['khan'], q5 = 'oct3' }) {
   const priorPrep = priorPrepNames(q7);
-  const lastScore = CANCHOR_SCORES[q4];
+  const scoreBand = Q4_BAND[q4] || CANCHOR_SCORES[q4];
 
   const today = new Date('2026-05-26');
   const days = D_TEST_DATES[q5]
