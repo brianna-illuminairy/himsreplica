@@ -183,7 +183,7 @@
   font-family: var(--qf-display);
   color: var(--qf-ink);
   margin: 0;
-  text-wrap: pretty;
+  text-wrap: normal;
 }
 .qf-page h1 {
   font-weight: 500;
@@ -504,7 +504,7 @@
   font-variation-settings: 'opsz' 72;
   color: var(--qf-ink);
   margin: 0;
-  text-wrap: pretty;
+  text-wrap: normal;
 }
 .qf-page .qf-h1 em { font-style: normal; color: var(--qf-forest); font-weight: 500; }
 
@@ -517,7 +517,7 @@
   font-variation-settings: 'opsz' 48;
   color: var(--qf-ink);
   margin: 0;
-  text-wrap: pretty;
+  text-wrap: normal;
 }
 .qf-page .qf-h2 em { font-style: normal; color: var(--qf-forest); font-weight: 500; }
 .qf-page .qf-lead {

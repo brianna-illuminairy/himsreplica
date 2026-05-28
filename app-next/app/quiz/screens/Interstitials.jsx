@@ -708,9 +708,10 @@ function pickContentSkills(q6 = []) {
   ];
 }
 
+// Short-timeline (≤6 weeks) rescale: skill points sum to 150 instead of 200
+const SHORT_PTS = [40, 35, 30, 25, 20];
+
 export function QFIDiagnosis({ onContinue, onBack, q4 = '1200-1300', q6 = ['math', 'no-plan'], q7 = ['khan'], q5 = 'oct3' }) {
-  const skills = pickContentSkills(q6);
-  const totalPts = skills.reduce((s, x) => s + x.pts, 0);
   const priorPrep = priorPrepNames(q7);
   const lastScore = CANCHOR_SCORES[q4];
 
@@ -720,6 +721,15 @@ export function QFIDiagnosis({ onContinue, onBack, q4 = '1200-1300', q6 = ['math
     : null;
   const weeks = days ? Math.round(days / 7) : null;
   const dateShort = D_TEST_DATE_SHORT[q5];
+  const dateMonth = D_TEST_DATE_SHORT[q5] ? D_TEST_DATE_SHORT[q5].split(' ')[0] : null;
+
+  // ≤6 weeks → realistic target is +150, skills rescaled to match; otherwise +200
+  const isShort = weeks != null && weeks <= 6;
+  const skills = pickContentSkills(q6).map((s, i) =>
+    isShort ? { ...s, pts: SHORT_PTS[i] ?? s.pts } : s
+  );
+  const totalPts = skills.reduce((s, x) => s + x.pts, 0);
+  const gainPhrase = isShort ? `${totalPts} points` : `${totalPts} or more points`;
 
   // Constellation reveal: chaotic 28 → 5 illuminated + connected
   const [revealed, setRevealed] = useState(false);
@@ -863,10 +873,10 @@ export function QFIDiagnosis({ onContinue, onBack, q4 = '1200-1300', q6 = ['math
         {/* Below image: 2 sentences, no space between */}
         <div>
           <p className="qf-lead" style={{ margin: 0 }}>
-            {weeks && dateShort ? (
-              <>With <em>{weeks} weeks</em> until the {dateShort} SAT, you need to quickly figure out the skills costing them points and build a personalized plan.</>
+            {weeks && dateMonth ? (
+              <>With <em>{weeks} weeks</em> until the {dateMonth} SAT, we can identify the skills most likely to improve their score and build a focused plan to help raise it by <em>{gainPhrase}</em>.</>
             ) : (
-              <>You need to quickly figure out the skills costing them points and build a personalized plan.</>
+              <>We can identify the skills most likely to improve their score and build a focused plan to help raise it by <em>{gainPhrase}</em>.</>
             )}
           </p>
         </div>
