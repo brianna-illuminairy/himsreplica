@@ -885,68 +885,83 @@ export function QFIDiagnosis({ onContinue, onBack, q4 = '1200-1300', q6 = ['math
   );
 }
 
-// ─── I · Method (Slide 1: visual beat — 3-image collage, no text) ───────────
+// ─── Product-outcome (Hims-style: offer + outcome collage, 1 sentence) ───────
 export function QFIMethod({ onContinue, onBack }) {
   return (
     <QFScreen stepIdx={10} onBack={onBack}
       footer={<QFButton kind="forest" onClick={onContinue}>How it works</QFButton>}
     >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-        {/* Tutor — large hero, 16:10 */}
-        <div style={{
-          width: '100%', aspectRatio: '16 / 10', borderRadius: 14, overflow: 'hidden',
-          position: 'relative',
-          background: 'linear-gradient(135deg, #1A4D2F 0%, #2F6E47 50%, #0057A8 100%)',
-        }}>
-          <img
-            src="/photos/tutor-single.png"
-            alt="An illuminairy tutor"
-            style={{
-              position: 'absolute', inset: 0,
-              width: '100%', height: '100%',
-              objectFit: 'cover', display: 'block',
-            }}
-            onError={(e) => { e.currentTarget.style.display = 'none'; }}
-          />
-        </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <p className="qf-lead" style={{ margin: 0 }}>
+          Great news — we have <em>SAT tutoring plans</em> that may work for them.
+        </p>
 
-        {/* Below: 2-column grid — student + score report */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-          {/* Student photo */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {/* Hero — tutor + student working on the plan together */}
           <div style={{
-            aspectRatio: '1 / 1', borderRadius: 14, overflow: 'hidden',
+            width: '100%', aspectRatio: '16 / 10', borderRadius: 14, overflow: 'hidden',
             position: 'relative',
-            background: 'linear-gradient(135deg, #C8E6CF 0%, #77C89A 70%, #2F6E47 100%)',
+            background: 'linear-gradient(135deg, #1A4D2F 0%, #2F6E47 50%, #0057A8 100%)',
           }}>
             <img
-              src="/photos/male-student.png"
-              alt="An illuminairy student"
+              src="/photos/tutor-student-session.png"
+              alt="An illuminairy tutor and student working on the plan together"
               style={{
                 position: 'absolute', inset: 0,
                 width: '100%', height: '100%',
-                objectFit: 'cover', display: 'block',
+                objectFit: 'cover', objectPosition: 'top', display: 'block',
               }}
               onError={(e) => { e.currentTarget.style.display = 'none'; }}
             />
           </div>
 
-          {/* Score report — real College Board app screenshot */}
-          <div style={{
-            aspectRatio: '1 / 1', borderRadius: 14, overflow: 'hidden',
-            position: 'relative',
-            background: '#1f4099',
-          }}>
-            <img
-              src="/photos/score-report.png"
-              alt="College Board score report showing 1410"
-              style={{
-                position: 'absolute', inset: 0,
-                width: '100%', height: '100%',
-                objectFit: 'cover', objectPosition: 'center',
-                display: 'block',
-              }}
-              onError={(e) => { e.currentTarget.style.display = 'none'; }}
-            />
+          {/* Below: before → after score report pair */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+            {/* Before */}
+            <div style={{
+              aspectRatio: '1 / 1', borderRadius: 14, overflow: 'hidden',
+              position: 'relative', background: '#1f4099',
+            }}>
+              <img
+                src="/photos/before-score-report.png"
+                alt="Score report before: 1180"
+                style={{
+                  position: 'absolute', inset: 0,
+                  width: '100%', height: '100%',
+                  objectFit: 'cover', objectPosition: 'center 32%', display: 'block',
+                }}
+                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+              />
+              <span style={{
+                position: 'absolute', top: 8, left: 8,
+                fontFamily: 'var(--qf-mono)', fontSize: 9, fontWeight: 600,
+                letterSpacing: '0.16em', color: '#fff',
+                background: 'rgba(20,32,46,0.55)', padding: '3px 8px', borderRadius: 6,
+              }}>BEFORE</span>
+            </div>
+
+            {/* After */}
+            <div style={{
+              aspectRatio: '1 / 1', borderRadius: 14, overflow: 'hidden',
+              position: 'relative', background: '#1f4099',
+            }}>
+              <img
+                src="/photos/score-report.png"
+                alt="Score report after: 1410"
+                style={{
+                  position: 'absolute', inset: 0,
+                  width: '100%', height: '100%',
+                  objectFit: 'cover', objectPosition: 'center 32%', display: 'block',
+                }}
+                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+              />
+              <span style={{
+                position: 'absolute', top: 8, left: 8,
+                fontFamily: 'var(--qf-mono)', fontSize: 9, fontWeight: 600,
+                letterSpacing: '0.16em', color: '#fff',
+                background: 'var(--qf-forest)', padding: '3px 8px', borderRadius: 6,
+              }}>AFTER</span>
+            </div>
           </div>
         </div>
       </div>
