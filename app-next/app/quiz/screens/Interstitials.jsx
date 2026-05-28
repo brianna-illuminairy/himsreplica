@@ -893,7 +893,7 @@ export function QFIMethod({ onContinue, onBack }) {
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <p className="qf-lead" style={{ margin: 0 }}>
-          Great news — we have <em>SAT tutoring plans</em> that may work for them.
+          Great news — we have <em>a plan</em> that may work for them.
         </p>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
