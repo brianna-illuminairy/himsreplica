@@ -257,9 +257,9 @@ export function QFS7PlanDetails({ onContinue, onBack, q5 = 'oct3' }) {
 // ─── S8 · Acknowledgment (clinical, trust-building) ──────────────────────────
 export function QFS8Acknowledgment({ name = "your kid", onContinue, onBack }) {
   const stats = [
-    { num: '+182', label: <>Plan completer mean improvement <span style={{ color: 'var(--qf-ink-mute)' }}>· College Board retest average: <strong style={{ color: 'var(--qf-ink-2)' }}>+40</strong></span></> },
-    { num: '78%',  label: <>of plan completers reach their goal score</> },
-    { num: '12',   label: <>weeks · standard plan duration</> },
+    { num: '+182', label: 'Plan completer mean improvement' },
+    { num: '78%',  label: 'Plan completers reaching their goal score' },
+    { num: '12',   label: 'Weeks · standard plan duration' },
   ];
   return (
     <QFScreen stepIdx={21} onBack={onBack}
@@ -272,7 +272,7 @@ export function QFS8Acknowledgment({ name = "your kid", onContinue, onBack }) {
             Your strategy call is <em>reserved</em>.
           </h1>
           <p className="qf-lead">
-            Quick note on what plan completers achieve — published, not promised.
+            Plan completers average <em>+182 points</em>. The College Board retest average is <em>+40</em>.
           </p>
         </div>
 
@@ -307,7 +307,7 @@ export function QFS8Acknowledgment({ name = "your kid", onContinue, onBack }) {
           fontFamily: 'var(--qf-body)', fontSize: 12.5,
           color: 'var(--qf-ink-mute)', lineHeight: 1.55, margin: 0,
         }}>
-          Score outcomes vary by starting score, completion of assigned work, and individual test-day factors — they are not guaranteed. Reported figures reflect students who completed every action on their plan; partial-completion outcomes are lower on average.
+          We don't guarantee score improvements. Scores go up based on various factors, including effort. Figures above reflect plan completers; partial completion is lower on average.
         </p>
       </div>
     </QFScreen>
