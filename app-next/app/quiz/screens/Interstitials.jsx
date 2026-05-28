@@ -869,9 +869,6 @@ export function QFIDiagnosis({ onContinue, onBack, q4 = '1200-1300', q6 = ['math
               <>You need to quickly figure out the skills costing them points and build a personalized plan.</>
             )}
           </p>
-          <p className="qf-lead" style={{ margin: 0 }}>
-            Illuminairy's diagnostic identifies the <em>5–6 skills</em> and builds a plan around them.
-          </p>
         </div>
       </div>
     </QFScreen>
