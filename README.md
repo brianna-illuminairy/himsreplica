@@ -8,7 +8,7 @@ the funnel ends by booking a free strategy call (no checkout in-funnel).
 **Design north star:** [`FUNNEL-PRINCIPLES.md`](FUNNEL-PRINCIPLES.md) — Hims density, parent voice, no marketer-speak.
 
 > ⚠️ **The production funnel is `app-next/` (Next.js). That is the only code that runs.**
-> The `legacy/` folder is the archived prototype — do not use or import from it.
+> `design-source/` is reference material (A/B variants + Claude Design originals) — not live.
 
 ---
 
@@ -16,10 +16,12 @@ the funnel ends by booking a free strategy call (no checkout in-funnel).
 
 ```
 app-next/        ← PRODUCTION funnel (Next.js). All work happens here.
+design-source/   ← A/B landing variants + Claude Design originals (reference / A-B ideas)
 uploads/         ← source/raw image options (renamed to readable names)
-legacy/          ← archived prototype + design canvas. Reference only — DO NOT USE.
 README.md · FUNNEL-PRINCIPLES.md · DECISIONS.md
 ```
+
+Everything lives on **`main`** — one branch, no juggling.
 
 ### Run locally
 
