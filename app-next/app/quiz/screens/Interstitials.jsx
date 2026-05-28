@@ -769,7 +769,7 @@ export function QFIDiagnosis({ onContinue, onBack, q4 = '1200-1300', q6 = ['math
             )}
           </h1>
           <p className="qf-lead">
-            Those approaches spread focus across all <em>28 SAT skills</em> instead of going deep on the <em>few skills driving the biggest score gains.</em>
+            Those approaches spread focus across all <em>28 SAT skills</em> instead of going deep on the <em>highest-impact skills.</em>
           </p>
         </div>
 
