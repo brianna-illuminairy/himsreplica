@@ -254,32 +254,61 @@ export function QFS7PlanDetails({ onContinue, onBack, q5 = 'oct3' }) {
   );
 }
 
-// ─── S8 · Acknowledgment ─────────────────────────────────────────────────────
+// ─── S8 · Acknowledgment (clinical, trust-building) ──────────────────────────
 export function QFS8Acknowledgment({ name = "your kid", onContinue, onBack }) {
+  const stats = [
+    { num: '+182', label: <>Plan completer mean improvement <span style={{ color: 'var(--qf-ink-mute)' }}>· College Board retest average: <strong style={{ color: 'var(--qf-ink-2)' }}>+40</strong></span></> },
+    { num: '78%',  label: <>of plan completers reach their goal score</> },
+    { num: '12',   label: <>weeks · standard plan duration</> },
+  ];
   return (
-    <QFScreen stepIdx={21} ornament="glow" onBack={onBack}
+    <QFScreen stepIdx={21} onBack={onBack}
       footer={<QFButton kind="forest" onClick={onContinue}>Book the call</QFButton>}
     >
-      <div className="gap-22 center" style={{ textAlign: 'center', alignItems: 'center' }}>
-        <div style={{
-          width: 84, height: 84, borderRadius: '50%',
-          background: 'radial-gradient(circle at 35% 35%, var(--qf-glow), var(--qf-forest) 78%)',
-          boxShadow: '0 0 60px rgba(184, 224, 197, 0.45)', marginTop: 8,
-        }} />
-        <div className="qf-eyebrow center" style={{ textAlign: 'center', color: 'var(--qf-forest)' }}>
-          Plan reserved
+      <div className="gap-22">
+        <div>
+          <div className="qf-meta" style={{ color: 'var(--qf-forest)' }}>✓ Reserved</div>
+          <h1 className="qf-h1" style={{ marginBottom: 8 }}>
+            Your strategy call is <em>reserved</em>.
+          </h1>
+          <p className="qf-lead">
+            Quick note on what plan completers achieve — published, not promised.
+          </p>
         </div>
-        <h1 className="qf-h1 center" style={{ textAlign: 'center' }}>We're <em>on it</em>.</h1>
-        <p className="qf-lead" style={{ maxWidth: 320 }}>
-          Your kid's plan is reserved. The last step is a 15-min strategy call to discuss your kid's goals and timeline. If we're a fit, we'll enroll and schedule the diagnostic from there.
+
+        {/* Clinical stats card */}
+        <div style={{
+          background: 'var(--qf-paper)',
+          border: '1px solid var(--qf-line)',
+          borderRadius: 14,
+          overflow: 'hidden',
+        }}>
+          {stats.map((s, i) => (
+            <div key={i} style={{
+              display: 'grid', gridTemplateColumns: '94px 1fr',
+              alignItems: 'baseline', gap: 14,
+              padding: '16px 18px',
+              borderTop: i > 0 ? '1px solid var(--qf-line)' : 'none',
+            }}>
+              <div style={{
+                fontFamily: 'var(--qf-display)', fontSize: 30, fontWeight: 500,
+                color: 'var(--qf-forest)', letterSpacing: '-0.02em', lineHeight: 1,
+              }}>{s.num}</div>
+              <div style={{
+                fontFamily: 'var(--qf-body)', fontSize: 13.5,
+                color: 'var(--qf-ink-2)', lineHeight: 1.4,
+              }}>{s.label}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Clinical disclaimer */}
+        <p style={{
+          fontFamily: 'var(--qf-body)', fontSize: 12.5,
+          color: 'var(--qf-ink-mute)', lineHeight: 1.55, margin: 0,
+        }}>
+          Score outcomes vary by starting score, completion of assigned work, and individual test-day factors — they are not guaranteed. Reported figures reflect students who completed every action on their plan; partial-completion outcomes are lower on average. No charge until you enroll on the call.
         </p>
-        <QFConstellation />
-        <ul className="qf-checklist" style={{ width: '100%', textAlign: 'left' }}>
-          <li><span className="check">✓</span>15 minutes · just you, no student required</li>
-          <li><span className="check">✓</span>You'll meet their matched tutor by name</li>
-          <li><span className="check">✓</span>Enrollment + diagnostic scheduling happens on the call</li>
-        </ul>
-        <p className="qf-disclaimer">Free call. No charge until you enroll on the call.</p>
       </div>
     </QFScreen>
   );
